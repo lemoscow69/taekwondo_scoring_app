@@ -9,544 +9,383 @@
 *{box-sizing:border-box}
 
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#10131a;
-    color:#fff;
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#10131a;
+  color:white;
+  text-align:center;
 }
 
 header{
-    text-align:center;
-    padding:18px;
-    background:#171c25;
-    border-bottom:2px solid #333;
-}
-
-header h1{
-    margin:0;
-    font-size:28px;
+  padding:18px;
+  font-size:28px;
+  font-weight:bold;
 }
 
 .topbar{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
-    padding:15px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:10px;
 }
 
 button{
-    border:0;
-    border-radius:10px;
-    padding:12px 18px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
+  border:0;
+  border-radius:12px;
+  padding:14px 22px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  color:white;
 }
 
+.start{background:#168cff}
+.pause{background:#6757e8}
+.end{background:#ed3948}
+.direct{background:#ed3948}
+.new{background:#16bfa5}
+.settings{background:#333;padding:10px 18px}
+
 .timer{
-    text-align:center;
-    font-size:44px;
-    font-weight:bold;
-    margin:8px;
+  font-size:52px;
+  font-weight:bold;
+  margin-top:10px;
 }
 
 .roundInfo{
-    text-align:center;
-    font-size:20px;
-    margin:10px;
+  font-size:24px;
+  margin:8px;
 }
 
 .match{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-    max-width:1100px;
-    margin:auto;
-    padding:15px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:15px;
 }
 
 .player{
-    border-radius:18px;
-    padding:20px;
-    text-align:center;
+  padding:20px;
+  border-radius:20px;
+  background:#222b38;
 }
 
-.red{
-    background:#5d171d;
-}
+.player.red{background:#a62d45}
+.player.blue{background:#176a78}
 
-.blue{
-    background:#123e68;
-}
-
-.playerName{
-    font-size:30px;
-    font-weight:bold;
-    margin:5px;
-    min-height:38px;
+.name{
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:15px;
 }
 
 .score{
-    font-size:110px;
-    font-weight:bold;
-    line-height:1;
-    margin:15px 0;
+  font-size:90px;
+  font-weight:bold;
 }
 
-.controls{
-    display:flex;
-    justify-content:center;
-    gap:12px;
+.scoreButtons{
+  display:flex;
+  justify-content:center;
+  gap:15px;
 }
 
-.scoreBtn{
-    width:90px;
-    height:70px;
-    font-size:40px;
+.scoreButtons button{
+  width:90px;
+  font-size:35px;
+  background:#16bfa5;
 }
 
-.plus{
-    background:#27ae60;
-    color:white;
+.scoreButtons button:first-child{
+  background:#555;
 }
 
-.minus{
-    background:#c0392b;
-    color:white;
+.gam{
+  margin-top:12px;
+  font-size:20px;
 }
 
-.gamjeom{
-    font-size:23px;
-    font-weight:bold;
-    margin:15px;
+.gam button{
+  margin-top:8px;
+  background:#555;
+  font-size:16px;
 }
 
-.gamBtn{
-    background:#f39c12;
-    color:#111;
-    width:90%;
-}
-
-.roundWins{
-    font-size:18px;
-    margin-top:15px;
-}
-
-.bottom{
-    text-align:center;
-    padding:15px;
-}
-
-.start{background:#2980b9;color:#fff}
-.pause{background:#8e44ad;color:#fff}
-.end{background:#d35400;color:#fff}
-.new{background:#16a085;color:#fff}
-.direct{background:#c0392b;color:#fff}
-.settingsLink{
-    color:#5dade2;
-    text-decoration:underline;
-    cursor:pointer;
-    font-size:19px;
-    margin:10px;
-    display:inline-block;
+.rounds{
+  margin-top:12px;
+  font-size:18px;
 }
 
 .winner{
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    min-height:40px;
-    padding:10px;
+  font-size:30px;
+  font-weight:bold;
+  margin:15px;
+  min-height:40px;
 }
 
 .modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.78);
-    z-index:1000;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  justify-content:center;
+  align-items:center;
+  z-index:10;
 }
 
 .modalBox{
-    background:#1d232d;
-    width:100%;
-    max-width:520px;
-    max-height:90vh;
-    overflow:auto;
-    border-radius:18px;
-    padding:25px;
+  background:#202733;
+  padding:25px;
+  border-radius:18px;
+  width:min(90%,420px);
 }
 
 .modalBox h2{
-    margin-top:0;
+  margin-top:0;
 }
 
-.setting{
-    margin:18px 0;
+.modalBox label{
+  display:block;
+  text-align:left;
+  margin-top:12px;
 }
 
-.setting label{
-    display:block;
-    font-weight:bold;
-    margin-bottom:7px;
+.modalBox input,
+.modalBox select{
+  width:100%;
+  padding:12px;
+  margin-top:5px;
+  border-radius:8px;
+  border:0;
+  font-size:16px;
 }
 
-.setting input,
-.setting select{
-    width:100%;
-    padding:12px;
-    border:0;
-    border-radius:8px;
-    font-size:17px;
+.modalBox button{
+  margin-top:15px;
 }
 
 .save{
-    background:#27ae60;
-    color:white;
+  background:#16bfa5;
 }
 
 .close{
-    background:#555;
-    color:white;
+  background:#555;
 }
 
 .directWinnerBtn{
-    width:100%;
-    margin:7px 0;
-    padding:16px;
-    font-size:18px;
-}
-
-.redChoice{
-    background:#8e252d;
-    color:white;
-}
-
-.blueChoice{
-    background:#18558c;
-    color:white;
-}
-
-.reason{
-    background:#444;
-    color:white;
+  display:block;
+  width:100%;
+  margin:10px 0;
+  background:#444;
 }
 
 @media(max-width:700px){
-    .match{
-        grid-template-columns:1fr;
-    }
+  .match{
+    grid-template-columns:1fr;
+  }
 
-    .score{
-        font-size:80px;
-    }
+  .score{
+    font-size:70px;
+  }
 
-    .playerName{
-        font-size:25px;
-    }
-
-    .timer{
-        font-size:36px;
-    }
+  .timer{
+    font-size:42px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>🥋 TAEKWONDO SCORING</h1>
-</header>
+<header>🥋 TAEKWONDO SCORING</header>
 
 <div class="topbar">
-    <button class="start" onclick="startTimer()">START</button>
-    <button class="pause" onclick="pauseTimer()">PAUSE</button>
-    <button class="end" onclick="endRound()">END ROUND</button>
-    <button class="direct" onclick="openDirectWinner()">DIRECT WINNER</button>
-    <button class="new" onclick="newMatch()">NEW MATCH</button>
+  <button class="start" onclick="startTimer()">START</button>
+  <button class="pause" onclick="pauseTimer()">PAUSE</button>
+  <button class="end" onclick="endRound()">END ROUND</button>
+  <button class="direct" onclick="openDirectWinner()">DIRECT WINNER</button>
+  <button class="new" onclick="newMatch()">NEW MATCH</button>
 </div>
 
 <div class="timer" id="timer">01:00</div>
+<div class="roundInfo" id="roundInfo">ROUND 1 / 3</div>
 
-<div class="roundInfo">
-    ROUND <span id="currentRound">1</span>
-    /
-    <span id="totalRounds">3</span>
-</div> 
-    <div class="match">
+<div class="match">
 
-    <div class="player red">
+  <div class="player red">
+    <div class="name" id="player1Name">HONG CHONG</div>
 
-        <div class="playerName" id="redName">
-            HONG CHONG
-        </div>
+    <div class="score" id="score1">0</div>
 
-        <div class="score" id="redScore">0</div>
-
-        <div class="controls">
-            <button class="minus scoreBtn"
-                    onclick="changeScore('red',-1)">−</button>
-
-            <button class="plus scoreBtn"
-                    onclick="changeScore('red',1)">+</button>
-        </div>
-
-        <div class="gamjeom">
-            GAM-JEOM:
-            <span id="redGam">0</span>
-        </div>
-
-        <button class="gamBtn"
-                onclick="giveGamjeom('red')">
-            + GAM-JEOM
-        </button>
-
-        <div class="roundWins">
-            ROUNDS WON:
-            <span id="redRounds">0</span>
-        </div>
-
+    <div class="scoreButtons">
+      <button onclick="changeScore(1,-1)">−</button>
+      <button onclick="changeScore(1,1)">+</button>
     </div>
 
-
-    <div class="player blue">
-
-        <div class="playerName" id="blueName">
-            BLUE PLAYER
-        </div>
-
-        <div class="score" id="blueScore">0</div>
-
-        <div class="controls">
-            <button class="minus scoreBtn"
-                    onclick="changeScore('blue',-1)">−</button>
-
-            <button class="plus scoreBtn"
-                    onclick="changeScore('blue',1)">+</button>
-        </div>
-
-        <div class="gamjeom">
-            GAM-JEOM:
-            <span id="blueGam">0</span>
-        </div>
-
-        <button class="gamBtn"
-                onclick="giveGamjeom('blue')">
-            + GAM-JEOM
-        </button>
-
-        <div class="roundWins">
-            ROUNDS WON:
-            <span id="blueRounds">0</span>
-        </div>
-
+    <div class="gam">
+      GAM-JEOM: <span id="gam1">0</span><br>
+      <button onclick="giveGamjeom(1)">+ GAM-JEOM</button>
     </div>
 
-</div>
+    <div class="rounds">
+      ROUNDS WON: <span id="rounds1">0</span>
+    </div>
+  </div>
+
+  <div class="player blue">
+    <div class="name" id="player2Name">BLUE PLAYER</div>
+
+    <div class="score" id="score2">0</div>
+
+    <div class="scoreButtons">
+      <button onclick="changeScore(2,-1)">−</button>
+      <button onclick="changeScore(2,1)">+</button>
+    </div>
+
+    <div class="gam">
+      GAM-JEOM: <span id="gam2">0</span><br>
+      <button onclick="giveGamjeom(2)">+ GAM-JEOM</button>
+    </div>
+
+    <div class="rounds">
+      ROUNDS WON: <span id="rounds2">0</span>
+    </div>
+  </div>
+  </div>
 
 <div class="winner" id="winner"></div>
 
-<div class="bottom">
-
-    <span class="settingsLink"
-          onclick="openSettings()">
-        ⚙️ MATCH SETTINGS
-    </span>
-
-</div>
+<button class="settings" onclick="openSettings()">⚙ MATCH SETTINGS</button>
 
 
-<!-- SETTINGS -->
+<!-- SETTINGS MODAL -->
 
 <div class="modal" id="settingsModal">
+  <div class="modalBox">
 
-<div class="modalBox">
+    <h2>⚙ Match Settings</h2>
 
-<h2>⚙️ Match Settings</h2>
+    <label>Player 1 Name</label>
+    <input id="setPlayer1" type="text">
 
-<div class="setting">
-<label>Player 1 Name</label>
-<input id="player1Setting"
-       type="text"
-       value="HONG CHONG">
-</div>
+    <label>Player 2 Name</label>
+    <input id="setPlayer2" type="text">
 
-<div class="setting">
-<label>Player 2 Name</label>
-<input id="player2Setting"
-       type="text"
-       value="BLUE PLAYER">
-</div>
+    <label>Round Time (seconds)</label>
+    <input id="setTime" type="number" min="10">
 
-<div class="setting">
-<label>Round Time (seconds)</label>
-<input id="roundTimeSetting"
-       type="number"
-       min="10"
-       max="600"
-       value="60">
-</div>
+    <label>Best Of</label>
+    <select id="setBestOf">
+      <option value="1">1 Round</option>
+      <option value="3">3 Rounds</option>
+      <option value="5">5 Rounds</option>
+    </select>
 
-<div class="setting">
-<label>Best Of</label>
+    <label>Gam-jeom Disqualification Limit</label>
+    <input id="setGamLimit" type="number" min="1">
 
-<select id="bestOfSetting">
-<option value="1">Best of 1</option>
-<option value="3" selected>Best of 3</option>
-<option value="5">Best of 5</option>
-</select>
+    <label>Score Size</label>
+    <select id="setScoreSize">
+      <option value="70">Small</option>
+      <option value="90">Medium</option>
+      <option value="120">Large</option>
+    </select>
 
-</div>
+    <br>
 
-<div class="setting">
-<label>Gam-Joom Disqualification Limit</label>
+    <button class="save" onclick="saveSettings()">SAVE SETTINGS</button>
+    <button class="close" onclick="closeSettings()">CLOSE</button>
 
-<input id="gamLimitSetting"
-       type="number"
-       min="1"
-       max="30"
-       value="10">
-</div>
-
-<div class="setting">
-<label>Score Size</label>
-
-<select id="scoreSizeSetting">
-<option value="70">Small</option>
-<option value="100" selected>Large</option>
-<option value="140">Extra Large</option>
-<option value="180">Huge</option>
-</select>
-
-</div>
-
-<button class="save"
-        onclick="saveSettings()">
-SAVE SETTINGS
-</button>
-
-<button class="close"
-        onclick="closeSettings()">
-CLOSE
-</button>
-
-</div>
+  </div>
 </div>
 
 
-<!-- DIRECT WINNER -->
+<!-- DIRECT WINNER MODAL -->
 
-<div class="modal" id="directWinnerModal">
+<div class="modal" id="directModal">
+  <div class="modalBox">
 
-<div class="modalBox">
+    <h2>🏆 Direct Winner</h2>
 
-<h2>🏆 DIRECT WINNER</h2>
+    <button class="directWinnerBtn" onclick="setDirectWinner(1)">
+      HONG CHONG WINS
+    </button>
 
-<p>Select the winner:</p>
+    <button class="directWinnerBtn" onclick="setDirectWinner(2)">
+      BLUE PLAYER WINS
+    </button>
 
-<button class="directWinnerBtn redChoice"
-        onclick="setDirectWinner('red')">
-🔴 <span id="redChoiceName">HONG CHONG</span>
-</button>
+    <h3>Reason</h3>
 
-<button class="directWinnerBtn blueChoice"
-        onclick="setDirectWinner('blue')">
-🔵 <span id="blueChoiceName">BLUE PLAYER</span>
-</button>
+    <button class="directWinnerBtn" onclick="setWinnerReason('Walkover')">
+      Walkover / Opponent Did Not Fight
+    </button>
 
-<hr>
+    <button class="directWinnerBtn" onclick="setWinnerReason('Withdrawal')">
+      Opponent Withdrawal
+    </button>
 
-<p>Select reason:</p>
+    <button class="directWinnerBtn" onclick="setWinnerReason('Injury')">
+      Injury
+    </button>
 
-<button class="directWinnerBtn reason"
-        onclick="setWinnerReason('Withdrawal')">
-Withdrawal / Walkover
-</button>
+    <button class="close" onclick="closeDirectWinner()">CLOSE</button>
 
-<button class="directWinnerBtn reason"
-        onclick="setWinnerReason('Disqualification')">
-Disqualification
-</button>
-
-<button class="directWinnerBtn reason"
-        onclick="setWinnerReason('Other')">
-Other
-</button>
-
-<button class="close"
-        onclick="closeDirectWinner()">
-CLOSE
-</button>
-
-</div>
+  </div>
 </div>
 
 
 <script>
 
 let settings = {
-    player1:"HONG CHONG",
-    player2:"BLUE PLAYER",
-
-    roundTime:60,
-
-    bestOf:3,
-
-    gamLimit:10,
-
-    scoreSize:100
+  player1: "HONG CHONG",
+  player2: "BLUE PLAYER",
+  roundTime: 60,
+  bestOf: 3,
+  gamLimit: 10,
+  scoreSize: 90
 };
 
+let score1 = 0;
+let score2 = 0;
 
-let redScore=0;
-let blueScore=0;
+let gam1 = 0;
+let gam2 = 0;
 
-let redGam=0;
-let blueGam=0;
+let rounds1 = 0;
+let rounds2 = 0;
 
-let redRounds=0;
-let blueRounds=0;
+let currentRound = 1;
+let timeLeft = settings.roundTime;
 
-let currentRound=1;
+let timerInterval = null;
+let running = false;
 
-let timeLeft=settings.roundTime;
-
-let timerInterval=null;
-
-let running=false;
-
-let roundFinished=false;
-
-let selectedWinner=null;
+let directWinnerPlayer = null;
 
 
 /* SCORE */
 
-function changeScore(player,amount){
+function changeScore(player, amount){
 
-    if(roundFinished) return;
+  if(player === 1){
+    score1 += amount;
 
-    if(player==="red"){
-
-        redScore += amount;
-
-        if(redScore<0)
-            redScore=0;
+    if(score1 < 0){
+      score1 = 0;
     }
+  }
 
-    if(player==="blue"){
+  if(player === 2){
+    score2 += amount;
 
-        blueScore += amount;
-
-        if(blueScore<0)
-            blueScore=0;
+    if(score2 < 0){
+      score2 = 0;
     }
+  }
 
-    updateDisplay();
+  updateDisplay();
 }
 
 
@@ -554,51 +393,31 @@ function changeScore(player,amount){
 
 function giveGamjeom(player){
 
-    if(roundFinished) return;
+  if(player === 1){
 
-    if(player==="red"){
+    gam1++;
 
-        redGam++;
+    score2++;
 
-        blueScore++;
+    if(gam1 >= settings.gamLimit){
+      showWinner(2,"Gam-jeom Limit");
+      return;
     }
+  }
 
-    if(player==="blue"){
+  if(player === 2){
 
-        blueGam++;
+    gam2++;
 
-        redScore++;
+    score1++;
+
+    if(gam2 >= settings.gamLimit){
+      showWinner(1,"Gam-jeom Limit");
+      return;
     }
+  }
 
-    updateDisplay();
-
-    checkGamLimit();
-}
-
-
-function checkGamLimit(){
-
-    if(redGam >= settings.gamLimit){
-
-        showWinner(
-            settings.player2 +
-            " WINS - " +
-            settings.player1 +
-            " DISQUALIFIED"
-        );
-
-        return;
-    }
-
-    if(blueGam >= settings.gamLimit){
-
-        showWinner(
-            settings.player1 +
-            " WINS - " +
-            settings.player2 +
-            " DISQUALIFIED"
-        );
-    }
+  updateDisplay();
 }
 
 
@@ -606,77 +425,63 @@ function checkGamLimit(){
 
 function startTimer(){
 
-    if(running || roundFinished)
-        return;
+  if(running){
+    return;
+  }
 
-    running=true;
+  running = true;
 
-    timerInterval=setInterval(function(){
+  timerInterval = setInterval(function(){
 
-        if(timeLeft>0){
+    if(timeLeft > 0){
 
-            timeLeft--;
+      timeLeft--;
 
-            updateDisplay();
+      updateTimer();
 
-        }else{
+    }else{
 
-            pauseTimer();
+      clearInterval(timerInterval);
 
-            endRound();
-        }
+      running = false;
 
-    },1000);
+      endRound();
+
+    }
+
+  },1000);
 }
 
 
 function pauseTimer(){
 
-    running=false;
+  clearInterval(timerInterval);
 
-    clearInterval(timerInterval);
+  running = false;
+
 }
 
 
-/* END ROUND */
-
 function endRound(){
 
-    if(roundFinished)
-        return;
+  clearInterval(timerInterval);
 
-    pauseTimer();
+  running = false;
 
-    if(redScore===blueScore){
+  if(score1 > score2){
 
-        document.getElementById("winner").innerText =
-        "⚠️ ROUND TIED";
+    rounds1++;
 
-        return;
-    }
+  }else if(score2 > score1){
 
-    if(redScore>blueScore){
+    rounds2++;
 
-        redRounds++;
+  }
 
-        document.getElementById("winner").innerText =
-        settings.player1 +
-        " WINS ROUND " +
-        currentRound;
+  updateDisplay();
 
-    }else{
+  checkMatchWinner();
 
-        blueRounds++;
-
-        document.getElementById("winner").innerText =
-        settings.player2 +
-        " WINS ROUND " +
-        currentRound;
-    }
-
-    roundFinished=true;
-
-    checkMatchWinner();
 }
 
 
@@ -684,63 +489,55 @@ function endRound(){
 
 function checkMatchWinner(){
 
-    let requiredWins=
-        Math.ceil(settings.bestOf/2);
+  let needed = Math.ceil(settings.bestOf / 2);
 
-    if(redRounds>=requiredWins){
+  if(rounds1 >= needed){
 
-        showWinner(
-            "🏆 " +
-            settings.player1 +
-            " WINS THE MATCH"
-        );
+    showWinner(1,"Match Winner");
 
-        return;
-    }
+    return;
 
-    if(blueRounds>=requiredWins){
+  }
 
-        showWinner(
-            "🏆 " +
-            settings.player2 +
-            " WINS THE MATCH"
-        );
+  if(rounds2 >= needed){
 
-        return;
-    }
+    showWinner(2,"Match Winner");
 
+    return;
 
-    setTimeout(function(){
+  }
 
-        currentRound++;
+  currentRound++;
 
-        redScore=0;
-        blueScore=0;
+  if(currentRound <= settings.bestOf){
 
-        redGam=0;
-        blueGam=0;
+    score1 = 0;
+    score2 = 0;
 
-        timeLeft=settings.roundTime;
+    gam1 = 0;
+    gam2 = 0;
 
-        roundFinished=false;
+    timeLeft = settings.roundTime;
 
-        document.getElementById("winner").innerText="";
+    updateDisplay();
 
-        updateDisplay();
+  }
 
-    },1200);
 }
 
 
 /* WINNER */
 
-function showWinner(text){
+function showWinner(player,reason){
 
-    pauseTimer();
+  clearInterval(timerInterval);
 
-    roundFinished=true;
+  running = false;
+    let name = player === 1 ? settings.player1 : settings.player2;
 
-    document.getElementById("winner").innerText=text;
+  document.getElementById("winner").innerHTML =
+    "🏆 WINNER: " + name + "<br><small>" + reason + "</small>";
+
 }
 
 
@@ -748,84 +545,48 @@ function showWinner(text){
 
 function openDirectWinner(){
 
-    document.getElementById("directWinnerModal").style.display="flex";
+  document.getElementById("directModal").style.display = "flex";
+
 }
 
 
 function closeDirectWinner(){
 
-    document.getElementById("directWinnerModal").style.display="none";
+  document.getElementById("directModal").style.display = "none";
 
-    selectedWinner=null;
+  directWinnerPlayer = null;
+
 }
 
 
 function setDirectWinner(player){
 
-    selectedWinner=player;
+  directWinnerPlayer = player;
 
-    let name=
-        player==="red"
-        ? settings.player1
-        : settings.player2;
-
-    document.getElementById("winner").innerText=
-        "🏆 " + name + " SELECTED";
-
-    alert(
-        "Now select the reason for " +
-        name
-    );
 }
 
 
 function setWinnerReason(reason){
-    if(!selectedWinner){
 
-        alert("First select the winner.");
+  if(directWinnerPlayer === null){
 
-        return;
-    }
-    let name=
-        selectedWinner==="red"
-        ? settings.player1
-        : settings.player2;
+    alert("First select the winner.");
 
-    showWinner(
-        "🏆 " +
-        name +
-        " WINS — " +
-        reason
-    );
+    return;
 
-    closeDirectWinner();
-}
+  }
 
+  let name =
+    directWinnerPlayer === 1
+    ? settings.player1
+    : settings.player2;
 
-/* NEW MATCH */
+  document.getElementById("winner").innerHTML =
+    "🏆 WINNER: " + name +
+    "<br><small>" + reason + "</small>";
 
-function newMatch(){
+  closeDirectWinner();
 
-    pauseTimer();
-
-    redScore=0;
-    blueScore=0;
-
-    redGam=0;
-    blueGam=0;
-
-    redRounds=0;
-    blueRounds=0;
-
-    currentRound=1;
-
-    timeLeft=settings.roundTime;
-
-    roundFinished=false;
-
-    document.getElementById("winner").innerText="";
-
-    updateDisplay();
 }
 
 
@@ -833,117 +594,150 @@ function newMatch(){
 
 function openSettings(){
 
-    document.getElementById("player1Setting").value=
-        settings.player1;
+  document.getElementById("setPlayer1").value = settings.player1;
 
-    document.getElementById("player2Setting").value=
-        settings.player2;
+  document.getElementById("setPlayer2").value = settings.player2;
 
-    document.getElementById("roundTimeSetting").value=
-        settings.roundTime;
+  document.getElementById("setTime").value = settings.roundTime;
 
-    document.getElementById("bestOfSetting").value=
-        settings.bestOf;
+  document.getElementById("setBestOf").value = settings.bestOf;
 
-    document.getElementById("gamLimitSetting").value=
-        settings.gamLimit;
+  document.getElementById("setGamLimit").value = settings.gamLimit;
 
-    document.getElementById("scoreSizeSetting").value=
-        settings.scoreSize;
+  document.getElementById("setScoreSize").value = settings.scoreSize;
 
-    document.getElementById("settingsModal").style.display="flex";
+  document.getElementById("settingsModal").style.display = "flex";
+
 }
 
 
 function closeSettings(){
 
-    document.getElementById("settingsModal").style.display="none";
+  document.getElementById("settingsModal").style.display = "none";
+
 }
 
 
 function saveSettings(){
 
-    settings.player1=
-        document.getElementById("player1Setting").value.trim()
-        || "PLAYER 1";
+  settings.player1 =
+    document.getElementById("setPlayer1").value || "RED PLAYER";
 
-    settings.player2=
-        document.getElementById("player2Setting").value.trim()
-        || "PLAYER 2";
+  settings.player2 =
+    document.getElementById("setPlayer2").value || "BLUE PLAYER";
 
-    settings.roundTime=
-        parseInt(
-            document.getElementById("roundTimeSetting").value
-        );
+  settings.roundTime =
+    Number(document.getElementById("setTime").value) || 60;
 
-    settings.bestOf=
-        parseInt(
-            document.getElementById("bestOfSetting").value
-        );
+  settings.bestOf =
+    Number(document.getElementById("setBestOf").value) || 3;
 
-    settings.gamLimit=
-        parseInt(
-            document.getElementById("gamLimitSetting").value
-        );
+  settings.gamLimit =
+    Number(document.getElementById("setGamLimit").value) || 10;
 
-    settings.scoreSize=
-        parseInt(
-            document.getElementById("scoreSizeSetting").value
-        );
+  settings.scoreSize =
+    Number(document.getElementById("setScoreSize").value) || 90;
 
-    timeLeft=settings.roundTime;
+  timeLeft = settings.roundTime;
 
-    updateDisplay();
+  document.querySelectorAll(".score").forEach(function(el){
 
-    closeSettings();
+    el.style.fontSize = settings.scoreSize + "px";
+
+  });
+
+  updateDisplay();
+
+  closeSettings();
+
+}
+
+
+/* NEW MATCH */
+
+function newMatch(){
+
+  clearInterval(timerInterval);
+
+  running = false;
+
+  score1 = 0;
+  score2 = 0;
+
+  gam1 = 0;
+  gam2 = 0;
+
+  rounds1 = 0;
+  rounds2 = 0;
+
+  currentRound = 1;
+
+  timeLeft = settings.roundTime;
+
+  document.getElementById("winner").innerHTML = "";
+
+  updateDisplay();
+
 }
 
 
 /* DISPLAY */
 
+function updateTimer(){
+
+  let minutes =
+    Math.floor(timeLeft / 60);
+
+  let seconds =
+    timeLeft % 60;
+
+  document.getElementById("timer").innerText =
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0");
+
+}
+
+
 function updateDisplay(){
 
-    document.getElementById("redName").innerText=
-        settings.player1;
+  document.getElementById("player1Name").innerText =
+    settings.player1;
 
-    document.getElementById("blueName").innerText=
-        settings.player2;
+  document.getElementById("player2Name").innerText =
+    settings.player2;
 
-    document.getElementById("redChoiceName").innerText=
-        settings.player1;
+  document.getElementById("score1").innerText =
+    score1;
 
-    document.getElementById("blueChoiceName").innerText=
-        settings.player2;
+  document.getElementById("score2").innerText =
+    score2;
 
-    document.getElementById("redScore").innerText=
-        redScore;
+  document.getElementById("gam1").innerText =
+    gam1;
 
-    document.getElementById("blueScore").innerText=
-        blueScore;
+  document.getElementById("gam2").innerText =
+    gam2;
 
-    document.getElementById("redGam").innerText=
-        redGam;
+  document.getElementById("rounds1").innerText =
+    rounds1;
 
-    document.getElementById("blueGam").innerText=
-        blueGam;
+  document.getElementById("rounds2").innerText =
+    rounds2;
 
-    document.getElementById("redRounds").innerText=
-        redRounds;
+  document.getElementById("roundInfo").innerText =
+    "ROUND " + currentRound + " / " + settings.bestOf;
 
-    document.getElementById("blueRounds").innerText=
-        blueRounds;
+  updateTimer();
 
-    document.getElementById("currentRound").innerText=
-        currentRound;
-
-    document.getElementById("totalRounds").innerText=
-        settings.bestOf;
-
-    document.querySelectorAll(".score").forEach(function(el){
-
-        el.style.fontSize=
-            settings.scoreSize+"px";
-    });
+}
 
 
-    let minutes
+/* INITIALIZE */
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
