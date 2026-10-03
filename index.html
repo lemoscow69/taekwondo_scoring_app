@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taekwondo Referee Scoring</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+            text-align: center;
+        }
+
+        header {
+            padding: 18px;
+            background: #000;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .round {
+            margin-top: 15px;
+            font-size: 20px;
+        }
+
+        .timer {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        .scoreboard {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .player {
+            width: 45%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .red {
+            background: #b91c1c;
+        }
+
+        .blue {
+            background: #1d4ed8;
+        }
+
+        .player h2 {
+            margin-top: 0;
+        }
+
+        .score {
+            font-size: 70px;
+            font-weight: bold;
+            margin: 15px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 13px 18px;
+            margin: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .controls {
+            margin: 15px;
+        }
+
+        .main-btn {
+            background: white;
+            color: black;
+        }
+
+        .danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .reset {
+            background: #f59e0b;
+            color: black;
+        }
+
+        .winner {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .scoreboard {
+                gap: 8px;
+                padding: 8px;
+            }
+
+            .player {
+                padding: 12px 5px;
+            }
+
+            .score {
+                font-size: 55px;
+            }
+
+            button {
+                width: 90%;
+                margin: 4px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🥋 TAEKWONDO SCORING</h1>
+</header>
+
+<div class="round">
+    ROUND <span id="round">1</span>
+</div>
+
+<div class="timer" id="timer">01:00</div>
+
+<div class="scoreboard">
+
+    <div class="player red">
+        <h2>🔴 RED</h2>
+
+        <div class="score" id="redScore">0</div>
+
+        <button onclick="addScore('red', 1)">+1 Point</button>
+        <button onclick="addScore('red', 2)">+2 Points</button>
+        <button onclick="addScore('red', 3)">+3 Points</button>
+        <button onclick="gamJeom('red')">Gam-jeom</button>
+    </div>
+
+    <div class="player blue">
+        <h2>🔵 BLUE</h2>
+
+        <div class="score" id="blueScore">0</div>
+
+        <button onclick="addScore('blue', 1)">+1 Point</button>
+        <button onclick="addScore('blue', 2)">+2 Points</button>
+        <button onclick="addScore('blue', 3)">+3 Points</button>
+        <button onclick="gamJeom('blue')">Gam-jeom</button>
+    </div>
+
+</div>
+
+<div class="controls">
+    <button class="main-btn" onclick="startTimer()">▶ Start</button>
+    <button class="main-btn" onclick="pauseTimer()">⏸ Pause</button>
+    <button class="danger" onclick="endRound()">End Round</button>
+    <button class="reset" onclick="resetMatch()">New Match</button>
+</div>
+
+<div class="winner" id="winner"></div>
+
+<script>
+    let redScore = 0;
+    let blueScore = 0;
+
+    let redGamJeom = 0;
+    let blueGamJeom = 0;
+
+    let timeLeft = 60;
+    let timerInterval = null;
+  function updateDisplay() {
+        document.getElementById("redScore").textContent = redScore;
+        document.getElementById("blueScore").textContent = blueScore;
+
+        document.getElementById("timer").textContent =
+            "00:" + String(timeLeft).padStart(2, "0");
+    }
+
+    function addScore(player, points) {
+
+        if (player === "red") {
+            redScore += points;
+        } else {
+            blueScore += points;
+        }
+
+        updateDisplay();
+    }
+
+    function gamJeom(player) {
+
+        if (player === "red") {
+            redGamJeom++;
+            blueScore++;
+        } else {
+            blueGamJeom++;
+            redScore++;
+        }
+
+        updateDisplay();
+    }
+
+    function startTimer() {
+
+        if (timerInterval !== null) return;
+
+        timerInterval = setInterval(() => {
+
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateDisplay();
+            } else {
+                pauseTimer();
+                endRound();
+            }
+
+        }, 1000);
+    }
+
+    function pauseTimer() {
+
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function endRound() {
+
+        pauseTimer();
+
+        let message = "";
+
+        if (redScore > blueScore) {
+            message = "🔴 RED WINS!";
+        } else if (blueScore > redScore) {
+            message = "🔵 BLUE WINS!";
+        } else {
+            message = "⚖️ DRAW";
+        }
+
+        document.getElementById("winner").textContent = message;
+    }
+
+    function resetMatch() {
+
+        pauseTimer();
+
+        redScore = 0;
+        blueScore = 0;
+
+        redGamJeom = 0;
+        blueGamJeom = 0;
+
+        timeLeft = 60;
+
+        document.getElementById("round").textContent = "1";
+        document.getElementById("winner").textContent = "";
+
+        updateDisplay();
+    }
+
+    updateDisplay();
+</script>
+
+</body>
+</html>
