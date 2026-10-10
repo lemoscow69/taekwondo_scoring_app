@@ -2,88 +2,188 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Taekwondo Referee Scoring</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taekwondo Referee Scoreboard</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#0b1019;color:white;font-family:Arial,sans-serif}
-header{padding:12px;text-align:center;background:#151e2c;font-size:20px;font-weight:bold;position:relative}
-.settingsLink{position:absolute;right:12px;top:12px;color:#8db9ff;background:none;text-decoration:underline;font-size:12px;padding:4px}
-.bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:12px;background:#111927}
-.roundInfo{text-align:center;color:#d5deeb;font-weight:bold;font-size:14px}
-.timer{text-align:center;font-size:clamp(38px,5vw,58px);font-weight:900;font-variant-numeric:tabular-nums}
-.breakLabel{display:none;text-align:center;color:#ffd45c;font-size:12px;font-weight:bold;margin:4px}
-.timeButtons{display:flex;justify-content:center;gap:6px;margin-top:5px}
-button{border:0;border-radius:6px;padding:9px 11px;font-weight:bold;cursor:pointer}
-.timeButtons button{font-size:12px;color:white;background:#354258}
-.timeButtons .plus{background:#14844b}
-.timeButtons .minus{background:#b72d37}
-.controls{display:flex;justify-content:flex-end;gap:5px;flex-wrap:wrap}
-.controls button{font-size:11px;color:white;padding:9px}
-.start{background:#14844b}.pause{background:#bd7a12}.end{background:#c52f39}
-.direct{background:#7948bd}.new{background:#354258}
-.board{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
-.fighter{padding:16px 10px;text-align:center;border-radius:12px;min-width:0}
-.red{background:linear-gradient(145deg,#a51e2b,#64141d);border:2px solid #ed4650}
-.blue{background:linear-gradient(145deg,#1b59b6,#12366f);border:2px solid #3c8bff}
-.name{font-size:clamp(20px,3vw,32px);font-weight:900;overflow-wrap:anywhere}
-.corner{font-size:11px;letter-spacing:2px;margin-top:4px}
-.score{font-size:clamp(90px,17vw,175px);font-weight:900;line-height:1.12;margin:8px 0;font-variant-numeric:tabular-nums}
-.blink{animation:blink .65s ease}
-@keyframes blink{0%,100%{filter:brightness(1);transform:scale(1)}25%,70%{filter:brightness(2.5);transform:scale(1.09);text-shadow:0 0 25px white}45%{filter:brightness(.65)}}
-.manual{display:flex;justify-content:center;gap:7px;margin-bottom:10px}
-.manual button{background:#111927;color:white;min-width:42px;font-size:16px}
-.techniques{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.tech{background:#111927;color:white;border:1px solid #ffffff40;min-height:58px;padding:8px 2px}
-.tech span{display:block;font-size:12px}
-.tech b{display:block;font-size:19px;color:#ffe08a;margin-top:4px}
-.footer{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:9px;font-size:12px;margin-top:13px}
-.gamBtn{background:#111927;color:white}
-.status{text-align:center;padding:5px 10px 15px;font-size:13px;color:#cbd5e1;min-height:30px}
-.overlay{display:none;position:fixed;inset:0;background:#000d;z-index:10;align-items:center;justify-content:center;padding:12px}
-.dialog{width:100%;max-width:460px;max-height:92vh;overflow:auto;background:#182131;border:2px solid #526078;border-radius:12px;padding:20px}
-.dialog h2{text-align:center;margin-top:0}
+:root{
+ --bg:#080d16;--panel:#151e2c;--text:#fff;
+ --red:#ef3947;--blue:#2385ff;--gold:#ffd35a;
+}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{border:0;border-radius:7px;font-weight:bold;cursor:pointer;transition:filter .15s,transform .15s}
+button:active{transform:scale(.96)}
+button:disabled{opacity:.6;cursor:not-allowed}
+
+/* HEADER AND SETTINGS */
+header{
+ display:flex;align-items:center;justify-content:center;
+ position:relative;padding:12px 155px;min-height:52px;
+ background:#111a29;border-bottom:1px solid #334057;
+ font-size:clamp(16px,2vw,23px);font-weight:900;letter-spacing:1px
+}
+.settingsLink{
+ position:absolute;right:12px;top:50%;transform:translateY(-50%);
+ background:#253650;color:#d6e6ff;border:1px solid #4c6385;
+ padding:9px 12px;font-size:12px
+}
+
+/* TIMER AND CONTROLS */
+.topbar{
+ display:grid;grid-template-columns:1fr minmax(170px,250px) 1fr;
+ align-items:center;gap:12px;padding:12px 15px;
+ background:#0e1624;border-bottom:1px solid #29364a
+}
+.roundInfo{font-size:15px;font-weight:bold;color:#d4deed}
+.timerArea{text-align:center}
+.timer{
+ font-size:clamp(46px,6vw,72px);font-weight:900;line-height:1.05;
+ font-variant-numeric:tabular-nums;letter-spacing:2px
+}
+.breakLabel{display:none;color:var(--gold);font-size:12px;font-weight:900;margin-top:4px}
+.timeButtons{display:flex;justify-content:center;gap:6px;margin-top:7px}
+.timeButtons button{padding:7px 11px;background:#35445c;color:white;font-size:12px}
+.timeButtons .minus{background:#b52b38}
+.timeButtons .plus{background:#13864b}
+.controls{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:6px}
+.controls button{padding:10px 12px;color:white;font-size:11px}
+.start{background:#16894d}.pause{background:#b77a17}
+.end{background:#c42e3b}.direct{background:#7545b7}.new{background:#344259}
+
+/* PLAYER PANELS */
+.board{
+ display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px;
+ min-height:calc(100vh - 190px)
+}
+.fighter{
+ min-width:0;border-radius:15px;padding:clamp(12px,2vw,24px) 12px;
+ text-align:center;display:flex;flex-direction:column;justify-content:center;
+ box-shadow:0 8px 24px #0005
+}
+.red{
+ background:linear-gradient(145deg,#a92230,#63151f);
+ border:2px solid #f04c57
+}
+.blue{
+ background:linear-gradient(145deg,#1766ce,#10366d);
+ border:2px solid #4194ff
+}
+.name{font-size:clamp(22px,3vw,36px);font-weight:900;overflow-wrap:anywhere}
+.corner{font-size:11px;letter-spacing:3px;margin-top:5px;opacity:.85}
+.score{
+ font-size:clamp(100px,17vw,190px);font-weight:900;line-height:1.05;
+ font-variant-numeric:tabular-nums;margin:12px 0;
+ text-shadow:0 4px 18px #0005
+}
+.score.blink{animation:scoreBlink .7s ease}
+@keyframes scoreBlink{
+ 0%,100%{filter:brightness(1);transform:scale(1)}
+ 20%,60%{filter:brightness(2.3);transform:scale(1.08);text-shadow:0 0 30px white}
+ 40%,80%{filter:brightness(.7)}
+}
+.manual{display:flex;justify-content:center;gap:8px;margin-bottom:13px}
+.manual button{background:#111927;color:white;padding:9px 18px;font-size:18px;min-width:48px}
+
+/* TECHNIQUE BUTTONS */
+.techniques{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tech{
+ min-height:76px;padding:10px 3px;color:white;
+ background:#101a2a;border:2px solid #ffffff55;
+ box-shadow:0 3px 8px #0003
+}
+.tech span{display:block;font-size:clamp(11px,1.4vw,15px);letter-spacing:.4px}
+.tech b{display:block;font-size:clamp(20px,2.3vw,27px);color:#ffe28c;margin-top:6px}
+.red .tech{border-color:#ef7880}
+.blue .tech{border-color:#76b3ff}
+.tech.hit{animation:buttonBlink .65s ease}
+@keyframes buttonBlink{
+ 0%,100%{filter:brightness(1);transform:scale(1)}
+ 20%,60%{filter:brightness(2.4);transform:scale(1.06);box-shadow:0 0 22px white}
+ 40%,80%{filter:brightness(.7)}
+}
+.footer{
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ gap:12px;margin-top:16px;font-size:14px
+}
+.gamBtn{background:#111927;color:white;padding:10px 12px}
+.roundCount{font-weight:bold}
+.status{text-align:center;color:#cbd5e1;padding:7px 12px 14px;font-size:13px;min-height:32px}
+
+/* MODALS */
+.overlay{
+ display:none;position:fixed;inset:0;background:#000d;z-index:20;
+ align-items:center;justify-content:center;padding:12px
+}
+.dialog{
+ width:100%;max-width:480px;max-height:92vh;overflow:auto;
+ padding:22px;background:#172233;border:2px solid #4c5c74;border-radius:14px
+}
+.dialog h2{text-align:center;margin:0 0 18px}
 .field{margin:12px 0}
-.field label{display:block;font-size:13px;margin-bottom:6px}
-.field input,.field select{width:100%;padding:10px;background:#0b1019;color:white;border:1px solid #526078;border-radius:5px}
-.check{display:flex;align-items:center;gap:8px;margin:12px 0;font-size:14px}
-.actions{display:flex;gap:8px;margin-top:16px}
-.actions button{flex:1;color:white;padding:11px}
-.save{background:#14844b}.close{background:#465268}
-.winner{text-align:center;border-color:#ffc94a}
-.winner h2{color:#ffc94a}
-.winner h3{font-size:32px;overflow-wrap:anywhere}
-.winner button{background:#14844b;color:white}
+.field label{display:block;font-size:13px;margin-bottom:6px;color:#e0e7f1}
+.field input,.field select{
+ width:100%;padding:11px;background:#0a111d;color:white;
+ border:1px solid #526078;border-radius:6px
+}
+.check{display:flex;gap:9px;align-items:center;margin:12px 0;font-size:14px}
+.check input{width:18px;height:18px}
+.actions{display:flex;gap:8px;margin-top:18px}
+.actions button{flex:1;padding:12px;color:white}
+.save{background:#16894d}.close{background:#465268}
+.winner{text-align:center;border-color:var(--gold)}
+.winner h2{color:var(--gold);font-size:25px}
+.winner h3{font-size:clamp(28px,5vw,44px);overflow-wrap:anywhere;margin:12px 0}
+.winner p{color:#d4deed}
+.winner button{padding:12px 18px;background:#16894d;color:white;margin:4px}
+.breakClock{font-size:32px;font-weight:900;color:var(--gold);margin:10px}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choices button{background:#354258;color:white}
-.choices .selected{background:#ffc94a;color:#111}
-@media(max-width:760px){
- header{font-size:15px;padding:14px 125px 14px 8px}
- .bar{grid-template-columns:1fr;gap:10px}
+.choices button{background:#354259;color:white;padding:14px}
+.choices button.selected{background:var(--gold);color:#111}
+
+@media(min-width:1100px){
+ .board{min-height:calc(100vh - 175px)}
+}
+@media(max-width:850px){
+ .topbar{grid-template-columns:1fr;gap:10px}
+ .roundInfo{text-align:center}
  .controls{justify-content:center}
- .controls button{flex:1;min-width:65px;padding:9px 4px}
+ .controls button{flex:1;min-width:75px}
+ .board{min-height:auto}
+}
+@media(max-width:520px){
+ header{padding:13px 120px 13px 8px;font-size:14px;letter-spacing:0}
+ .settingsLink{right:5px;font-size:10px;padding:8px}
  .board{gap:7px;padding:7px}
  .fighter{padding:12px 5px}
- .score{font-size:clamp(65px,16vw,120px)}
- .tech{min-height:52px}
+ .score{font-size:clamp(68px,16vw,110px);margin:12px 0}
+ .techniques{gap:4px}
+ .tech{min-height:64px}
  .tech span{font-size:10px}
- .tech b{font-size:16px}
- .footer{gap:6px;font-size:10px}
+ .tech b{font-size:18px}
+ .footer{gap:7px;font-size:11px}
  .gamBtn{padding:8px 5px}
+ .manual button{padding:8px 12px}
 }
-@media(max-width:360px){.board{grid-template-columns:1fr}}
+@media(max-width:350px){
+ .board{grid-template-columns:1fr}
+ .score{font-size:100px}
+}
 </style>
 </head>
+
 <body>
 
 <header>
-🥋 TAEKWONDO SCORING
-<button class="settingsLink" onclick="openSettings()">⚙ MATCH SETTINGS</button>
+ TAEKWONDO REFEREE SCORING
+ <button class="settingsLink" onclick="openSettings()">⚙ MATCH SETTINGS</button>
 </header>
 
-<section class="bar">
+<section class="topbar">
  <div class="roundInfo" id="roundInfo">ROUND 1 · BEST OF 3</div>
- <div>
+
+ <div class="timerArea">
   <div class="timer" id="timer">01:00</div>
   <div class="breakLabel" id="breakLabel">BREAK TIME</div>
   <div class="timeButtons">
@@ -91,6 +191,7 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:bold;cursor:point
    <button class="plus" onclick="adjustTime(5)">+5 SEC</button>
   </div>
  </div>
+
  <div class="controls">
   <button class="start" onclick="startTimer()">START</button>
   <button class="pause" onclick="pauseTimer()">PAUSE</button>
@@ -110,14 +211,14 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:bold;cursor:point
    <button onclick="changeScore(1,1)">+1</button>
   </div>
   <div class="techniques">
-   <button class="tech" onclick="award(1,'punch')"><span>PUNCH</span><b id="punch1">+1</b></button>
-   <button class="tech" onclick="award(1,'body')"><span>BODY</span><b id="body1">+2</b></button>
-   <button class="tech" onclick="award(1,'head')"><span>HEAD</span><b id="head1">+3</b></button>
+   <button class="tech" onclick="award(1,'punch',this)"><span>PUNCH</span><b id="punch1">+1</b></button>
+   <button class="tech" onclick="award(1,'body',this)"><span>BODY</span><b id="body1">+2</b></button>
+   <button class="tech" onclick="award(1,'head',this)"><span>HEAD</span><b id="head1">+3</b></button>
   </div>
   <div class="footer">
    <span>Gam-jeom: <b id="gam1">0</b></span>
    <button class="gamBtn" onclick="giveGamjeom(1)">+ GAM-JEOM</button>
-   <span>Rounds: <b id="wins1">0</b></span>
+   <span class="roundCount">Rounds: <b id="wins1">0</b></span>
   </div>
  </section>
 
@@ -130,33 +231,34 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:bold;cursor:point
    <button onclick="changeScore(2,1)">+1</button>
   </div>
   <div class="techniques">
-   <button class="tech" onclick="award(2,'punch')"><span>PUNCH</span><b id="punch2">+1</b></button>
-   <button class="tech" onclick="award(2,'body')"><span>BODY</span><b id="body2">+2</b></button>
-   <button class="tech" onclick="award(2,'head')"><span>HEAD</span><b id="head2">+3</b></button>
+   <button class="tech" onclick="award(2,'punch',this)"><span>PUNCH</span><b id="punch2">+1</b></button>
+   <button class="tech" onclick="award(2,'body',this)"><span>BODY</span><b id="body2">+2</b></button>
+   <button class="tech" onclick="award(2,'head',this)"><span>HEAD</span><b id="head2">+3</b></button>
   </div>
   <div class="footer">
    <span>Gam-jeom: <b id="gam2">0</b></span>
    <button class="gamBtn" onclick="giveGamjeom(2)">+ GAM-JEOM</button>
-   <span>Rounds: <b id="wins2">0</b></span>
+   <span class="roundCount">Rounds: <b id="wins2">0</b></span>
   </div>
  </section>
 </main>
 
 <div class="status" id="status">Ready to start the match.</div>
 
-<!-- ROUND RESULT AND BREAK -->
+<!-- ROUND WINNER AND BREAK -->
 <div class="overlay" id="roundOverlay">
  <div class="dialog winner">
   <h2>🏆 ROUND WINNER</h2>
   <h3 id="roundWinnerName">HONG</h3>
   <p id="roundReason">Won Round 1</p>
-  <h2>BREAK: <span id="breakDisplay">00:30</span></h2>
-  <p id="breakMessage">Next round will be available when break ends.</p>
-  <button id="nextButton" onclick="nextRound()">START NEXT ROUND</button>
+  <p>BREAK TIME</p>
+  <div class="breakClock" id="breakDisplay">00:30</div>
+  <p id="breakMessage">Break countdown running. You may start the next round early.</p>
+  <button onclick="nextRound()">START NEXT ROUND</button>
  </div>
 </div>
 
-<!-- MATCH RESULT -->
+<!-- MATCH WINNER -->
 <div class="overlay" id="matchOverlay">
  <div class="dialog winner">
   <h2>🏆 MATCH WINNER</h2>
@@ -221,20 +323,19 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:bold;cursor:point
 <script>
 "use strict";
 
-/* MATCH STATE */
 let names=["HONG","CHONG"];
-let scores=[0,0], gam=[0,0], wins=[0,0];
-let round=1, roundTime=60, timeLeft=60;
-let breakTime=30, breakLeft=30, bestOf=3;
+let scores=[0,0],gam=[0,0],wins=[0,0];
+let round=1,roundTime=60,timeLeft=60,breakTime=30,breakLeft=30,bestOf=3;
 let points={punch:1,body:2,head:3};
-let gamLimit=10, pointGap=12, targetScore=20, scoreSize=130;
-let gapOn=true, targetOn=true;
-let timerId=null, running=false, breakRunning=false;
-let roundFinished=false, matchFinished=false, selectedWinner=null;
+let gamLimit=10,pointGap=12,targetScore=20,scoreSize=130;
+let gapOn=true,targetOn=true;
+let timerId=null,running=false,breakRunning=false;
+let roundFinished=false,matchFinished=false,selectedWinner=null;
 let audioContext=null;
 
 function el(id){return document.getElementById(id)}
 function status(msg){el("status").textContent=msg}
+function canScore(){return !matchFinished&&!roundFinished}
 
 function stopClock(){
  clearInterval(timerId);
@@ -243,58 +344,63 @@ function stopClock(){
  breakRunning=false;
 }
 
-function sound(freq,duration,delay=0){
+function beep(freq,duration,delay=0){
  try{
-  if(!audioContext) audioContext=new (window.AudioContext||window.webkitAudioContext)();
-  if(audioContext.state==="suspended") audioContext.resume();
+  if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioContext.state==="suspended")audioContext.resume();
   setTimeout(()=>{
-   const osc=audioContext.createOscillator();
-   const gain=audioContext.createGain();
-   osc.frequency.value=freq;
-   gain.gain.value=.12;
-   osc.connect(gain);
-   gain.connect(audioContext.destination);
-   osc.start();
-   osc.stop(audioContext.currentTime+duration);
+   const osc=audioContext.createOscillator(),gain=audioContext.createGain();
+   osc.frequency.value=freq;gain.gain.value=.12;
+   osc.connect(gain);gain.connect(audioContext.destination);
+   osc.start();osc.stop(audioContext.currentTime+duration);
   },delay);
  }catch(e){}
 }
-function startSound(){sound(700,.15);sound(1000,.2,200)}
-function winnerSound(){sound(400,.2);sound(550,.2,250);sound(750,.4,500)}
+function startSound(){beep(700,.15);beep(1000,.2,200)}
+function winnerSound(){beep(400,.2);beep(550,.2,250);beep(750,.4,500)}
 
-function blink(i){
- const node=el("score"+(i+1));
- node.classList.remove("blink");
- void node.offsetWidth;
- node.classList.add("blink");
- setTimeout(()=>node.classList.remove("blink"),700);
+function blinkScore(i){
+ const n=el("score"+(i+1));
+ n.classList.remove("blink");
+ void n.offsetWidth;
+ n.classList.add("blink");
+ setTimeout(()=>n.classList.remove("blink"),750);
 }
-function canScore(){return !matchFinished&&!roundFinished}
+function blinkButton(btn){
+ if(!btn)return;
+ btn.classList.remove("hit");
+ void btn.offsetWidth;
+ btn.classList.add("hit");
+ setTimeout(()=>btn.classList.remove("hit"),700);
+}
 
 function changeScore(player,amount){
  if(!canScore())return;
  const i=player-1;
  scores[i]=Math.max(0,scores[i]+amount);
  update();
- if(amount>0)blink(i);
+ if(amount>0)blinkScore(i);
  checkRules();
 }
-function award(player,kind){
+
+function award(player,kind,btn){
  if(!canScore())return;
  const i=player-1;
  scores[i]+=points[kind];
  update();
- blink(i);
+ blinkScore(i);
+ blinkButton(btn);
  status(names[i]+" +"+points[kind]+" "+kind.toUpperCase());
  checkRules();
 }
+
 function giveGamjeom(player){
  if(!canScore())return;
- const i=player-1, opponent=1-i;
+ const i=player-1,opponent=1-i;
  gam[i]++;
  scores[opponent]++;
  update();
- blink(opponent);
+ blinkScore(opponent);
  if(gam[i]>=gamLimit){
   finishRound(opponent,names[i]+" reached Gam-jeom limit");
   return;
@@ -302,7 +408,7 @@ function giveGamjeom(player){
  checkRules();
 }
 
-/* FIGHT TIMER */
+/* MATCH TIMER */
 function startTimer(){
  if(matchFinished||roundFinished||running||timeLeft<=0)return;
  startSound();
@@ -317,15 +423,18 @@ function startTimer(){
   }
  },1000);
 }
+
 function pauseTimer(){
- if(running||breakRunning){
-  clearInterval(timerId);
-  timerId=null;
-  running=false;
-  breakRunning=false;
-  status("Timer paused");
+ if(running){
+  clearInterval(timerId);timerId=null;running=false;
+  status("Round timer paused");
+ }else if(breakRunning){
+  clearInterval(timerId);timerId=null;breakRunning=false;
+  status("Break paused — press START NEXT ROUND to continue the match");
+  el("breakMessage").textContent="Break paused. You can start the next round now.";
  }
 }
+
 function adjustTime(amount){
  if(matchFinished||roundFinished)return;
  timeLeft=Math.max(0,timeLeft+amount);
@@ -336,25 +445,26 @@ function adjustTime(amount){
   endRound();
  }
 }
+
 function endRound(){
  if(matchFinished||roundFinished)return;
  stopClock();
  if(scores[0]>scores[1])finishRound(0,"End of round");
  else if(scores[1]>scores[0])finishRound(1,"End of round");
- else status("Round tied — apply the relevant competition tie-break rules.");
+ else status("Round tied — apply the applicable competition tie-break rules.");
 }
 
 /* ROUND RULES */
 function checkRules(){
  if(!canScore())return;
- let w=-1;
+ let winner=-1;
  if(gapOn&&Math.abs(scores[0]-scores[1])>=pointGap)
-  w=scores[0]>scores[1]?0:1;
- if(w===-1&&targetOn){
-  if(scores[0]>=targetScore)w=0;
-  else if(scores[1]>=targetScore)w=1;
+  winner=scores[0]>scores[1]?0:1;
+ if(winner===-1&&targetOn){
+  if(scores[0]>=targetScore)winner=0;
+  else if(scores[1]>=targetScore)winner=1;
  }
- if(w!==-1)finishRound(w,"Early-win rule");
+ if(winner!==-1)finishRound(winner,"Early-win rule");
 }
 
 function finishRound(winner,reason){
@@ -373,51 +483,63 @@ function finishRound(winner,reason){
  el("roundReason").textContent="Won Round "+round+" · "+reason;
  el("roundOverlay").style.display="flex";
 
- /* Automatically start the break countdown */
  breakLeft=breakTime;
  updateBreakDisplay();
- if(breakTime>0){
-  startBreak();
- }else{
-  el("breakMessage").textContent="Break complete. Start the next round when ready.";
-  el("nextButton").disabled=false;
+ el("breakMessage").textContent="Break countdown running. You may start the next round early.";
+ status(names[winner]+" won Round "+round);
+
+ if(breakTime>0)startBreak();
+ else{
+  el("breakMessage").textContent="Break complete. Start the next round whenever ready.";
+  status("Break complete");
  }
- status(names[winner]+" won Round "+round+" — break started");
 }
 
+/* BREAK COUNTDOWN */
 function startBreak(){
  clearInterval(timerId);
+ timerId=null;
  breakRunning=true;
  running=false;
- el("nextButton").disabled=true;
- el("breakMessage").textContent="Break in progress…";
+
  timerId=setInterval(()=>{
   if(!breakRunning)return;
   if(breakLeft>0)breakLeft--;
   updateBreakDisplay();
+
   if(breakLeft<=0){
    clearInterval(timerId);
    timerId=null;
    breakRunning=false;
-   el("nextButton").disabled=false;
    el("breakMessage").textContent="Break complete. Press START NEXT ROUND.";
-   sound(700,.25);
-   status("Break complete — ready for next round");
+   beep(700,.25);
+   status("Break complete — next round is ready");
   }
  },1000);
 }
+
 function updateBreakDisplay(){
  const m=Math.floor(breakLeft/60),s=breakLeft%60;
  el("breakDisplay").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
 }
+
+/* FIX: NEXT ROUND WORKS EVEN DURING BREAK */
 function nextRound(){
- if(!roundFinished||breakRunning)return;
+ if(!roundFinished||matchFinished)return;
+
+ clearInterval(timerId);
+ timerId=null;
+ running=false;
+ breakRunning=false;
+
  el("roundOverlay").style.display="none";
+
  round++;
  scores=[0,0];
  gam=[0,0];
  timeLeft=roundTime;
  roundFinished=false;
+
  update();
  status("Round "+round+" ready — press START");
 }
@@ -452,8 +574,7 @@ function selectWinner(player){
 }
 function confirmWinner(){
  if(selectedWinner===null){alert("Please select a winner.");return}
- const name=names[selectedWinner];
- const reason=el("directReason").value;
+ const name=names[selectedWinner],reason=el("directReason").value;
  el("directOverlay").style.display="none";
  showMatchWinner(name,reason);
 }
@@ -478,6 +599,7 @@ function openSettings(){
  el("settingsOverlay").style.display="flex";
 }
 function closeSettings(){el("settingsOverlay").style.display="none"}
+
 function val(id,fallback,min,max){
  const n=Number(el(id).value);
  if(!Number.isFinite(n))return fallback;
@@ -501,22 +623,16 @@ function saveSettings(){
  timeLeft=roundTime;
  update();
  closeSettings();
- status("Settings saved. Round time reset to configured duration.");
+ status("Settings saved");
 }
 
 /* NEW MATCH */
 function newMatch(){
  if(!confirm("Reset all scores and start a new match?"))return;
  stopClock();
- scores=[0,0];
- gam=[0,0];
- wins=[0,0];
- round=1;
- timeLeft=roundTime;
- breakLeft=breakTime;
- roundFinished=false;
- matchFinished=false;
- selectedWinner=null;
+ scores=[0,0];gam=[0,0];wins=[0,0];
+ round=1;timeLeft=roundTime;breakLeft=breakTime;
+ roundFinished=false;matchFinished=false;selectedWinner=null;
  el("roundOverlay").style.display="none";
  el("matchOverlay").style.display="none";
  el("directOverlay").style.display="none";
@@ -524,7 +640,7 @@ function newMatch(){
  status("New match ready");
 }
 
-/* SCREEN UPDATE */
+/* DISPLAY */
 function update(){
  el("name1").textContent=names[0];
  el("name2").textContent=names[1];
