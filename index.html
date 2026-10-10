@@ -2,127 +2,246 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Taekwondo Referee Scoring</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taekwondo Referee Scoring System</title>
+
 <style>
 *{box-sizing:border-box}
-:root{--red:#ff2548;--blue:#078cff;--gold:#ffd45c}
-body{margin:0;background:#070d19;color:white;font-family:Arial,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-button,input,select{font:inherit}
-button{cursor:pointer;font-weight:bold;border:1px solid #ffffff35;border-radius:7px;padding:10px;color:white}
-button:active{transform:scale(.97)}
-header{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#060b14;border-bottom:1px solid #ffffff22}
-.logo{font-size:28px}.brand{font-size:22px;font-weight:900;letter-spacing:1px}
-.brand small{display:block;color:#9bb6d8;font-size:9px;letter-spacing:2px;margin-top:3px}
-.settingsBtn{margin-left:auto;background:#102943;border:2px solid var(--blue)}
-.topbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:9px 14px;background:linear-gradient(90deg,#300817,#111522 50%,#071c3b)}
-.roundInfo{font-weight:900;color:#c6dcf8;font-size:13px}
-.clock{text-align:center}
-.timerRow{display:flex;align-items:center;justify-content:center;gap:9px}
-.timer{font-size:clamp(36px,4vw,58px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:2px}
-.timerRow button{min-width:44px;background:#23374e;font-size:12px}
-.timerRow .minus{background:#81172c}.timerRow .plus{background:#086143}
-.timerCaption{font-size:9px;letter-spacing:3px;color:#9bb6d8;margin-top:3px}
-.controls{display:flex;justify-content:flex-end;gap:5px;flex-wrap:wrap}
-.controls button{font-size:10px;padding:11px 10px;white-space:nowrap}
-.start{background:#087544}.pause{background:#80510a}.end{background:#a3112b}.direct{background:#5128a2}.new{background:#334968}
-.board{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0}
-.fighter{min-width:0;display:flex;flex-direction:column;justify-content:space-evenly;text-align:center;padding:12px;overflow:hidden}
-.red{background:linear-gradient(135deg,#c51b3c,#5b0d24);border-right:2px solid #ff8294}
-.blue{background:linear-gradient(225deg,#087edc,#082e6e);border-left:2px solid #76d6ff}
-.name{font-size:clamp(23px,3vw,42px);font-weight:900;overflow-wrap:anywhere}
-.corner{font-size:11px;letter-spacing:3px;margin-top:4px}
-.score{font-size:clamp(75px,14vw,175px);font-weight:900;line-height:1;margin:10px 0;font-variant-numeric:tabular-nums;text-shadow:0 5px 20px #0005}
-.blink{animation:blink .65s ease}
-@keyframes blink{20%,60%{filter:brightness(2.5);transform:scale(1.07)}40%,80%{filter:brightness(.6)}}
-.manual{display:flex;justify-content:center;gap:6px;margin-bottom:10px}
-.manual button{background:#07172c;border:1px solid #ffffff55;font-size:17px;padding:8px 12px}
-.manual .undo{font-size:11px}
-.techniques{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.tech{background:#06162b;border:2px solid #ff647d;min-height:65px;padding:8px 2px}
-.blue .tech{border-color:#078cff}
-.tech span{display:block;font-size:clamp(9px,1vw,13px)}
-.tech b{display:block;font-size:clamp(20px,2.5vw,32px);color:var(--gold);margin-top:4px}
-.footer{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:7px;background:#06132677;font-size:12px}
-.gamControls{display:flex;gap:4px}
-.gamControls button{padding:7px 10px;background:#26364d}
-.red .gamPlus{background:#b41632}.blue .gamPlus{background:#075bb9}
-.status{text-align:center;min-height:23px;padding:5px;background:#060b14;color:#b5cce7;font-size:11px}
-.overlay{display:none;position:fixed;inset:0;z-index:5;background:#000c;align-items:center;justify-content:center;padding:12px}
-.dialog{width:100%;max-width:620px;max-height:92vh;overflow:auto;background:#0a1b31;border:2px solid var(--blue);border-radius:15px;padding:20px}
-.dialog h2{text-align:center;margin-top:0}
-.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field label{display:block;font-size:12px;margin-bottom:5px;color:#c6d8ee}
-.field input,.field select{width:100%;padding:10px;background:#071326;color:white;border:1px solid #45688f;border-radius:7px}
-.check{display:flex;align-items:center;gap:8px;margin:12px 0;font-size:13px}
-.actions{display:flex;gap:8px;margin-top:15px}
-.actions button{flex:1}.save{background:#eaa51e;color:#172033}.close{background:#365477}
-.winner{text-align:center;max-width:470px;border-color:var(--gold)}
-.winner h2{color:var(--gold)}.winner h3{font-size:clamp(28px,5vw,44px);overflow-wrap:anywhere}
-.winner p{color:#c9d9ed}.winner button{background:#087544;margin:4px}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choices button{background:#1c3555}.choices .selected{background:var(--gold);color:#101827}
-@media(max-width:1000px){
-body{height:auto;min-height:100vh;overflow:auto}
-.topbar{grid-template-columns:1fr;gap:8px}
-.roundInfo{text-align:center}.controls{justify-content:center}
-.board{flex:1;min-height:65vh}
+:root{
+--red:#ff2548;
+--blue:#078cff;
+--gold:#ffd45c;
+--dark:#07101f;
 }
-@media(max-width:600px){
-header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px}
-.topbar{padding:8px 5px}.timer{font-size:39px}
-.controls{gap:4px}.controls button{flex:1;padding:9px 3px;font-size:9px}
-.board{min-height:65vh}
-.fighter{padding:10px 4px}
-.score{font-size:clamp(65px,15vw,100px)}
-.manual{gap:3px}.manual button{padding:7px 5px;font-size:14px}
-.manual .undo{font-size:9px}
-.techniques{gap:3px}.tech{min-height:55px}
-.tech span{font-size:9px}.tech b{font-size:18px}
-.footer{gap:4px;font-size:9px}
-.gamControls{gap:3px}.gamControls button{padding:6px}
+html,body{margin:0;width:100%;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--dark);color:#fff}
+button,input,select{font:inherit}
+button{cursor:pointer;font-weight:800;border-radius:7px;transition:filter .15s,transform .15s}
+button:active{transform:scale(.97);filter:brightness(1.2)}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+header{
+display:flex;align-items:center;gap:10px;padding:8px 15px;
+background:#050a13;border-bottom:1px solid #ffffff20;min-height:52px
+}
+.brandIcon{font-size:28px}
+.brand{font-size:clamp(15px,2vw,23px);font-weight:900;letter-spacing:1px}
+.brand small{display:block;font-size:9px;letter-spacing:2px;color:#91b4df;margin-top:3px}
+.settingsLink{margin-left:auto;background:#0c1e35;color:white;border:1px solid var(--blue);padding:9px 12px;font-size:11px}
+
+.topbar{
+display:grid;
+grid-template-columns:minmax(0,1fr) minmax(180px,235px) minmax(0,1fr);
+align-items:stretch;gap:0;
+background:#0a1221;border-bottom:1px solid #ffffff22;
+}
+.roundInfo{display:none}
+.clock{
+grid-column:2;grid-row:1;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:7px;padding:10px 8px;background:#101c30;
+border-left:1px solid #ffffff18;border-right:1px solid #ffffff18;
+text-align:center;min-width:0
+}
+.timerRow{display:flex;align-items:center;justify-content:center;gap:5px;width:100%}
+.timer{font-size:clamp(32px,4vw,48px);font-weight:900;line-height:1.05;letter-spacing:1px;font-variant-numeric:tabular-nums;color:#fff}
+.timerRow .minus,.timerRow .plus{
+width:39px;min-width:35px;height:34px;padding:3px;color:white;font-size:12px;
+border:1px solid #ffffff40
+}
+.timerRow .minus{background:#76152a}
+.timerRow .plus{background:#07563d}
+.timerCaption{font-size:9px;font-weight:900;letter-spacing:2px;color:#9bb8dc}
+.breakLabel{display:none;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:1px;margin-top:3px}
+.controls{
+display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+gap:5px;width:100%;padding:0 3px
+}
+.controls button{flex:1 1 43%;min-width:0;padding:9px 4px;font-size:10px;color:#fff;border:1px solid #ffffff24;white-space:normal}
+.start{background:linear-gradient(#1ba969,#087544)}
+.pause{background:linear-gradient(#b98016,#80510a)}
+.end{background:linear-gradient(#ed2945,#9c1028)}
+.direct{background:linear-gradient(#9158ed,#5128a2)}
+.new{background:linear-gradient(#334968,#17283f)}
+.clock .controls{display:grid;grid-template-columns:1fr 1fr}
+.clock .controls button{min-height:33px}
+
+.board{
+display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,235px) minmax(0,1fr);
+flex:1;min-height:calc(100vh - 165px);gap:0;padding:0
+}
+.fighter{
+min-width:0;min-height:0;height:100%;position:relative;overflow:hidden;
+display:flex;flex-direction:column;justify-content:space-evenly;
+align-items:stretch;text-align:center;padding:12px 10px
+}
+.red{grid-column:1;background:linear-gradient(135deg,#c51b3c,#5b0d24);border-right:2px solid #ff8294}
+.blue{grid-column:3;background:linear-gradient(225deg,#087edc,#082e6e);border-left:2px solid #76d6ff}
+.name{font-size:clamp(17px,2.5vw,35px);font-weight:900;letter-spacing:1px;overflow-wrap:anywhere}
+.corner{font-size:clamp(8px,.9vw,12px);font-weight:900;letter-spacing:2px;margin-top:4px}
+.red .corner{color:#ff9cac}
+.blue .corner{color:#8bdbff}
+.score{font-size:clamp(60px,10vw,145px);font-weight:900;line-height:1;letter-spacing:-2px;margin:10px 0;font-variant-numeric:tabular-nums;text-shadow:0 5px 20px #0006}
+.score.blink{animation:scoreBlink .6s ease}
+@keyframes scoreBlink{0%,100%{filter:brightness(1);transform:scale(1)}30%,70%{filter:brightness(2);transform:scale(1.06)}}
+.manual{display:flex;justify-content:center;gap:5px;margin-bottom:10px}
+.manual button{min-width:35px;padding:8px 7px;color:#fff;background:#07172c;border:1px solid #47709b;font-size:15px}
+.manual .undoBtn{font-size:9px;padding:8px 5px}
+.techniques{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.tech{min-width:0;min-height:58px;padding:7px 2px;background:#06162b;color:#fff;border:1px solid #ff5c73}
+.blue .tech{border-color:#078cff}
+.tech span{display:block;font-size:clamp(8px,.95vw,12px)}
+.tech b{display:block;font-size:clamp(17px,2vw,27px);color:var(--gold);margin-top:5px}
+.tech.hit{animation:buttonBlink .5s ease}
+@keyframes buttonBlink{0%,100%{filter:brightness(1)}50%{filter:brightness(2)}}
+
+/* GAM-JEOM SIDE BADGES */
+.footer{
+position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+width:35px;padding:4px 2px;border:1px solid #ffffff35;
+border-radius:7px;background:#061326e8;font-size:8px
+}
+.red .footer{left:3px}
+.blue .footer{right:3px}
+.footer>span:last-child{display:none}
+.footer>span:first-child{text-align:center;overflow-wrap:anywhere;line-height:1.2}
+.gamControls{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%}
+.gamControls button{width:27px;min-width:27px;height:23px;padding:2px;color:white;background:#07182c;border:1px solid #ffffff55;font-size:12px}
+.red .gamControls .gamPlus{background:#b41632;border-color:#ff7185}
+.blue .gamControls .gamPlus{background:#075bb9;border-color:#72baff}
+.gamControls .gamPlus{font-size:7px;line-height:1.05;overflow-wrap:anywhere}
+.gamControls .gamMinus{background:#26364d}
+.red .name,.red .corner,.red .score,.red .manual,.red .techniques{margin-left:23px}
+.blue .name,.blue .corner,.blue .score,.blue .manual,.blue .techniques{margin-right:23px}
+
+/* CENTER COLUMN BELOW THE TIMER */
+.centerColumn{
+grid-column:2;grid-row:1;display:flex;flex-direction:column;
+align-items:stretch;justify-content:flex-start;min-width:0;
+background:#101c30;border-left:1px solid #ffffff18;border-right:1px solid #ffffff18
+}
+.centerColumn .clock{border:0;border-bottom:1px solid #ffffff20}
+.centerInfo{display:flex;justify-content:center;text-align:center;padding:8px 3px;color:#b9d4f7;font-size:11px;font-weight:900;letter-spacing:.5px}
+.centerActions{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:7px}
+.centerActions button{min-width:0;min-height:35px;padding:6px 3px;font-size:9px;color:white;border:1px solid #ffffff25;overflow-wrap:anywhere}
+.centerActions .start{background:linear-gradient(#1ba969,#087544)}
+.centerActions .pause{background:linear-gradient(#b98016,#80510a)}
+.centerActions .end{background:linear-gradient(#ed2945,#9c1028)}
+.centerActions .direct{background:linear-gradient(#9158ed,#5128a2)}
+.centerActions .new{background:linear-gradient(#334968,#17283f)}
+.status{padding:5px 8px;background:#050a13;color:#a9c6e6;text-align:center;font-size:10px;min-height:23px}
+
+.overlay{display:none;position:fixed;inset:0;z-index:20;align-items:center;justify-content:center;padding:12px;background:#000c;backdrop-filter:blur(6px)}
+.dialog{width:100%;max-width:620px;max-height:92vh;overflow:auto;background:linear-gradient(145deg,#0c1d35,#071326);border:2px solid #168cff;border-radius:14px;padding:18px}
+.dialog h2{margin:0 0 15px;text-align:center;font-size:21px}
+.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:700;color:#c6d8ee;margin-bottom:5px}
+.field input,.field select{width:100%;padding:10px;background:#071326;color:white;border:1px solid #45688f;border-radius:7px}
+.check{display:flex;gap:8px;align-items:center;margin:8px 0 13px;font-size:12px;color:#d6e4f6}
+.check input{width:17px;height:17px;accent-color:#078cff}
+.actions{display:flex;gap:8px;margin-top:14px}
+.actions button{flex:1;padding:12px;color:white;border:1px solid #ffffff20}
+.save{background:linear-gradient(#ffd96b,#eaa51e);color:#172033!important}
+.close{background:linear-gradient(#365477,#1b304b)}
+.winner{max-width:450px;text-align:center;border-color:var(--gold)}
+.winner h2{color:var(--gold)}
+.winner h3{font-size:clamp(27px,5vw,43px);overflow-wrap:anywhere;margin:12px 0}
+.winner p{color:#c9d9ed}
+.winner button{padding:12px 16px;background:linear-gradient(#1ba969,#087544);color:white;margin:4px}
+.breakClock{font-size:32px;font-weight:900;color:var(--gold);margin:8px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choices button{background:#1c3555;color:white;padding:12px}
+.choices .selected{background:var(--gold);color:#101827}
+
+@media(max-width:800px){
+header{padding:7px 9px}
+.topbar{grid-template-columns:1fr}
+.topbar>.roundInfo{display:block;text-align:center;padding:7px}
+.board{grid-template-columns:minmax(0,1fr) 155px minmax(0,1fr)}
+.centerColumn{grid-column:2;grid-row:1}
+.centerColumn .clock{padding:8px 3px}
+.timer{font-size:clamp(25px,5vw,38px)}
+.timerRow{gap:2px}
+.timerRow .minus,.timerRow .plus{width:29px;min-width:27px;height:29px;font-size:10px}
+.centerInfo{font-size:9px}
+.centerActions{padding:4px;gap:4px}
+.centerActions button{font-size:8px;padding:5px 2px;min-height:34px}
+.fighter{padding:9px 4px}
+.score{font-size:clamp(48px,9vw,90px)}
+.red .name,.red .corner,.red .score,.red .manual,.red .techniques{margin-left:19px}
+.blue .name,.blue .corner,.blue .score,.blue .manual,.blue .techniques{margin-right:19px}
+.footer{width:29px;padding:3px 1px}
+.gamControls button{width:23px;min-width:23px;height:22px}
+.tech{min-height:48px}
+.tech b{font-size:16px}
+.manual{gap:3px}
+.manual button{min-width:27px;padding:6px 3px;font-size:12px}
+.manual .undoBtn{font-size:8px}
+}
+@media(max-width:500px){
+html,body{height:auto;min-height:100%;overflow:auto}
+header{min-height:45px;gap:6px}
+.brandIcon{font-size:22px}
+.brand{font-size:14px}
+.brand small{font-size:8px}
+.settingsLink{font-size:9px;padding:7px 6px}
+.topbar{display:block}
+.topbar>.roundInfo{display:none}
+.board{grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);min-height:calc(100vh - 100px)}
+.fighter{min-height:calc(100vh - 100px);padding:8px 2px}
+.centerColumn{min-height:100%;grid-column:2}
+.centerColumn .clock{gap:5px;padding:7px 2px}
+.timer{font-size:25px;letter-spacing:0}
+.timerRow .minus,.timerRow .plus{width:23px;min-width:22px;height:25px;font-size:9px}
+.timerCaption{font-size:7px;letter-spacing:1px}
+.breakLabel{font-size:8px}
+.centerInfo{padding:6px 1px;font-size:8px}
+.centerActions{grid-template-columns:1fr;padding:4px;gap:4px}
+.centerActions button{min-height:29px;font-size:9px;padding:5px 2px}
+.name{font-size:clamp(13px,4vw,19px);letter-spacing:0}
+.corner{font-size:7px;letter-spacing:1px}
+.score{font-size:clamp(38px,10vw,60px);letter-spacing:-1px;margin:8px 0}
+.red .name,.red .corner,.red .score,.red .manual,.red .techniques{margin-left:17px}
+.blue .name,.blue .corner,.blue .score,.blue .manual,.blue .techniques{margin-right:17px}
+.footer{width:26px;left:2px;padding:3px 1px;font-size:7px}
+.blue .footer{left:auto;right:2px}
+.gamControls button{width:21px;min-width:21px;height:21px}
+.gamControls .gamPlus{font-size:6px}
+.manual{flex-wrap:wrap;gap:2px}
+.manual button{min-width:24px;padding:5px 2px;font-size:10px}
+.manual .undoBtn{font-size:7px;padding:5px 2px}
+.techniques{gap:2px}
+.tech{min-height:42px;padding:4px 1px}
+.tech span{font-size:7px}
+.tech b{font-size:14px;margin-top:3px}
+.status{font-size:9px}
 .settingsGrid{grid-template-columns:1fr}
+.dialog{padding:13px}
 }
 </style>
 </head>
 <body>
 
 <header>
-<div class="logo">🥋</div>
+<div class="brandIcon">🥋</div>
 <div class="brand">TAEKWONDO<small>REFEREE SCORING SYSTEM</small></div>
-<button class="settingsBtn" onclick="openSettings()">⚙ SETTINGS</button>
+<button class="settingsLink" onclick="openSettings()">⚙ SETTINGS</button>
 </header>
 
 <section class="topbar">
 <div class="roundInfo" id="roundInfo">ROUND 1 · BEST OF 3</div>
-<div class="clock">
-  <div class="timerRow">
-   <button class="minus" onclick="adjustTime(-5)">−5</button>
-   <div class="timer" id="timer">01:00</div>
-   <button class="plus" onclick="adjustTime(5)">+5</button>
-  </div>
-  <div class="timerCaption">ROUND TIMER</div>
-</div>
-<div class="controls">
-  <button class="start" onclick="startTimer()">▶ START</button>
-  <button class="pause" onclick="pauseTimer()">Ⅱ PAUSE</button>
-  <button class="end" onclick="endRound()">■ END ROUND</button>
-  <button class="direct" onclick="openDirectWinner()">🏆 WINNER</button>
-  <button class="new" onclick="newMatch()">↻ NEW MATCH</button>
-</div>
 </section>
 
 <main class="board">
 <section class="fighter red">
-  <div>
-   <div class="name" id="name1">HONG</div>
-   <div class="corner">RED CORNER</div>
-  </div>
+  <div class="name" id="name1">HONG</div>
+  <div class="corner">RED CORNER</div>
   <div class="score" id="score1">0</div>
   <div class="manual">
    <button onclick="changeScore(1,-1)">−1</button>
    <button onclick="changeScore(1,1)">+1</button>
-   <button class="undo" onclick="undoLast(1)">↶ UNDO LAST</button>
+   <button class="undoBtn" onclick="undoLast(1)">↶ UNDO</button>
   </div>
   <div class="techniques">
    <button class="tech" onclick="award(1,'punch',this)"><span>PUNCH</span><b id="punch1">+1</b></button>
@@ -130,25 +249,45 @@ header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px
    <button class="tech" onclick="award(1,'head',this)"><span>HEAD</span><b id="head1">+3</b></button>
   </div>
   <div class="footer">
-   <span>Gam-jeom: <b id="gam1">0</b></span>
+   <span>GAM<br><b id="gam1">0</b></span>
    <div class="gamControls">
-    <button onclick="changeGamjeom(1,-1)">−</button>
-    <button class="gamPlus" onclick="giveGamjeom(1)">+</button>
+    <button class="gamMinus" onclick="changeGamjeom(1,-1)" title="Remove Gam-jeom">−</button>
+    <button class="gamPlus" onclick="giveGamjeom(1)" title="Add Gam-jeom">+</button>
    </div>
    <span>Rounds: <b id="wins1">0</b></span>
   </div>
 </section>
 
-<section class="fighter blue">
-  <div>
-   <div class="name" id="name2">CHONG</div>
-   <div class="corner">BLUE CORNER</div>
+<section class="centerColumn">
+  <div class="clock">
+   <div class="timerRow">
+    <button class="minus" onclick="adjustTime(-5)" aria-label="Minus five seconds">−5</button>
+    <div>
+     <div class="timer" id="timer">01:00</div>
+     <div class="breakLabel" id="breakLabel">BREAK TIME</div>
+    </div>
+    <button class="plus" onclick="adjustTime(5)" aria-label="Plus five seconds">+5</button>
+   </div>
+   <div class="timerCaption">ROUND TIMER</div>
   </div>
+  <div class="centerInfo" id="centerRoundInfo">ROUND 1 · BEST OF 3</div>
+  <div class="centerActions">
+   <button class="start" onclick="startTimer()">▶ START</button>
+   <button class="pause" onclick="pauseTimer()">Ⅱ PAUSE</button>
+   <button class="end" onclick="endRound()">■ END ROUND</button>
+   <button class="direct" onclick="openDirectWinner()">🏆 DIRECT WINNER</button>
+   <button class="new" onclick="newMatch()">↻ NEW MATCH</button>
+  </div>
+</section>
+
+<section class="fighter blue">
+  <div class="name" id="name2">CHONG</div>
+  <div class="corner">BLUE CORNER</div>
   <div class="score" id="score2">0</div>
   <div class="manual">
    <button onclick="changeScore(2,-1)">−1</button>
    <button onclick="changeScore(2,1)">+1</button>
-   <button class="undo" onclick="undoLast(2)">↶ UNDO LAST</button>
+   <button class="undoBtn" onclick="undoLast(2)">↶ UNDO</button>
   </div>
   <div class="techniques">
    <button class="tech" onclick="award(2,'punch',this)"><span>PUNCH</span><b id="punch2">+1</b></button>
@@ -156,10 +295,10 @@ header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px
    <button class="tech" onclick="award(2,'head',this)"><span>HEAD</span><b id="head2">+3</b></button>
   </div>
   <div class="footer">
-   <span>Gam-jeom: <b id="gam2">0</b></span>
+   <span>GAM<br><b id="gam2">0</b></span>
    <div class="gamControls">
-    <button onclick="changeGamjeom(2,-1)">−</button>
-    <button class="gamPlus" onclick="giveGamjeom(2)">+</button>
+    <button class="gamMinus" onclick="changeGamjeom(2,-1)" title="Remove Gam-jeom">−</button>
+    <button class="gamPlus" onclick="giveGamjeom(2)" title="Add Gam-jeom">+</button>
    </div>
    <span>Rounds: <b id="wins2">0</b></span>
   </div>
@@ -168,39 +307,14 @@ header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px
 
 <div class="status" id="status">Ready to start the match.</div>
 
-<div class="overlay" id="settingsOverlay">
-<div class="dialog">
-  <h2>⚙ MATCH SETTINGS</h2>
-  <div class="settingsGrid">
-   <div class="field"><label>Red Player Name</label><input id="sName1" value="HONG"></div>
-   <div class="field"><label>Blue Player Name</label><input id="sName2" value="CHONG"></div>
-   <div class="field"><label>Round Duration (seconds)</label><input id="sTime" type="number" min="10" value="60"></div>
-   <div class="field"><label>Break Duration (seconds)</label><input id="sBreak" type="number" min="0" value="30"></div>
-   <div class="field"><label>Match Format</label><select id="sBest"><option value="1">Best of 1</option><option value="3" selected>Best of 3</option><option value="5">Best of 5</option></select></div>
-   <div class="field"><label>Gam-jeom Limit</label><input id="sGamLimit" type="number" min="1" value="10"></div>
-   <div class="field"><label>Punch Points</label><input id="sPunch" type="number" min="0" value="1"></div>
-   <div class="field"><label>Body Points</label><input id="sBody" type="number" min="0" value="2"></div>
-   <div class="field"><label>Head Points</label><input id="sHead" type="number" min="0" value="3"></div>
-   <div class="field"><label>Point Gap</label><input id="sGap" type="number" min="1" value="12"></div>
-   <div class="field"><label>Target Score</label><input id="sTarget" type="number" min="1" value="20"></div>
-   <div class="field"><label>Score Size (px)</label><input id="sSize" type="number" min="60" max="200" value="130"></div>
-  </div>
-  <label class="check"><input id="sGapOn" type="checkbox" checked> Enable point-gap rule</label>
-  <label class="check"><input id="sTargetOn" type="checkbox" checked> Enable target-score rule</label>
-  <div class="actions">
-   <button class="close" onclick="closeSettings()">CANCEL</button>
-   <button class="save" onclick="saveSettings()">SAVE SETTINGS</button>
-  </div>
-</div>
-</div>
-
 <div class="overlay" id="roundOverlay">
 <div class="dialog winner">
-  <h2>ROUND WINNER</h2>
-  <h3 id="roundWinnerName"></h3>
-  <p id="roundReason"></p>
-  <p>Break countdown: <b id="breakDisplay">00:30</b></p>
-  <p id="breakMessage">Start the next round whenever ready.</p>
+  <h2>🏆 ROUND WINNER</h2>
+  <h3 id="roundWinnerName">HONG</h3>
+  <p id="roundReason">Won Round 1</p>
+  <p>BREAK TIME</p>
+  <div class="breakClock" id="breakDisplay">00:30</div>
+  <p id="breakMessage">Break countdown running.</p>
   <button onclick="nextRound()">START NEXT ROUND</button>
 </div>
 </div>
@@ -208,16 +322,57 @@ header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px
 <div class="overlay" id="matchOverlay">
 <div class="dialog winner">
   <h2>🏆 MATCH WINNER</h2>
-  <h3 id="matchWinnerName"></h3>
-  <p id="matchReason"></p>
+  <h3 id="matchWinnerName">HONG</h3>
+  <p id="matchReason">Match Winner</p>
   <button onclick="closeMatchPopup()">CLOSE</button>
-  <button onclick="newMatch()">NEW MATCH</button>
+</div>
+</div>
+
+<div class="overlay" id="settingsOverlay">
+<div class="dialog">
+  <h2>⚙ MATCH SETTINGS</h2>
+  <div class="settingsGrid">
+   <div>
+    <div class="field"><label>Red player name</label><input id="sName1" value="HONG" maxlength="30"></div>
+    <div class="field"><label>Blue player name</label><input id="sName2" value="CHONG" maxlength="30"></div>
+    <div class="field"><label>Round time (seconds)</label><input id="sTime" type="number" min="10" max="3600" value="60"></div>
+    <div class="field"><label>Break time (seconds)</label><input id="sBreak" type="number" min="0" max="600" value="30"></div>
+    <div class="field"><label>Match format</label>
+     <select id="sBest">
+      <option value="1">Best of 1</option>
+      <option value="3" selected>Best of 3</option>
+      <option value="5">Best of 5</option>
+     </select>
+    </div>
+   </div>
+   <div>
+    <div class="field"><label>Punch points</label><input id="sPunch" type="number" min="0" max="20" value="1"></div>
+    <div class="field"><label>Body points</label><input id="sBody" type="number" min="0" max="20" value="2"></div>
+    <div class="field"><label>Head points</label><input id="sHead" type="number" min="0" max="20" value="3"></div>
+    <div class="field"><label>Gam-jeom limit</label><input id="sGamLimit" type="number" min="1" max="100" value="10"></div>
+    <div class="field"><label>Point gap</label><input id="sGap" type="number" min="1" max="200" value="12"></div>
+    <label class="check"><input id="sGapOn" type="checkbox" checked> Enable point-gap rule</label>
+    <div class="field"><label>Target score</label><input id="sTarget" type="number" min="1" max="500" value="20"></div>
+    <label class="check"><input id="sTargetOn" type="checkbox" checked> Enable target-score rule</label>
+    <div class="field"><label>Score size</label>
+     <select id="sSize">
+      <option value="60">Small</option>
+      <option value="90">Normal</option>
+      <option value="120">Large</option>
+     </select>
+    </div>
+   </div>
+  </div>
+  <div class="actions">
+   <button class="close" onclick="closeSettings()">CLOSE</button>
+   <button class="save" onclick="saveSettings()">SAVE SETTINGS</button>
+  </div>
 </div>
 </div>
 
 <div class="overlay" id="directOverlay">
 <div class="dialog">
-  <h2>DECLARE WINNER</h2>
+  <h2>DIRECT MATCH WINNER</h2>
   <div class="choices">
    <button id="choose1" onclick="selectWinner(1)">HONG WINS</button>
    <button id="choose2" onclick="selectWinner(2)">CHONG WINS</button>
@@ -233,7 +388,7 @@ header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px
   </div>
   <div class="actions">
    <button class="close" onclick="closeDirectWinner()">CANCEL</button>
-   <button class="save" onclick="confirmWinner()">CONFIRM</button>
+   <button class="save" onclick="confirmWinner()">CONFIRM WINNER</button>
   </div>
 </div>
 </div>
@@ -244,100 +399,67 @@ header{padding:8px}.brand{font-size:16px}.settingsBtn{padding:8px;font-size:10px
 let names=["HONG","CHONG"];
 let scores=[0,0],gam=[0,0],wins=[0,0];
 let round=1,roundTime=60,timeLeft=60,breakTime=30,breakLeft=30,bestOf=3;
-let points={punch:1,body:2,head:3};
-let gamLimit=10,pointGap=12,targetScore=20,scoreSize=130;
-let gapOn=true,targetOn=true;
-let timerId=null,running=false,breakRunning=false;
-let roundFinished=false,matchFinished=false,selectedWinner=null;
 let lastAction=[null,null];
+let points={punch:1,body:2,head:3};
+let gamLimit=10,pointGap=12,targetScore=20,scoreSize=90;
+let gapOn=true,targetOn=true,timerId=null,running=false,breakRunning=false;
+let roundFinished=false,matchFinished=false,selectedWinner=null,audioContext=null;
 
 const el=id=>document.getElementById(id);
-function status(message){el("status").textContent=message}
-function canScore(){return !roundFinished&&!matchFinished}
+function status(msg){el("status").textContent=msg}
+function canScore(){return !matchFinished&&!roundFinished}
 
 function stopClock(){
-clearInterval(timerId);
-timerId=null;
-running=false;
-breakRunning=false;
+clearInterval(timerId);timerId=null;running=false;breakRunning=false;
 }
 
-function beep(freq=700,duration=.2){
+function beep(freq,duration,delay=0){
 try{
-  const C=window.AudioContext||window.webkitAudioContext;
-  const ctx=new C();
-  const oscillator=ctx.createOscillator();
-  const gain=ctx.createGain();
-  oscillator.frequency.value=freq;
-  gain.gain.value=.1;
-  oscillator.connect(gain);
-  gain.connect(ctx.destination);
-  oscillator.start();
-  oscillator.stop(ctx.currentTime+duration);
-  oscillator.onended=()=>ctx.close();
+  if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioContext.state==="suspended")audioContext.resume();
+  setTimeout(()=>{
+   const o=audioContext.createOscillator(),g=audioContext.createGain();
+   o.frequency.value=freq;g.gain.value=.12;
+   o.connect(g);g.connect(audioContext.destination);
+   o.start();o.stop(audioContext.currentTime+duration);
+  },delay);
 }catch(e){}
 }
+function startSound(){beep(700,.15);beep(1000,.2,200)}
+function winnerSound(){beep(400,.2);beep(550,.2,250);beep(750,.4,500)}
 
 function blinkScore(i){
-const node=el("score"+(i+1));
-node.classList.remove("blink");
-void node.offsetWidth;
-node.classList.add("blink");
-setTimeout(()=>node.classList.remove("blink"),700);
+const n=el("score"+(i+1));
+n.classList.remove("blink");void n.offsetWidth;n.classList.add("blink");
+setTimeout(()=>n.classList.remove("blink"),650);
+}
+function blinkButton(btn){
+if(!btn)return;
+btn.classList.remove("hit");void btn.offsetWidth;btn.classList.add("hit");
+setTimeout(()=>btn.classList.remove("hit"),550);
 }
 
 function changeScore(player,amount){
 if(!canScore())return;
-const i=player-1;
-const next=Math.max(0,scores[i]+amount);
-const actual=next-scores[i];
-if(!actual)return;
+const i=player-1,old=scores[i],next=Math.max(0,old+amount);
+const actual=next-old;
+if(actual===0)return;
 scores[i]=next;
 lastAction[i]={type:"score",amount:actual};
 update();
-if(actual>0)blinkScore(i);
-status(names[i]+" score "+(actual>0?"increased":"decreased"));
+if(amount>0)blinkScore(i);
+status(names[i]+" score "+(amount>0?"increased":"decreased"));
 checkRules();
 }
 
-function award(player,kind,button){
-if(!canScore())return;
-const i=player-1,amount=points[kind];
-if(amount<=0){status("This technique is set to zero points.");return}
-scores[i]+=amount;
-lastAction[i]={type:"score",amount};
-update();
-blinkScore(i);
-button.classList.remove("blink");
-void button.offsetWidth;
-button.classList.add("blink");
-setTimeout(()=>button.classList.remove("blink"),700);
-status(names[i]+" scored +"+amount+" for "+kind.toUpperCase());
-checkRules();
-}
-
-function giveGamjeom(player){
-if(!canScore())return;
-const i=player-1,op=1-i;
-gam[i]++;
-scores[op]++;
-lastAction[i]={type:"gamjeom"};
-update();
-blinkScore(op);
-status("Gam-jeom to "+names[i]+"; "+names[op]+" receives +1 point.");
-if(gam[i]>=gamLimit){finishRound(op,names[i]+" reached Gam-jeom limit");return}
-checkRules();
-}
-
-function changeGamjeom(player,amount){
+function award(player,kind,btn){
 if(!canScore())return;
 const i=player-1;
-if(amount<0&&gam[i]===0){status("Gam-jeom count is already zero.");return}
-gam[i]=Math.max(0,gam[i]+amount);
-update();
-status(amount<0?
-  "Gam-jeom count decreased. Opponent score unchanged.":
-  "Penalty count manually increased; no point awarded.");
+scores[i]+=points[kind];
+lastAction[i]={type:"score",amount:points[kind]};
+update();blinkScore(i);blinkButton(btn);
+status(names[i]+" +"+points[kind]+" "+kind.toUpperCase());
+checkRules();
 }
 
 function undoLast(player){
@@ -351,15 +473,31 @@ if(action.type==="score"){
   scores[1-i]=Math.max(0,scores[1-i]-1);
 }
 lastAction[i]=null;
-update();
-status("Last action undone for "+names[i]);
+update();status("Last action undone for "+names[i]);
+}
+
+function giveGamjeom(player){
+if(!canScore())return;
+const i=player-1,op=1-i;
+gam[i]++;scores[op]++;
+lastAction[i]={type:"gamjeom"};
+update();blinkScore(op);
+status("Gam-jeom added to "+names[i]);
+if(gam[i]>=gamLimit){finishRound(op,names[i]+" reached Gam-jeom limit");return}
+checkRules();
+}
+
+function changeGamjeom(player,amount){
+if(!canScore())return;
+const i=player-1;
+if(gam[i]<=0){status("Gam-jeom is already zero for "+names[i]);return}
+gam[i]=Math.max(0,gam[i]+amount);
+update();status("Removed one Gam-jeom from "+names[i]);
 }
 
 function startTimer(){
 if(matchFinished||roundFinished||running||timeLeft<=0)return;
-running=true;
-beep(800,.15);
-status("Round timer running.");
+startSound();running=true;status("Round running");
 timerId=setInterval(()=>{
   if(timeLeft>0)timeLeft--;
   update();
@@ -370,19 +508,18 @@ timerId=setInterval(()=>{
 function pauseTimer(){
 if(running){
   clearInterval(timerId);timerId=null;running=false;
-  status("Round timer paused.");
+  status("Round timer paused");
 }else if(breakRunning){
   clearInterval(timerId);timerId=null;breakRunning=false;
-  el("breakMessage").textContent="Break paused. You can start the next round.";
-  status("Break paused.");
+  el("breakMessage").textContent="Break paused. Start next round when ready.";
+  status("Break paused");
 }
 }
 
 function adjustTime(amount){
 if(matchFinished||roundFinished)return;
 timeLeft=Math.max(0,timeLeft+amount);
-update();
-status("Timer adjusted by "+amount+" seconds.");
+update();status("Timer adjusted by "+amount+" seconds");
 if(timeLeft===0&&running){stopClock();endRound()}
 }
 
@@ -391,44 +528,40 @@ if(matchFinished||roundFinished)return;
 stopClock();
 if(scores[0]>scores[1])finishRound(0,"End of round");
 else if(scores[1]>scores[0])finishRound(1,"End of round");
-else status("Scores are tied. Apply the relevant tie-break rules.");
+else status("Round tied — apply the competition tie-break rules.");
 }
 
 function checkRules(){
 if(!canScore())return;
-let winner=-1;
-if(gapOn&&Math.abs(scores[0]-scores[1])>=pointGap)
-  winner=scores[0]>scores[1]?0:1;
-if(winner===-1&&targetOn){
-  if(scores[0]>=targetScore)winner=0;
-  else if(scores[1]>=targetScore)winner=1;
+let w=-1;
+if(gapOn&&Math.abs(scores[0]-scores[1])>=pointGap){
+  w=scores[0]>scores[1]?0:1;
 }
-if(winner!==-1)finishRound(winner,"Early-win rule");
+if(w===-1&&targetOn){
+  if(scores[0]>=targetScore)w=0;
+  else if(scores[1]>=targetScore)w=1;
+}
+if(w!==-1)finishRound(w,"Early-win rule");
 }
 
-function finishRound(winner,reason){
+function finishRound(w,reason){
 if(matchFinished||roundFinished)return;
-stopClock();
-roundFinished=true;
-wins[winner]++;
-update();
-if(wins[winner]>=Math.ceil(bestOf/2)){
-  showMatchWinner(names[winner],"Match winner · "+reason);
-  return;
+stopClock();roundFinished=true;wins[w]++;update();
+if(wins[w]>=Math.ceil(bestOf/2)){
+  showMatchWinner(names[w],"Match Winner · "+reason);return;
 }
-el("roundWinnerName").textContent=names[winner];
-el("roundReason").textContent="Round "+round+" · "+reason;
+el("roundWinnerName").textContent=names[w];
+el("roundReason").textContent="Won Round "+round+" · "+reason;
 el("roundOverlay").style.display="flex";
-breakLeft=breakTime;
-updateBreakDisplay();
+breakLeft=breakTime;updateBreakDisplay();
+el("breakMessage").textContent="Break countdown running. You can start the next round early.";
+status(names[w]+" won Round "+round);
 if(breakTime>0)startBreak();
 else el("breakMessage").textContent="Break complete. Start the next round.";
-status(names[winner]+" won Round "+round);
 }
 
 function startBreak(){
-clearInterval(timerId);
-breakRunning=true;
+clearInterval(timerId);timerId=null;breakRunning=true;running=false;
 timerId=setInterval(()=>{
   if(!breakRunning)return;
   if(breakLeft>0)breakLeft--;
@@ -436,8 +569,7 @@ timerId=setInterval(()=>{
   if(breakLeft<=0){
    clearInterval(timerId);timerId=null;breakRunning=false;
    el("breakMessage").textContent="Break complete. Press START NEXT ROUND.";
-   beep(700,.25);
-   status("Break complete.");
+   beep(700,.25);status("Break complete — next round ready");
   }
 },1000);
 }
@@ -451,11 +583,9 @@ function nextRound(){
 if(!roundFinished||matchFinished)return;
 clearInterval(timerId);timerId=null;running=false;breakRunning=false;
 el("roundOverlay").style.display="none";
-round++;
-scores=[0,0];gam=[0,0];lastAction=[null,null];
-timeLeft=roundTime;roundFinished=false;
-update();
-status("Round "+round+" ready. Press START.");
+round++;scores=[0,0];gam=[0,0];lastAction=[null,null];
+timeLeft=roundTime;roundFinished=false;update();
+status("Round "+round+" ready — press START");
 }
 
 function showMatchWinner(name,reason){
@@ -463,10 +593,8 @@ stopClock();matchFinished=true;roundFinished=true;
 el("matchWinnerName").textContent=name;
 el("matchReason").textContent=reason;
 el("matchOverlay").style.display="flex";
-status(name+" wins the match.");
-beep(500,.5);
+status(name+" wins the match");winnerSound();
 }
-
 function closeMatchPopup(){el("matchOverlay").style.display="none"}
 
 function openDirectWinner(){
@@ -478,33 +606,27 @@ el("choose1").textContent=names[0]+" WINS";
 el("choose2").textContent=names[1]+" WINS";
 el("directOverlay").style.display="flex";
 }
-
-function selectWinner(player){
-selectedWinner=player-1;
-el("choose1").classList.toggle("selected",player===1);
-el("choose2").classList.toggle("selected",player===2);
+function selectWinner(p){
+selectedWinner=p-1;
+el("choose1").classList.toggle("selected",p===1);
+el("choose2").classList.toggle("selected",p===2);
 }
-
 function confirmWinner(){
 if(selectedWinner===null){alert("Please select a winner.");return}
-const name=names[selectedWinner],reason=el("directReason").value;
+const n=names[selectedWinner],r=el("directReason").value;
 el("directOverlay").style.display="none";
-showMatchWinner(name,reason);
+showMatchWinner(n,r);
 }
-
 function closeDirectWinner(){el("directOverlay").style.display="none"}
 
 function openSettings(){
 el("sName1").value=names[0];el("sName2").value=names[1];
-el("sTime").value=roundTime;el("sBreak").value=breakTime;
-el("sBest").value=bestOf;el("sPunch").value=points.punch;
-el("sBody").value=points.body;el("sHead").value=points.head;
-el("sGamLimit").value=gamLimit;el("sGap").value=pointGap;
-el("sGapOn").checked=gapOn;el("sTarget").value=targetScore;
-el("sTargetOn").checked=targetOn;el("sSize").value=scoreSize;
+el("sTime").value=roundTime;el("sBreak").value=breakTime;el("sBest").value=bestOf;
+el("sPunch").value=points.punch;el("sBody").value=points.body;el("sHead").value=points.head;
+el("sGamLimit").value=gamLimit;el("sGap").value=pointGap;el("sGapOn").checked=gapOn;
+el("sTarget").value=targetScore;el("sTargetOn").checked=targetOn;el("sSize").value=scoreSize;
 el("settingsOverlay").style.display="flex";
 }
-
 function closeSettings(){el("settingsOverlay").style.display="none"}
 
 function val(id,fallback,min,max){
@@ -527,42 +649,48 @@ pointGap=val("sGap",12,1,200);
 gapOn=el("sGapOn").checked;
 targetScore=val("sTarget",20,1,500);
 targetOn=el("sTargetOn").checked;
-scoreSize=val("sSize",130,60,200);
-if(!running&&!roundFinished)timeLeft=roundTime;
-update();
-closeSettings();
-status("Match settings saved.");
+scoreSize=Number(el("sSize").value);
+timeLeft=roundTime;
+update();closeSettings();status("Settings saved");
 }
 
 function newMatch(){
 if(!confirm("Reset all scores and start a new match?"))return;
-stopClock();
-scores=[0,0];gam=[0,0];wins=[0,0];
-round=1;timeLeft=roundTime;breakLeft=breakTime;
-lastAction=[null,null];roundFinished=false;matchFinished=false;
-selectedWinner=null;
+stopClock();scores=[0,0];gam=[0,0];wins=[0,0];round=1;
+timeLeft=roundTime;breakLeft=breakTime;lastAction=[null,null];
+roundFinished=false;matchFinished=false;selectedWinner=null;
 el("roundOverlay").style.display="none";
 el("matchOverlay").style.display="none";
 el("directOverlay").style.display="none";
-update();status("New match ready.");
+update();status("New match ready");
 }
 
 function update(){
-el("name1").textContent=names[0];el("name2").textContent=names[1];
-el("score1").textContent=scores[0];el("score2").textContent=scores[1];
-el("gam1").textContent=gam[0];el("gam2").textContent=gam[1];
-el("wins1").textContent=wins[0];el("wins2").textContent=wins[1];
-el("roundInfo").textContent="ROUND "+round+" · BEST OF "+bestOf;
+el("name1").textContent=names[0];
+el("name2").textContent=names[1];
+el("score1").textContent=scores[0];
+el("score2").textContent=scores[1];
+el("gam1").textContent=gam[0];
+el("gam2").textContent=gam[1];
+el("wins1").textContent=wins[0];
+el("wins2").textContent=wins[1];
+
+const roundText="ROUND "+round+" · BEST OF "+bestOf;
+el("roundInfo").textContent=roundText;
+el("centerRoundInfo").textContent=roundText;
+
 const m=Math.floor(timeLeft/60),s=timeLeft%60;
 el("timer").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+
 el("punch1").textContent=el("punch2").textContent="+"+points.punch;
 el("body1").textContent=el("body2").textContent="+"+points.body;
 el("head1").textContent=el("head2").textContent="+"+points.head;
-el("score1").style.fontSize="clamp(65px,14vw,"+scoreSize+"px)";
-el("score2").style.fontSize="clamp(65px,14vw,"+scoreSize+"px)";
-}
 
+el("score1").style.fontSize=scoreSize+"px";
+el("score2").style.fontSize=scoreSize+"px";
+el("breakLabel").style.display=breakRunning?"block":"none";
+}
 update();
 </script>
 </body>
-</html> 
+</html>
