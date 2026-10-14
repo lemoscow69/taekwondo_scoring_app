@@ -2,1403 +2,524 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taekwondo Referee Scoring System</title>
-
 <style>
 :root {
-  --red: #e81743;
-  --blue: #087df5;
-  --navy: #071329;
-  --panel: #0c1b38;
-  --cyan: #36e6ff;
-  --gold: #ffe36a;
-  --text: #f7fbff;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #030916;
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-button {
-  color: white;
-  cursor: pointer;
-  border: 1px solid #ffffff38;
-  border-radius: 10px;
-  font-weight: 800;
-  transition: transform .12s, filter .12s;
-  touch-action: manipulation;
-}
-
-button:active {
-  transform: scale(.96);
-  filter: brightness(1.2);
-}
-
-button:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-.app {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at top, #142b50 0%, #071329 48%, #030916 100%);
-}
-
-.header {
-  min-height: 66px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 20px;
-  background: #050c1d;
-  border-bottom: 1px solid #35dfff40;
-}
-
-.brand {
-  font-weight: 1000;
-  font-size: clamp(17px, 2vw, 26px);
-  letter-spacing: 1.5px;
-}
-
-.brand small {
-  display: block;
-  color: var(--cyan);
-  font-size: 10px;
-  letter-spacing: 3px;
-  margin-top: 4px;
-}
-
-.settingsButton {
-  background: #102341;
-  padding: 12px 18px;
-  border-color: var(--cyan);
-}
-
-.board {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 290px) minmax(0, 1fr);
-  align-items: stretch;
-  gap: 0;
-}
-
-.fighter {
-  position: relative;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 34px 26px;
-  overflow: hidden;
-}
-
-.fighter.red {
-  background:
-    linear-gradient(145deg, #ed183f 0%, #c20d49 65%, #8d1459 100%);
-  border-right: 2px solid #ff9db7;
-}
-
-.fighter.blue {
-  background:
-    linear-gradient(145deg, #0789ff 0%, #0764d4 65%, #123e91 100%);
-  border-left: 2px solid #78edff;
-}
-
-.fighterName {
-  width: 100%;
-  text-align: center;
-  font-size: clamp(24px, 3vw, 42px);
-  font-weight: 1000;
-  letter-spacing: 1px;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: white;
-  text-transform: uppercase;
-  padding: 8px 0;
-}
-
-.cornerLabel {
-  margin-top: 14px;
-  font-size: clamp(11px, 1.1vw, 15px);
-  letter-spacing: 3px;
-  font-weight: 900;
-  opacity: .85;
-}
-
-.red .cornerLabel {
-  color: #ffd5e1;
-}
-
-.blue .cornerLabel {
-  color: #b9ffff;
-}
-
-.score {
-  width: 100%;
-  text-align: center;
-  font-size: clamp(100px, 14vw, 190px);
-  line-height: 1;
-  font-weight: 1000;
-  letter-spacing: -5px;
-  text-shadow: 0 6px 12px #00112d45;
-  margin: auto 0 12px;
-  font-variant-numeric: tabular-nums;
-}
-
-.scoreAdjust {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  margin-bottom: 24px;
-}
-
-.adjustButton {
-  min-width: 48px;
-  min-height: 45px;
-  background: #071a37db;
-  border: 2px solid #9feaff80;
-  font-size: 19px;
-}
-
-.undoButton {
-  min-height: 45px;
-  padding: 0 12px;
-  background: #071a37db;
-  border: 2px solid #9feaff80;
-  font-size: 13px;
-}
-
-.pointButtons {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 9px;
-}
-
-.pointButton {
-  min-height: 82px;
-  padding: 10px 5px;
-  background: #061c40d9;
-  border: 2px solid #c2f5ff75;
-  box-shadow: 0 4px 0 #00112b55;
-}
-
-.pointButton span {
-  display: block;
-  font-size: clamp(11px, 1.1vw, 15px);
-  margin-bottom: 7px;
-}
-
-.pointButton strong {
-  display: block;
-  font-size: clamp(23px, 2.6vw, 34px);
-  color: var(--gold);
-}
-
-.red .pointButton:hover {
-  background: #8c092d;
-}
-
-.blue .pointButton:hover {
-  background: #064da7;
-}
-
-/* Larger Gam-jeom controls on the outer edges */
-.gamjeom {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  width: 54px;
-  padding: 8px 5px;
-  border: 1px solid #ffffff60;
-  border-radius: 13px;
-  background: #06142be8;
-  box-shadow: 0 5px 15px #00102d45;
-  z-index: 2;
-}
-
-.red .gamjeom {
-  left: 8px;
-}
-
-.blue .gamjeom {
-  right: 8px;
-}
-
-.gamLabel {
-  text-align: center;
-  font-size: 10px;
-  font-weight: 1000;
-  letter-spacing: .3px;
-}
-
-.gamCount {
-  font-size: 17px;
-  font-weight: 1000;
-}
-
-.gamButton {
-  width: 40px;
-  height: 40px;
-  font-size: 24px;
-  border-radius: 9px;
-  background: #10264a;
-}
-
-.gamMinus {
-  border-color: #9dc7ff;
-}
-
-.gamPlus {
-  background: #c5223f;
-  border-color: #ffb1c2;
-}
-
-.blue .gamPlus {
-  background: #0874dd;
-  border-color: #9be8ff;
-}
-
-/* Center column */
-.centerColumn {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 18px 12px;
-  gap: 13px;
-  background:
-    linear-gradient(180deg, #071329, #0a1c3b 55%, #071329);
-  border-left: 1px solid #ffffff20;
-  border-right: 1px solid #ffffff20;
-}
-
-.timerRow {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 44px;
-  align-items: center;
-  gap: 5px;
-}
-
-.timeAdjust {
-  min-height: 43px;
-  background: #102341;
-  border: 1px solid var(--cyan);
-  color: white;
-  font-size: 13px;
-  padding: 3px;
-}
-
-.clock {
-  min-width: 0;
-  text-align: center;
-  font-size: clamp(30px, 3.3vw, 47px);
-  font-weight: 1000;
-  letter-spacing: 1px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.timerCaption {
-  text-align: center;
-  color: var(--cyan);
-  font-weight: 1000;
-  font-size: 11px;
-  letter-spacing: 3px;
-  margin-top: -4px;
-}
-
-.roundInfo {
-  text-align: center;
-  color: #a8f6ff;
-  font-weight: 900;
-  font-size: 13px;
-  letter-spacing: .5px;
-  padding: 8px 2px;
-  border-top: 1px solid #ffffff15;
-  border-bottom: 1px solid #ffffff15;
-}
-
-.controlGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-}
-
-.controlButton {
-  min-height: 49px;
-  padding: 8px 5px;
-  font-size: 13px;
-  border-radius: 9px;
-}
-
-.startButton {
-  background: #0e9b55;
-  border-color: #68ffad;
-}
-
-.pauseButton {
-  background: #bd5429;
-  border-color: #ffc09a;
-}
-
-.endButton {
-  background: #e62942;
-  border-color: #ff9eaf;
-}
-
-.winnerButton {
-  background: #087adf;
-  border-color: #8deaff;
-}
-
-.newButton {
-  background: #163c78;
-  border-color: #83b8ff;
-  grid-column: 1 / -1;
-}
-
-.status {
-  margin-top: auto;
-  text-align: center;
-  padding: 12px 5px 2px;
-  font-size: 11px;
-  line-height: 1.5;
-  color: #c0d5f0;
-  border-top: 1px solid #ffffff1c;
-  overflow-wrap: anywhere;
-}
-
-.footer {
-  text-align: center;
-  padding: 8px;
-  color: #b9cbe5;
-  background: #040b19;
-  font-size: 11px;
-  border-top: 1px solid #ffffff20;
-}
-
-/* Dialogs */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: #000b1de8;
-  z-index: 20;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modalCard {
-  width: min(480px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 23px;
-  background: #0c1c37;
-  border: 1px solid var(--cyan);
-  border-radius: 17px;
-  box-shadow: 0 20px 70px #0009;
-}
-
-.modalCard h2 {
-  margin: 0 0 18px;
-  color: var(--cyan);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin: 13px 0;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.field input,
-.field select {
-  width: 100%;
-  padding: 11px;
-  background: #061229;
-  color: white;
-  border: 1px solid #527092;
-  border-radius: 8px;
-}
-
-.modalActions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.modalActions button {
-  flex: 1;
-  min-height: 43px;
-  padding: 8px;
-  background: #123763;
-}
-
-.modalActions .confirm {
-  background: #087b55;
-}
-
-.winnerTitle {
-  font-size: 29px;
-  font-weight: 1000;
-  text-align: center;
-  margin: 15px 0;
-}
-
-.winnerText {
-  text-align: center;
-  line-height: 1.6;
-}
-
-.breakCountdown {
-  text-align: center;
-  font-size: 40px;
-  font-weight: 1000;
-  color: var(--gold);
-  margin: 15px 0;
-}
-
-.hidden {
-  display: none !important;
-}
-
-@media (min-width: 1200px) {
-  .fighter {
-    padding-left: 46px;
-    padding-right: 46px;
-  }
-
-  .centerColumn {
-    padding: 24px 16px;
-  }
-
-  .controlButton {
-    min-height: 54px;
-    font-size: 14px;
-  }
-
-  .pointButton {
-    min-height: 95px;
-  }
-}
-
-@media (max-width: 900px) {
-  .board {
-    grid-template-columns: minmax(0, 1fr) minmax(205px, 235px) minmax(0, 1fr);
-  }
-
-  .fighter {
-    padding: 18px 22px;
-  }
-
-  .red .gamjeom {
-    left: 5px;
-  }
-
-  .blue .gamjeom {
-    right: 5px;
-  }
-
-  .gamjeom {
-    width: 46px;
-  }
-
-  .gamButton {
-    width: 34px;
-    height: 36px;
-  }
-
-  .scoreAdjust {
-    gap: 5px;
-  }
-
-  .adjustButton {
-    min-width: 40px;
-  }
-
-  .undoButton {
-    padding: 0 7px;
-  }
-
-  .centerColumn {
-    padding: 14px 9px;
-    gap: 11px;
-  }
-}
-
-@media (max-width: 650px) {
-  .header {
-    min-height: 55px;
-    padding: 8px 10px;
-  }
-
-  .brand {
-    font-size: 16px;
-  }
-
-  .brand small {
-    font-size: 8px;
-    letter-spacing: 1.5px;
-  }
-
-  .settingsButton {
-    padding: 9px 10px;
-    font-size: 12px;
-  }
-
-  .board {
-    grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr);
-  }
-
-  .fighter {
-    padding: 15px 8px;
-  }
-
-  .fighterName {
-    font-size: clamp(17px, 4vw, 25px);
-  }
-
-  .cornerLabel {
-    font-size: 9px;
-    letter-spacing: 1px;
-    margin-top: 7px;
-  }
-
-  .score {
-    font-size: clamp(70px, 15vw, 110px);
-    letter-spacing: -3px;
-  }
-
-  .pointButtons {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .pointButton {
-    min-height: 52px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 7px 10px;
-  }
-
-  .pointButton span {
-    margin: 0;
-    font-size: 10px;
-  }
-
-  .pointButton strong {
-    font-size: 21px;
-  }
-
-  .scoreAdjust {
-    gap: 4px;
-    margin-bottom: 15px;
-  }
-
-  .adjustButton {
-    min-width: 30px;
-    min-height: 35px;
-    font-size: 14px;
-  }
-
-  .undoButton {
-    min-height: 35px;
-    font-size: 10px;
-    padding: 0 4px;
-  }
-
-  .gamjeom {
-    width: 34px;
-    padding: 5px 2px;
-    gap: 5px;
-  }
-
-  .gamLabel {
-    font-size: 8px;
-  }
-
-  .gamCount {
-    font-size: 14px;
-  }
-
-  .gamButton {
-    width: 28px;
-    height: 31px;
-    font-size: 19px;
-  }
-
-  .red .gamjeom {
-    left: 2px;
-  }
-
-  .blue .gamjeom {
-    right: 2px;
-  }
-
-  .centerColumn {
-    padding: 12px 5px;
-    gap: 9px;
-  }
-
-  .timerRow {
-    grid-template-columns: 27px minmax(0, 1fr) 27px;
-    gap: 2px;
-  }
-
-  .timeAdjust {
-    min-height: 33px;
-    font-size: 10px;
-    border-radius: 6px;
-  }
-
-  .clock {
-    font-size: clamp(21px, 4.5vw, 30px);
-    letter-spacing: 0;
-  }
-
-  .timerCaption {
-    font-size: 8px;
-    letter-spacing: 1px;
-  }
-
-  .roundInfo {
-    font-size: 10px;
-    padding: 6px 1px;
-  }
-
-  .controlGrid {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .controlButton {
-    min-height: 36px;
-    padding: 6px 2px;
-    font-size: 10px;
-  }
-
-  .newButton {
-    grid-column: auto;
-  }
-
-  .status {
-    font-size: 9px;
-    padding-top: 8px;
-  }
-}
-
-@media (max-width: 380px) {
-  .board {
-    grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
-  }
-
-  .fighter {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  .clock {
-    font-size: 20px;
-  }
-
-  .timerRow {
-    grid-template-columns: 24px minmax(0, 1fr) 24px;
-  }
-
-  .timeAdjust {
-    font-size: 9px;
-  }
-
-  .pointButton {
-    padding: 6px;
-  }
+  --navy:#071329;
+  --cyan:#36e6ff;
+  --gold:#ffe36a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#030916;color:#f7fbff;font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{color:white;cursor:pointer;border:1px solid #ffffff40;border-radius:9px;font-weight:800;touch-action:manipulation}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(ellipse at top,#142b50,#071329 55%,#030916)}
+.header{min-height:65px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 20px;background:#050c1d;border-bottom:1px solid #35dfff40}
+.brand{font-size:clamp(17px,2vw,26px);font-weight:1000;letter-spacing:1.5px}
+.brand small{display:block;color:var(--cyan);font-size:10px;letter-spacing:3px;margin-top:4px}
+.settingsButton{background:#102341;padding:12px 16px;border-color:var(--cyan)}
+.board{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,300px) minmax(0,1fr)}
+.fighter{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;padding:24px 34px;overflow:hidden}
+.red{background:linear-gradient(145deg,#ed183f,#c20d49 65%,#8d1459);border-right:2px solid #ff9db7}
+.blue{background:linear-gradient(145deg,#0789ff,#0764d4 65%,#123e91);border-left:2px solid #78edff}
+.fighterName{width:100%;text-align:center;font-size:clamp(24px,3vw,42px);font-weight:1000;border:0;outline:0;background:transparent;color:white;text-transform:uppercase;padding:8px 0}
+.cornerLabel{margin-top:12px;font-size:clamp(11px,1.1vw,15px);letter-spacing:3px;font-weight:900;opacity:.9}
+.score{width:100%;text-align:center;font-size:clamp(100px,14vw,190px);line-height:1;font-weight:1000;letter-spacing:-5px;text-shadow:0 6px 12px #00112d45;margin:auto 0 12px;font-variant-numeric:tabular-nums}
+.scoreAdjust{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-bottom:24px}
+.adjustButton{min-width:48px;min-height:45px;background:#071a37db;border:2px solid #9feaff80;font-size:19px}
+.undoButton{min-height:45px;padding:0 12px;background:#071a37db;border:2px solid #9feaff80;font-size:13px}
+.pointButtons{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.pointButton{min-height:82px;padding:10px 5px;background:#061c40e8;border:2px solid #c2f5ff75;box-shadow:0 4px 0 #00112b55}
+.pointButton span{display:block;font-size:clamp(11px,1.1vw,15px);margin-bottom:7px}
+.pointButton strong{display:block;font-size:clamp(23px,2.6vw,34px);color:var(--gold)}
+.gamjeom{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;width:54px;padding:8px 5px;border:1px solid #ffffff60;border-radius:13px;background:#06142bf0;box-shadow:0 5px 15px #00102d45;z-index:2}
+.red .gamjeom{left:8px}.blue .gamjeom{right:8px}
+.gamLabel{text-align:center;font-size:10px;font-weight:1000}
+.gamCount{font-size:19px;font-weight:1000}
+.gamButton{width:40px;height:40px;font-size:24px;border-radius:9px;background:#10264a}
+.gamMinus{border-color:#9dc7ff}.gamPlus{background:#c5223f;border-color:#ffb1c2}
+.blue .gamPlus{background:#0874dd;border-color:#9be8ff}
+.centerColumn{min-width:0;display:flex;flex-direction:column;padding:18px 12px;gap:13px;background:linear-gradient(180deg,#071329,#0a1c3b 55%,#071329);border-left:1px solid #ffffff20;border-right:1px solid #ffffff20}
+.timerRow{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:5px}
+.timeAdjust{min-height:43px;background:#102341;border:1px solid var(--cyan);font-size:13px;padding:3px}
+.clock{text-align:center;font-size:clamp(30px,3.3vw,47px);font-weight:1000;letter-spacing:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.timerCaption{text-align:center;color:var(--cyan);font-weight:1000;font-size:11px;letter-spacing:3px;margin-top:-4px}
+.roundInfo{text-align:center;color:#a8f6ff;font-weight:900;font-size:13px;padding:8px 2px;border-top:1px solid #ffffff15;border-bottom:1px solid #ffffff15}
+.controlGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.controlButton{min-height:49px;padding:8px 5px;font-size:13px}
+.startButton{background:#0e9b55;border-color:#68ffad}
+.pauseButton{background:#bd5429;border-color:#ffc09a}
+.endButton{background:#e62942;border-color:#ff9eaf}
+.winnerButton{background:#087adf;border-color:#8deaff}
+.newButton{background:#163c78;border-color:#83b8ff;grid-column:1/-1}
+.status{margin-top:auto;text-align:center;padding:12px 5px 2px;font-size:11px;line-height:1.5;color:#c0d5f0;border-top:1px solid #ffffff1c;overflow-wrap:anywhere}
+.footer{text-align:center;padding:8px;color:#b9cbe5;background:#040b19;font-size:11px;border-top:1px solid #ffffff20}
+.modal{position:fixed;inset:0;background:#000b1de8;z-index:20;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.modalCard{width:min(490px,100%);max-height:92vh;overflow-y:auto;padding:23px;background:#0c1c37;border:1px solid var(--cyan);border-radius:17px;box-shadow:0 20px 70px #0009}
+.modalCard h2{margin:0 0 18px;color:var(--cyan)}
+.field{display:flex;flex-direction:column;gap:7px;margin:13px 0;font-size:13px;font-weight:700}
+.field input,.field select{width:100%;padding:11px;background:#061229;color:white;border:1px solid #527092;border-radius:8px}
+.modalActions{display:flex;gap:10px;margin-top:18px}
+.modalActions button{flex:1;min-height:44px;padding:9px;background:#123763}
+.modalActions .confirm{background:#087b55;border-color:#6effbd}
+.winnerTitle{text-align:center;font-size:27px;font-weight:1000;margin:15px 0}
+.winnerText{text-align:center;line-height:1.6}
+.breakPanel{margin:18px 0;padding:15px;border:1px solid #ffffff25;border-radius:12px;background:#06142c;text-align:center}
+.breakLabel{color:var(--cyan);font-size:12px;letter-spacing:2px;font-weight:900}
+.breakCountdown{font-size:40px;font-weight:1000;color:var(--gold);margin:8px 0}
+.breakHint{font-size:12px;color:#c2d5ed;line-height:1.5}
+.hidden{display:none!important}
+@media(min-width:1200px){.fighter{padding-left:46px;padding-right:46px}.centerColumn{padding:24px 16px}.pointButton{min-height:95px}}
+@media(max-width:900px){
+.board{grid-template-columns:minmax(0,1fr) minmax(205px,235px) minmax(0,1fr)}
+.fighter{padding:18px 22px}.gamjeom{width:46px}.gamButton{width:34px;height:36px}
+.scoreAdjust{gap:5px}.adjustButton{min-width:40px}.undoButton{padding:0 7px}
+.centerColumn{padding:14px 9px;gap:11px}
+}
+@media(max-width:650px){
+.header{min-height:55px;padding:8px 10px}.brand{font-size:16px}.brand small{font-size:8px;letter-spacing:1.5px}
+.settingsButton{padding:9px 10px;font-size:12px}
+.board{grid-template-columns:minmax(0,1fr) 132px minmax(0,1fr)}
+.fighter{padding:15px 8px}.fighterName{font-size:clamp(17px,4vw,25px)}
+.cornerLabel{font-size:9px;letter-spacing:1px;margin-top:7px}
+.score{font-size:clamp(70px,15vw,110px);letter-spacing:-3px}
+.pointButtons{grid-template-columns:1fr;gap:6px}
+.pointButton{min-height:52px;display:flex;justify-content:space-between;align-items:center;padding:7px 10px}
+.pointButton span{margin:0;font-size:10px}.pointButton strong{font-size:21px}
+.scoreAdjust{gap:4px;margin-bottom:15px}.adjustButton{min-width:30px;min-height:35px;font-size:14px}
+.undoButton{min-height:35px;font-size:10px;padding:0 4px}
+.gamjeom{width:34px;padding:5px 2px;gap:5px}.gamLabel{font-size:8px}.gamCount{font-size:14px}
+.gamButton{width:28px;height:31px;font-size:19px}.red .gamjeom{left:2px}.blue .gamjeom{right:2px}
+.centerColumn{padding:12px 5px;gap:9px}
+.timerRow{grid-template-columns:27px minmax(0,1fr) 27px;gap:2px}
+.timeAdjust{min-height:33px;font-size:10px;border-radius:6px}
+.clock{font-size:clamp(21px,4.5vw,30px);letter-spacing:0}
+.timerCaption{font-size:8px;letter-spacing:1px}.roundInfo{font-size:10px;padding:6px 1px}
+.controlGrid{grid-template-columns:1fr;gap:6px}.controlButton{min-height:36px;padding:6px 2px;font-size:10px}.newButton{grid-column:auto}
+.status{font-size:9px;padding-top:8px}
+.modalCard{padding:18px}.modalActions{gap:7px}.modalActions button{font-size:12px}
+}
+@media(max-width:380px){
+.board{grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr)}
+.fighter{padding-left:5px;padding-right:5px}.clock{font-size:20px}
+.timerRow{grid-template-columns:24px minmax(0,1fr) 24px}.timeAdjust{font-size:9px}
+.pointButton{padding:6px}
 }
 </style>
 </head>
-
 <body>
 <div class="app">
+<header class="header">
+  <div class="brand">🥋 TAEKWONDO<small>REFEREE SCORING SYSTEM</small></div>
+  <button class="settingsButton" onclick="openSettings()">⚙ SETTINGS</button>
+</header>
 
-  <header class="header">
-    <div class="brand">
-      🥋 TAEKWONDO
-      <small>REFEREE SCORING SYSTEM</small>
-    </div>
-    <button class="settingsButton" onclick="openSettings()">⚙ SETTINGS</button>
-  </header>
+<main class="board">
+<section class="fighter red">
+  <input id="redName" class="fighterName" value="HONG" aria-label="Red player name">
+  <div class="cornerLabel">RED CORNER</div>
+  <div id="redScore" class="score">0</div>
+  <div class="scoreAdjust">
+    <button class="adjustButton" onclick="changeScore('red',-1)">−1</button>
+    <button class="adjustButton" onclick="changeScore('red',1)">+1</button>
+    <button class="undoButton" onclick="undoLast('red')">↶ UNDO</button>
+  </div>
+  <div class="pointButtons">
+    <button class="pointButton" onclick="addPoints('red','Punch')"><span>PUNCH</span><strong id="redPunchLabel">+1</strong></button>
+    <button class="pointButton" onclick="addPoints('red','Body')"><span>BODY</span><strong id="redBodyLabel">+2</strong></button>
+    <button class="pointButton" onclick="addPoints('red','Head')"><span>HEAD</span><strong id="redHeadLabel">+3</strong></button>
+  </div>
+  <div class="gamjeom">
+    <div class="gamLabel">GAM-JEOM</div><div id="redGam" class="gamCount">0</div>
+    <button class="gamButton gamMinus" onclick="changeGam('red',-1)">−</button>
+    <button class="gamButton gamPlus" onclick="changeGam('red',1)">+</button>
+  </div>
+</section>
 
-  <main class="board">
+<section class="centerColumn">
+  <div class="timerRow">
+    <button class="timeAdjust" onclick="adjustTime(-5)">−5</button>
+    <div id="clock" class="clock">01:00</div>
+    <button class="timeAdjust" onclick="adjustTime(5)">+5</button>
+  </div>
+  <div class="timerCaption">ROUND TIMER</div>
+  <div id="roundInfo" class="roundInfo">ROUND 1 · BEST OF 3</div>
+  <div class="controlGrid">
+    <button class="controlButton startButton" onclick="startTimer()">▶ START</button>
+    <button class="controlButton pauseButton" onclick="pauseTimer()">Ⅱ PAUSE</button>
+    <button class="controlButton endButton" onclick="endRound()">■ END ROUND</button>
+    <button class="controlButton winnerButton" onclick="openDirectWinner()">🏆 DIRECT WINNER</button>
+    <button class="controlButton newButton" onclick="newMatch()">↻ NEW MATCH</button>
+  </div>
+  <div id="status" class="status">Ready — press START</div>
+</section>
 
-    <!-- RED CORNER -->
-    <section class="fighter red">
-      <input id="redName" class="fighterName" value="HONG"
-        aria-label="Red player name">
-
-      <div class="cornerLabel">RED CORNER</div>
-
-      <div id="redScore" class="score">0</div>
-
-      <div class="scoreAdjust">
-        <button class="adjustButton" onclick="changeScore('red',-1)">−1</button>
-        <button class="adjustButton" onclick="changeScore('red',1)">+1</button>
-        <button class="undoButton" onclick="undoLast('red')">↶ UNDO</button>
-      </div>
-
-      <div class="pointButtons">
-        <button class="pointButton" onclick="addPoints('red','Punch')">
-          <span>PUNCH</span><strong id="redPunchLabel">+1</strong>
-        </button>
-        <button class="pointButton" onclick="addPoints('red','Body')">
-          <span>BODY</span><strong id="redBodyLabel">+2</strong>
-        </button>
-        <button class="pointButton" onclick="addPoints('red','Head')">
-          <span>HEAD</span><strong id="redHeadLabel">+3</strong>
-        </button>
-      </div>
-
-      <div class="gamjeom">
-        <div class="gamLabel">GAM-<br>JEOM</div>
-        <div id="redGam" class="gamCount">0</div>
-        <button class="gamButton gamMinus" onclick="changeGam('red',-1)">−</button>
-        <button class="gamButton gamPlus" onclick="changeGam('red',1)">+</button>
-      </div>
-    </section>
-
-    <!-- CENTER TIMER AND CONTROLS -->
-    <section class="centerColumn">
-      <div class="timerRow">
-        <button class="timeAdjust" onclick="adjustTime(-5)">−5</button>
-        <div id="clock" class="clock">01:00</div>
-        <button class="timeAdjust" onclick="adjustTime(5)">+5</button>
-      </div>
-
-      <div class="timerCaption">ROUND TIMER</div>
-
-      <div id="roundInfo" class="roundInfo">ROUND 1 · BEST OF 3</div>
-
-      <div class="controlGrid">
-        <button class="controlButton startButton" onclick="startTimer()">▶ START</button>
-        <button class="controlButton pauseButton" onclick="pauseTimer()">Ⅱ PAUSE</button>
-        <button class="controlButton endButton" onclick="endRound()">■ END ROUND</button>
-        <button class="controlButton winnerButton" onclick="openDirectWinner()">🏆 DIRECT WINNER</button>
-        <button class="controlButton newButton" onclick="newMatch()">↻ NEW MATCH</button>
-      </div>
-
-      <div id="status" class="status">Ready — press START</div>
-    </section>
-
-    <!-- BLUE CORNER -->
-    <section class="fighter blue">
-      <input id="blueName" class="fighterName" value="CHONG"
-        aria-label="Blue player name">
-
-      <div class="cornerLabel">BLUE CORNER</div>
-
-      <div id="blueScore" class="score">0</div>
-
-      <div class="scoreAdjust">
-        <button class="adjustButton" onclick="changeScore('blue',-1)">−1</button>
-        <button class="adjustButton" onclick="changeScore('blue',1)">+1</button>
-        <button class="undoButton" onclick="undoLast('blue')">↶ UNDO</button>
-      </div>
-
-      <div class="pointButtons">
-        <button class="pointButton" onclick="addPoints('blue','Punch')">
-          <span>PUNCH</span><strong id="bluePunchLabel">+1</strong>
-        </button>
-        <button class="pointButton" onclick="addPoints('blue','Body')">
-          <span>BODY</span><strong id="blueBodyLabel">+2</strong>
-        </button>
-        <button class="pointButton" onclick="addPoints('blue','Head')">
-          <span>HEAD</span><strong id="blueHeadLabel">+3</strong>
-        </button>
-      </div>
-
-      <div class="gamjeom">
-        <div class="gamLabel">GAM-<br>JEOM</div>
-        <div id="blueGam" class="gamCount">0</div>
-        <button class="gamButton gamMinus" onclick="changeGam('blue',-1)">−</button>
-        <button class="gamButton gamPlus" onclick="changeGam('blue',1)">+</button>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    TAEKWONDO · REFEREE SCORING SYSTEM
-  </footer>
+<section class="fighter blue">
+  <input id="blueName" class="fighterName" value="CHONG" aria-label="Blue player name">
+  <div class="cornerLabel">BLUE CORNER</div>
+  <div id="blueScore" class="score">0</div>
+  <div class="scoreAdjust">
+    <button class="adjustButton" onclick="changeScore('blue',-1)">−1</button>
+    <button class="adjustButton" onclick="changeScore('blue',1)">+1</button>
+    <button class="undoButton" onclick="undoLast('blue')">↶ UNDO</button>
+  </div>
+  <div class="pointButtons">
+    <button class="pointButton" onclick="addPoints('blue','Punch')"><span>PUNCH</span><strong id="bluePunchLabel">+1</strong></button>
+    <button class="pointButton" onclick="addPoints('blue','Body')"><span>BODY</span><strong id="blueBodyLabel">+2</strong></button>
+    <button class="pointButton" onclick="addPoints('blue','Head')"><span>HEAD</span><strong id="blueHeadLabel">+3</strong></button>
+  </div>
+  <div class="gamjeom">
+    <div class="gamLabel">GAM-JEOM</div><div id="blueGam" class="gamCount">0</div>
+    <button class="gamButton gamMinus" onclick="changeGam('blue',-1)">−</button>
+    <button class="gamButton gamPlus" onclick="changeGam('blue',1)">+</button>
+  </div>
+</section>
+</main>
+<footer class="footer">TAEKWONDO · REFEREE SCORING SYSTEM</footer>
 </div>
 
-<!-- SETTINGS DIALOG -->
+<!-- SETTINGS -->
 <div id="settingsModal" class="modal">
-  <div class="modalCard">
-    <h2>⚙ Match Settings</h2>
-
-    <label class="field">
-      Red player name
-      <input id="setRedName" value="HONG">
-    </label>
-
-    <label class="field">
-      Blue player name
-      <input id="setBlueName" value="CHONG">
-    </label>
-
-    <label class="field">
-      Round duration (seconds)
-      <input id="setDuration" type="number" min="10" max="600" value="60">
-    </label>
-
-    <label class="field">
-      Number of rounds
-      <select id="setRounds">
-        <option value="3">Best of 3</option>
-        <option value="5">Best of 5</option>
-        <option value="1">Single round</option>
-      </select>
-    </label>
-
-    <label class="field">
-      Punch points
-      <input id="setPunch" type="number" min="0" max="20" value="1">
-    </label>
-
-    <label class="field">
-      Body points
-      <input id="setBody" type="number" min="0" max="20" value="2">
-    </label>
-
-    <label class="field">
-      Head points
-      <input id="setHead" type="number" min="0" max="20" value="3">
-    </label>
-
-    <label class="field">
-      Gam-jeom limit
-      <input id="setGamLimit" type="number" min="1" max="20" value="5">
-    </label>
-
-    <label class="field">
-      Point-gap limit (0 = disabled)
-      <input id="setGap" type="number" min="0" max="100" value="0">
-    </label>
-
-    <label class="field">
-      Target score (0 = disabled)
-      <input id="setTarget" type="number" min="0" max="200" value="0">
-    </label>
-
-    <div class="modalActions">
-      <button onclick="closeSettings()">CANCEL</button>
-      <button class="confirm" onclick="saveSettings()">SAVE SETTINGS</button>
-    </div>
-  </div>
+<div class="modalCard">
+<h2>⚙ Match Settings</h2>
+<label class="field">Red player name<input id="setRedName" value="HONG"></label>
+<label class="field">Blue player name<input id="setBlueName" value="CHONG"></label>
+<label class="field">Round duration (seconds)<input id="setDuration" type="number" min="10" max="600" value="60"></label>
+<label class="field">Break time (seconds)<input id="setBreak" type="number" min="0" max="300" value="30"></label>
+<label class="field">Automatically start next round after break?
+<select id="setAutoNext"><option value="yes">Yes — automatic</option><option value="no">No — wait for button</option></select></label>
+<label class="field">Number of rounds<select id="setRounds"><option value="3">Best of 3</option><option value="5">Best of 5</option><option value="1">Single round</option></select></label>
+<label class="field">Punch points<input id="setPunch" type="number" min="0" max="20" value="1"></label>
+<label class="field">Body points<input id="setBody" type="number" min="0" max="20" value="2"></label>
+<label class="field">Head points<input id="setHead" type="number" min="0" max="20" value="3"></label>
+<label class="field">Gam-jeom limit<input id="setGamLimit" type="number" min="1" max="20" value="5"></label>
+<label class="field">Point-gap limit (0 = disabled)<input id="setGap" type="number" min="0" max="100" value="0"></label>
+<label class="field">Target score (0 = disabled)<input id="setTarget" type="number" min="0" max="200" value="0"></label>
+<div class="modalActions"><button onclick="closeSettings()">CANCEL</button><button class="confirm" onclick="saveSettings()">SAVE SETTINGS</button></div>
+</div>
 </div>
 
-<!-- WINNER DIALOG -->
+<!-- ROUND / MATCH RESULT -->
 <div id="winnerModal" class="modal">
-  <div class="modalCard">
-    <h2 id="winnerHeading">ROUND RESULT</h2>
-    <div id="winnerTitle" class="winnerTitle">RED WINS</div>
-    <div id="winnerText" class="winnerText"></div>
-    <div id="breakCountdown" class="breakCountdown hidden"></div>
-    <div class="modalActions">
-      <button onclick="closeWinner()">CLOSE</button>
-      <button id="nextRoundButton" class="confirm" onclick="nextRound()">NEXT ROUND</button>
-    </div>
-  </div>
+<div class="modalCard">
+<h2 id="winnerHeading">ROUND RESULT</h2>
+<div id="winnerTitle" class="winnerTitle">RED WINS THE ROUND</div>
+<div id="winnerText" class="winnerText"></div>
+<div id="breakPanel" class="breakPanel">
+  <div class="breakLabel">BREAK TIME</div>
+  <div id="breakCountdown" class="breakCountdown">00:30</div>
+  <div id="breakHint" class="breakHint">You can start the next round immediately using the button below.</div>
+</div>
+<div class="modalActions">
+  <button id="closeResultButton" onclick="closeWinner()">CLOSE</button>
+  <button id="nextRoundButton" class="confirm" onclick="nextRound()">▶ START NEXT ROUND</button>
+</div>
+</div>
 </div>
 
-<!-- DIRECT WINNER DIALOG -->
+<!-- DIRECT WINNER -->
 <div id="directModal" class="modal">
-  <div class="modalCard">
-    <h2>Declare Match Winner</h2>
-    <p>Select the winner:</p>
-    <div class="modalActions">
-      <button class="confirm" onclick="declareWinner('red')">🔴 RED WINS</button>
-      <button class="confirm" onclick="declareWinner('blue')">🔵 BLUE WINS</button>
-    </div>
-    <div class="modalActions">
-      <button onclick="closeDirectWinner()">CANCEL</button>
-    </div>
-  </div>
+<div class="modalCard">
+<h2>Declare Match Winner</h2>
+<p>Select the winner:</p>
+<div class="modalActions">
+<button class="confirm" onclick="declareWinner('red')">🔴 RED WINS</button>
+<button class="confirm" onclick="declareWinner('blue')">🔵 BLUE WINS</button>
+</div>
+<div class="modalActions"><button onclick="closeDirectWinner()">CANCEL</button></div>
+</div>
 </div>
 
 <script>
 const state = {
-  red: { score: 0, gam: 0, roundWins: 0, history: [] },
-  blue: { score: 0, gam: 0, roundWins: 0, history: [] },
-  duration: 60,
-  time: 60,
-  running: false,
-  round: 1,
-  totalRounds: 3,
-  punch: 1,
-  body: 2,
-  head: 3,
-  gamLimit: 5,
-  gapLimit: 0,
-  target: 0,
-  finished: false,
-  roundEnded: false,
-  interval: null,
-  breakInterval: null
+  red:{score:0,gam:0,roundWins:0,history:[]},
+  blue:{score:0,gam:0,roundWins:0,history:[]},
+  duration:60, time:60, breakDuration:30,
+  autoNext:true, breakRemaining:30, running:false,
+  round:1,totalRounds:3,punch:1,body:2,head:3,
+  gamLimit:5,gapLimit:0,target:0,
+  finished:false,roundEnded:false,
+  interval:null,breakInterval:null
 };
 
-function formatTime(seconds) {
-  seconds = Math.max(0, seconds);
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+function formatTime(seconds){
+  seconds=Math.max(0,Math.floor(seconds));
+  return String(Math.floor(seconds/60)).padStart(2,"0")+":"+
+         String(seconds%60).padStart(2,"0");
 }
-
-function render() {
-  document.getElementById("redScore").textContent = state.red.score;
-  document.getElementById("blueScore").textContent = state.blue.score;
-  document.getElementById("redGam").textContent = state.red.gam;
-  document.getElementById("blueGam").textContent = state.blue.gam;
-  document.getElementById("clock").textContent = formatTime(state.time);
-
-  document.getElementById("roundInfo").textContent =
-    "ROUND " + state.round + " · " +
-    (state.totalRounds === 1 ? "SINGLE ROUND" : "BEST OF " + state.totalRounds);
-
-  document.getElementById("redPunchLabel").textContent = "+" + state.punch;
-  document.getElementById("redBodyLabel").textContent = "+" + state.body;
-  document.getElementById("redHeadLabel").textContent = "+" + state.head;
-
-  document.getElementById("bluePunchLabel").textContent = "+" + state.punch;
-  document.getElementById("blueBodyLabel").textContent = "+" + state.body;
-  document.getElementById("blueHeadLabel").textContent = "+" + state.head;
+function getName(side){
+  return document.getElementById(side+"Name").value.trim()||
+    (side==="red"?"RED":"BLUE");
 }
-
-function setStatus(message) {
-  document.getElementById("status").textContent = message;
-}
-
-function saveHistory(side, action) {
-  state[side].history.push({
-    score: state[side].score,
-    gam: state[side].gam,
-    action: action
+function setStatus(text){document.getElementById("status").textContent=text;}
+function render(){
+  ["red","blue"].forEach(side=>{
+    document.getElementById(side+"Score").textContent=state[side].score;
+    document.getElementById(side+"Gam").textContent=state[side].gam;
   });
-
-  if (state[side].history.length > 100) {
-    state[side].history.shift();
-  }
+  document.getElementById("clock").textContent=formatTime(state.time);
+  document.getElementById("roundInfo").textContent=
+    "ROUND "+state.round+" · "+(state.totalRounds===1?"SINGLE ROUND":"BEST OF "+state.totalRounds);
+  ["red","blue"].forEach(side=>{
+    document.getElementById(side+"PunchLabel").textContent="+"+state.punch;
+    document.getElementById(side+"BodyLabel").textContent="+"+state.body;
+    document.getElementById(side+"HeadLabel").textContent="+"+state.head;
+  });
 }
-
-function canScore() {
-  return !state.finished && !state.roundEnded;
+function canScore(){return !state.finished&&!state.roundEnded;}
+function saveHistory(side,action){
+  state[side].history.push({score:state[side].score,gam:state[side].gam,action});
+  if(state[side].history.length>100)state[side].history.shift();
 }
-
-function addPoints(side, type) {
-  if (!canScore()) return;
-
-  const points = {
-    Punch: state.punch,
-    Body: state.body,
-    Head: state.head
-  }[type];
-
-  saveHistory(side, type + " +" + points);
-  state[side].score += points;
-
-  render();
-  setStatus(getName(side) + " scored " + points + " point(s) — " + type);
-
+function addPoints(side,type){
+  if(!canScore())return;
+  const points={Punch:state.punch,Body:state.body,Head:state.head}[type];
+  saveHistory(side,type+" +"+points);
+  state[side].score+=points;
+  render();setStatus(getName(side)+" scored "+points+" point(s) — "+type);
   checkMatchConditions();
 }
-
-function changeScore(side, amount) {
-  if (!canScore()) return;
-
-  saveHistory(side, "Manual score adjustment");
-  state[side].score = Math.max(0, state[side].score + amount);
-
-  render();
-  setStatus(getName(side) + " score adjusted");
+function changeScore(side,amount){
+  if(!canScore())return;
+  saveHistory(side,"Manual score adjustment");
+  state[side].score=Math.max(0,state[side].score+amount);
+  render();setStatus(getName(side)+" score adjusted");
   checkMatchConditions();
 }
-
-function changeGam(side, amount) {
-  if (!canScore()) return;
-
-  saveHistory(side, "Gam-jeom " + (amount > 0 ? "+1" : "-1"));
-  state[side].gam = Math.max(0, state[side].gam + amount);
-
+function changeGam(side,amount){
+  if(!canScore())return;
+  saveHistory(side,"Gam-jeom "+(amount>0?"+1":"-1"));
+  state[side].gam=Math.max(0,state[side].gam+amount);
   render();
-
-  if (amount > 0) {
-    setStatus("Gam-jeom added to " + getName(side));
-  } else {
-    setStatus("Gam-jeom removed from " + getName(side));
-  }
-
-  if (state[side].gam >= state.gamLimit) {
-    finishMatch(side === "red" ? "blue" : "red",
-      getName(side) + " reached the Gam-jeom limit.");
+  if(amount>0)setStatus("Gam-jeom added to "+getName(side));
+  else setStatus("Gam-jeom removed from "+getName(side));
+  if(state[side].gam>=state.gamLimit){
+    finishMatch(side==="red"?"blue":"red",getName(side)+" reached the Gam-jeom limit.");
     return;
   }
-
   checkMatchConditions();
 }
-
-function undoLast(side) {
-  if (!state[side].history.length) {
-    setStatus("No action available to undo for " + getName(side));
-    return;
-  }
-
-  if (state.finished) {
-    setStatus("Start a new match to change the finished result.");
-    return;
-  }
-
-  const last = state[side].history.pop();
-  state[side].score = last.score;
-  state[side].gam = last.gam;
-  state.roundEnded = false;
-
-  render();
-  setStatus("Last action undone: " + last.action);
+function undoLast(side){
+  if(!state[side].history.length){setStatus("No action available to undo");return;}
+  if(state.finished){setStatus("Match finished. Start a new match to reset.");return;}
+  const last=state[side].history.pop();
+  state[side].score=last.score;state[side].gam=last.gam;
+  render();setStatus("Last action undone: "+last.action);
 }
-
-function getName(side) {
-  const input = document.getElementById(side + "Name");
-  return input.value.trim() || (side === "red" ? "RED" : "BLUE");
-}
-
-function startTimer() {
-  if (state.finished || state.roundEnded || state.running) return;
-
-  if (state.time <= 0) {
-    endRound();
-    return;
-  }
-
-  state.running = true;
-  setStatus("Round " + state.round + " in progress");
-
-  state.interval = setInterval(() => {
-    if (!state.running) return;
-
-    state.time--;
-    render();
-
-    if (state.time <= 0) {
-      pauseTimer();
-      endRound();
-    } else {
-      checkMatchConditions();
-    }
-  }, 1000);
-}
-
-function pauseTimer() {
-  state.running = false;
+function stopMainTimer(){
+  state.running=false;
   clearInterval(state.interval);
-  state.interval = null;
-
-  if (!state.finished && !state.roundEnded) {
-    setStatus("Timer paused");
-  }
+  state.interval=null;
 }
-
-function adjustTime(amount) {
-  if (state.finished || state.roundEnded) return;
-
-  state.time = Math.max(0, Math.min(600, state.time + amount));
-  render();
-  setStatus("Timer adjusted");
-}
-
-function stopTimers() {
-  pauseTimer();
+function stopBreakTimer(){
   clearInterval(state.breakInterval);
-  state.breakInterval = null;
+  state.breakInterval=null;
 }
-
-function checkMatchConditions() {
-  if (!canScore()) return;
-
-  if (state.target > 0) {
-    if (state.red.score >= state.target) {
-      finishMatch("red", "Target score reached.");
-      return;
-    }
-
-    if (state.blue.score >= state.target) {
-      finishMatch("blue", "Target score reached.");
-      return;
-    }
+function startTimer(){
+  if(state.finished||state.roundEnded||state.running)return;
+  if(state.time<=0){endRound();return;}
+  stopBreakTimer();
+  state.running=true;setStatus("Round "+state.round+" in progress");
+  state.interval=setInterval(()=>{
+    if(!state.running)return;
+    state.time--;render();
+    if(state.time<=0){stopMainTimer();endRound();}
+    else checkMatchConditions();
+  },1000);
+}
+function pauseTimer(){
+  stopMainTimer();
+  if(!state.finished&&!state.roundEnded)setStatus("Timer paused");
+}
+function adjustTime(amount){
+  if(state.finished||state.roundEnded)return;
+  state.time=Math.max(0,Math.min(600,state.time+amount));
+  render();setStatus("Timer adjusted");
+}
+function checkMatchConditions(){
+  if(!canScore())return;
+  if(state.target>0){
+    if(state.red.score>=state.target){finishMatch("red","Target score reached.");return;}
+    if(state.blue.score>=state.target){finishMatch("blue","Target score reached.");return;}
   }
-
-  if (state.gapLimit > 0) {
-    const difference = Math.abs(state.red.score - state.blue.score);
-
-    if (difference >= state.gapLimit) {
-      finishMatch(
-        state.red.score > state.blue.score ? "red" : "blue",
-        "Point-gap limit reached."
-      );
-    }
+  if(state.gapLimit>0&&Math.abs(state.red.score-state.blue.score)>=state.gapLimit){
+    finishMatch(state.red.score>state.blue.score?"red":"blue","Point-gap limit reached.");
   }
 }
-
-function endRound() {
-  if (state.finished || state.roundEnded) return;
-
-  stopTimers();
-  state.roundEnded = true;
-
-  let winner = null;
-
-  if (state.red.score > state.blue.score) {
-    winner = "red";
-  } else if (state.blue.score > state.red.score) {
-    winner = "blue";
-  } else if (state.red.gam < state.blue.gam) {
-    winner = "red";
-  } else if (state.blue.gam < state.red.gam) {
-    winner = "blue";
+function endRound(){
+  if(state.finished||state.roundEnded)return;
+  stopMainTimer();stopBreakTimer();
+  state.roundEnded=true;
+  let winner=null;
+  if(state.red.score>state.blue.score)winner="red";
+  else if(state.blue.score>state.red.score)winner="blue";
+  else if(state.red.gam<state.blue.gam)winner="red";
+  else if(state.blue.gam<state.red.gam)winner="blue";
+  if(winner)state[winner].roundWins++;
+  const winsNeeded=Math.floor(state.totalRounds/2)+1;
+  if(winner&&state[winner].roundWins>=winsNeeded){
+    finishMatch(winner,"Required number of round wins reached.");return;
   }
-
-  if (winner) {
-    state[winner].roundWins++;
-  }
-
-  const neededWins = Math.floor(state.totalRounds / 2) + 1;
-
-  if (winner && state[winner].roundWins >= neededWins) {
-    finishMatch(winner, "Required number of round wins reached.");
-    return;
-  }
-
   showRoundResult(winner);
 }
-
-function showRoundResult(winner) {
-  document.getElementById("winnerHeading").textContent =
-    "ROUND " + state.round + " RESULT";
-
-  document.getElementById("winnerTitle").textContent = winner
-    ? getName(winner) + " WINS THE ROUND"
-    : "ROUND DRAW";
-
-  document.getElementById("winnerText").textContent =
-    "Score: " + getName("red") + " " + state.red.score +
-    " — " + state.blue.score + " " + getName("blue") +
-    ". Round wins: " + state.red.roundWins + " — " +
-    state.blue.roundWins + ".";
-
-  const nextButton = document.getElementById("nextRoundButton");
-
-  if (state.round >= state.totalRounds) {
-    nextButton.textContent = "FINISH MATCH";
-  } else {
-    nextButton.textContent = "NEXT ROUND";
+function showRoundResult(winner){
+  document.getElementById("winnerHeading").textContent="ROUND "+state.round+" RESULT";
+  document.getElementById("winnerTitle").textContent=winner?
+    getName(winner)+" WINS THE ROUND":"ROUND DRAW";
+  document.getElementById("winnerText").textContent=
+    "Score: "+getName("red")+" "+state.red.score+" — "+state.blue.score+" "+getName("blue")+
+    ". Round wins: "+state.red.roundWins+" — "+state.blue.roundWins+".";
+  const lastRound=state.round>=state.totalRounds;
+  document.getElementById("breakPanel").classList.toggle("hidden",lastRound);
+  document.getElementById("nextRoundButton").classList.toggle("hidden",lastRound);
+  document.getElementById("closeResultButton").classList.toggle("hidden",!lastRound);
+  if(lastRound){
+    document.getElementById("winnerTitle").textContent="ROUNDS COMPLETED";
+    document.getElementById("winnerText").textContent+=" Select finish match to see the final result.";
+    document.getElementById("closeResultButton").textContent="FINISH MATCH";
+  }else{
+    document.getElementById("closeResultButton").textContent="CLOSE";
+    document.getElementById("breakHint").textContent=state.autoNext?
+      "Next round starts automatically when break ends. Press START NEXT ROUND to skip the break.":
+      "Manual mode: press START NEXT ROUND whenever you are ready.";
+    document.getElementById("breakCountdown").textContent=formatTime(state.breakDuration);
   }
-
-  document.getElementById("breakCountdown").classList.add("hidden");
   document.getElementById("winnerModal").classList.add("show");
+  if(!lastRound)startBreakCountdown();
 }
-
-function nextRound() {
-  closeWinner();
-
-  if (state.round >= state.totalRounds) {
-    if (state.red.roundWins > state.blue.roundWins) {
-      finishMatch("red", "Tournament rounds completed.");
-    } else if (state.blue.roundWins > state.red.roundWins) {
-      finishMatch("blue", "Tournament rounds completed.");
-    } else {
-      finishMatch(null, "Tournament rounds completed in a tie.");
-    }
+function startBreakCountdown(){
+  stopBreakTimer();
+  state.breakRemaining=state.breakDuration;
+  document.getElementById("breakCountdown").textContent=formatTime(state.breakRemaining);
+  if(state.breakRemaining<=0){
+    if(state.autoNext)nextRound();
+    else document.getElementById("breakHint").textContent="Break finished — press START NEXT ROUND.";
     return;
   }
-
-  state.round++;
-  state.time = state.duration;
-  state.red.score = 0;
-  state.blue.score = 0;
-  state.red.gam = 0;
-  state.blue.gam = 0;
-  state.red.history = [];
-  state.blue.history = [];
-  state.running = false;
-  state.roundEnded = false;
-
-  render();
-  setStatus("Round " + state.round + " ready — press START");
+  state.breakInterval=setInterval(()=>{
+    if(!document.getElementById("winnerModal").classList.contains("show")){
+      stopBreakTimer();return;
+    }
+    state.breakRemaining--;
+    document.getElementById("breakCountdown").textContent=formatTime(state.breakRemaining);
+    if(state.breakRemaining<=0){
+      stopBreakTimer();
+      if(state.autoNext){
+        nextRound();
+      }else{
+        document.getElementById("breakHint").textContent="Break finished — press START NEXT ROUND.";
+        setStatus("Break finished — start the next round when ready");
+      }
+    }
+  },1000);
 }
-
-function finishMatch(winner, reason) {
-  stopTimers();
-  state.finished = true;
-  state.roundEnded = true;
-
-  document.getElementById("winnerHeading").textContent = "MATCH RESULT";
-
-  document.getElementById("winnerTitle").textContent = winner
-    ? getName(winner) + " WINS!"
-    : "MATCH DRAW";
-
-  document.getElementById("winnerText").textContent =
-    reason + " Final score: " +
-    getName("red") + " " + state.red.score + " — " +
-    state.blue.score + " " + getName("blue") +
-    ". Round wins: " + state.red.roundWins + " — " +
-    state.blue.roundWins + ".";
-
-  document.getElementById("nextRoundButton").classList.add("hidden");
-  document.getElementById("breakCountdown").classList.add("hidden");
-  document.getElementById("winnerModal").classList.add("show");
-
-  setStatus(winner ? getName(winner) + " wins the match" : "Match ended in a draw");
-}
-
-function closeWinner() {
+function nextRound(){
+  if(state.finished)return;
+  if(state.round>=state.totalRounds){
+    stopBreakTimer();closeWinner();
+    if(state.red.roundWins>state.blue.roundWins)finishMatch("red","Tournament rounds completed.");
+    else if(state.blue.roundWins>state.red.roundWins)finishMatch("blue","Tournament rounds completed.");
+    else finishMatch(null,"Tournament rounds completed in a tie.");
+    return;
+  }
+  stopBreakTimer();stopMainTimer();
   document.getElementById("winnerModal").classList.remove("show");
-  document.getElementById("nextRoundButton").classList.remove("hidden");
+  state.round++;
+  state.time=state.duration;
+  state.red.score=0;state.blue.score=0;
+  state.red.gam=0;state.blue.gam=0;
+  state.red.history=[];state.blue.history=[];
+  state.running=false;state.roundEnded=false;
+  render();setStatus("Round "+state.round+" ready — press START");
 }
-
-function openDirectWinner() {
-  if (state.finished) return;
-  pauseTimer();
+function finishMatch(winner,reason){
+  stopMainTimer();stopBreakTimer();
+  state.finished=true;state.roundEnded=true;
+  document.getElementById("winnerHeading").textContent="MATCH RESULT";
+  document.getElementById("winnerTitle").textContent=winner?getName(winner)+" WINS!":"MATCH DRAW";
+  document.getElementById("winnerText").textContent=reason+
+    " Final score: "+getName("red")+" "+state.red.score+" — "+state.blue.score+" "+getName("blue")+
+    ". Round wins: "+state.red.roundWins+" — "+state.blue.roundWins+".";
+  document.getElementById("breakPanel").classList.add("hidden");
+  document.getElementById("nextRoundButton").classList.add("hidden");
+  document.getElementById("closeResultButton").classList.remove("hidden");
+  document.getElementById("closeResultButton").textContent="CLOSE";
+  document.getElementById("winnerModal").classList.add("show");
+  setStatus(winner?getName(winner)+" wins the match":"Match ended in a draw");
+}
+function closeWinner(){
+  document.getElementById("winnerModal").classList.remove("show");
+  if(!state.finished&&state.roundEnded&&state.round<state.totalRounds){
+    // The break timer continues if the result popup is closed.
+    setStatus("Break in progress — use START NEXT ROUND when ready");
+  }
+}
+function openDirectWinner(){
+  if(state.finished)return;
+  pauseTimer();stopBreakTimer();
   document.getElementById("directModal").classList.add("show");
 }
-
-function closeDirectWinner() {
-  document.getElementById("directModal").classList.remove("show");
+function closeDirectWinner(){document.getElementById("directModal").classList.remove("show");}
+function declareWinner(side){
+  closeDirectWinner();finishMatch(side,"Winner declared by the referee.");
 }
-
-function declareWinner(side) {
-  closeDirectWinner();
-  finishMatch(side, "Winner declared by the referee.");
+function newMatch(){
+  if(!confirm("Start a new match? Current scores and round wins will be cleared."))return;
+  stopMainTimer();stopBreakTimer();
+  ["red","blue"].forEach(side=>{
+    state[side].score=0;state[side].gam=0;
+    state[side].roundWins=0;state[side].history=[];
+  });
+  state.round=1;state.time=state.duration;state.running=false;
+  state.finished=false;state.roundEnded=false;
+  closeWinner();closeDirectWinner();
+  render();setStatus("New match ready — press START");
 }
-
-function newMatch() {
-  if (!confirm("Start a new match? Current scores and round wins will be cleared.")) {
-    return;
-  }
-
-  stopTimers();
-
-  state.red.score = 0;
-  state.red.gam = 0;
-  state.red.roundWins = 0;
-  state.red.history = [];
-
-  state.blue.score = 0;
-  state.blue.gam = 0;
-  state.blue.roundWins = 0;
-  state.blue.history = [];
-
-  state.round = 1;
-  state.time = state.duration;
-  state.running = false;
-  state.finished = false;
-  state.roundEnded = false;
-
-  closeWinner();
-  closeDirectWinner();
-  render();
-
-  setStatus("New match ready — press START");
-}
-
-function openSettings() {
-  document.getElementById("setRedName").value = getName("red");
-  document.getElementById("setBlueName").value = getName("blue");
-  document.getElementById("setDuration").value = state.duration;
-  document.getElementById("setRounds").value = state.totalRounds;
-  document.getElementById("setPunch").value = state.punch;
-  document.getElementById("setBody").value = state.body;
-  document.getElementById("setHead").value = state.head;
-  document.getElementById("setGamLimit").value = state.gamLimit;
-  document.getElementById("setGap").value = state.gapLimit;
-  document.getElementById("setTarget").value = state.target;
-
+function openSettings(){
+  document.getElementById("setRedName").value=getName("red");
+  document.getElementById("setBlueName").value=getName("blue");
+  document.getElementById("setDuration").value=state.duration;
+  document.getElementById("setBreak").value=state.breakDuration;
+  document.getElementById("setAutoNext").value=state.autoNext?"yes":"no";
+  document.getElementById("setRounds").value=state.totalRounds;
+  document.getElementById("setPunch").value=state.punch;
+  document.getElementById("setBody").value=state.body;
+  document.getElementById("setHead").value=state.head;
+  document.getElementById("setGamLimit").value=state.gamLimit;
+  document.getElementById("setGap").value=state.gapLimit;
+  document.getElementById("setTarget").value=state.target;
   document.getElementById("settingsModal").classList.add("show");
 }
-
-function closeSettings() {
-  document.getElementById("settingsModal").classList.remove("show");
-}
-
-function saveSettings() {
-  const duration = Number(document.getElementById("setDuration").value);
-  const rounds = Number(document.getElementById("setRounds").value);
-
-  if (!Number.isFinite(duration) || duration < 10 || duration > 600) {
-    alert("Round duration must be between 10 and 600 seconds.");
-    return;
+function closeSettings(){document.getElementById("settingsModal").classList.remove("show");}
+function saveSettings(){
+  const duration=Number(document.getElementById("setDuration").value);
+  const breakTime=Number(document.getElementById("setBreak").value);
+  if(!Number.isFinite(duration)||duration<10||duration>600){
+    alert("Round duration must be between 10 and 600 seconds.");return;
   }
-
-  state.duration = duration;
-  state.totalRounds = [1, 3, 5].includes(rounds) ? rounds : 3;
-
-  state.punch = Math.max(0, Number(document.getElementById("setPunch").value) || 0);
-  state.body = Math.max(0, Number(document.getElementById("setBody").value) || 0);
-  state.head = Math.max(0, Number(document.getElementById("setHead").value) || 0);
-  state.gamLimit = Math.max(1, Number(document.getElementById("setGamLimit").value) || 5);
-  state.gapLimit = Math.max(0, Number(document.getElementById("setGap").value) || 0);
-  state.target = Math.max(0, Number(document.getElementById("setTarget").value) || 0);
-
-  document.getElementById("redName").value =
-    document.getElementById("setRedName").value.trim() || "HONG";
-
-  document.getElementById("blueName").value =
-    document.getElementById("setBlueName").value.trim() || "CHONG";
-
-  if (!state.running) {
-    state.time = state.duration;
+  if(!Number.isFinite(breakTime)||breakTime<0||breakTime>300){
+    alert("Break time must be between 0 and 300 seconds.");return;
   }
-
-  closeSettings();
-  render();
-  setStatus("Settings saved");
+  state.duration=duration;
+  state.breakDuration=breakTime;
+  state.autoNext=document.getElementById("setAutoNext").value==="yes";
+  state.totalRounds=[1,3,5].includes(Number(document.getElementById("setRounds").value))?
+    Number(document.getElementById("setRounds").value):3;
+  state.punch=Math.max(0,Number(document.getElementById("setPunch").value)||0);
+  state.body=Math.max(0,Number(document.getElementById("setBody").value)||0);
+  state.head=Math.max(0,Number(document.getElementById("setHead").value)||0);
+  state.gamLimit=Math.max(1,Number(document.getElementById("setGamLimit").value)||5);
+  state.gapLimit=Math.max(0,Number(document.getElementById("setGap").value)||0);
+  state.target=Math.max(0,Number(document.getElementById("setTarget").value)||0);
+  document.getElementById("redName").value=document.getElementById("setRedName").value.trim()||"HONG";
+  document.getElementById("blueName").value=document.getElementById("setBlueName").value.trim()||"CHONG";
+  if(!state.running)state.time=state.duration;
+  closeSettings();render();setStatus("Settings saved");
 }
-
 render();
 </script>
 </body>
