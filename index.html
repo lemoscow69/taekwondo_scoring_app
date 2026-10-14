@@ -14,6 +14,7 @@ button:active{transform:scale(.97)}
 button:disabled{opacity:.45;cursor:not-allowed}
 header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#080a0f;gap:10px}
 header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
+.header-actions{display:flex;gap:6px;flex-wrap:wrap}
 .small-btn{font-size:13px;padding:9px}
 .board{display:grid;grid-template-columns:1fr minmax(150px,25%) 1fr;min-height:calc(100vh - 58px);gap:8px;padding:8px}
 .fighter{border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;min-width:0}
@@ -50,7 +51,7 @@ header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 .hidden{display:none!important}
 .status{font-size:12px;color:#cfd8dc;text-align:center;line-height:1.4}
 .overlay{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
-.modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:#202631;border:1px solid #ffffff33;border-radius:16px;padding:22px;text-align:center}
+.modal{width:min(600px,100%);max-height:90vh;overflow:auto;background:#202631;border:1px solid #ffffff33;border-radius:16px;padding:22px;text-align:center}
 .modal h2{font-size:clamp(25px,5vw,40px);margin:8px 0 14px}
 .modal p{line-height:1.5}
 .modal-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
@@ -59,8 +60,19 @@ header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 .settings label{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0;font-size:14px}
 .settings input,.settings select{width:130px;max-width:50%;padding:8px;border-radius:6px;border:1px solid #777;background:#111821;color:white}
 .settings input[type=checkbox]{width:22px}
+.history-list{display:grid;gap:10px;text-align:left}
+.history-card{background:#111821;border:1px solid #ffffff22;border-radius:10px;padding:12px}
+.history-card h3{margin:0 0 8px;font-size:16px}
+.history-card p{margin:5px 0;font-size:13px;color:#d7dce5}
+.history-card .result{font-size:16px;font-weight:bold;color:#ffd54f}
+.history-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.export-btn{background:#1565c0}
+.delete-btn{background:#b71c1c}
+.empty-history{padding:24px 10px;text-align:center;color:#cfd8dc}
 @media(max-width:650px){
-header{padding:8px}
+header{padding:8px;align-items:flex-start}
+header h1{font-size:16px}
+.small-btn{font-size:11px;padding:8px}
 .board{grid-template-columns:1fr 1fr;gap:6px;padding:6px}
 .center{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:1fr 1fr;align-items:center}
 .center .round-label,.center .timer,.center .timer-adjust,.center .status{grid-column:1/-1}
@@ -70,6 +82,7 @@ header{padding:8px}
 .points button{padding:10px 2px;min-height:48px}
 .gam-box{gap:5px}
 .gam-box button{min-width:38px;min-height:42px}
+.modal{padding:15px}
 }
 </style>
 </head>
@@ -77,7 +90,10 @@ header{padding:8px}
 <body>
 <header>
   <h1>🥋 TAEKWONDO SCOREBOARD</h1>
-  <button class="small-btn" id="settingsBtn">⚙ SETTINGS</button>
+  <div class="header-actions">
+    <button class="small-btn" id="historyBtn">📋 HISTORY</button>
+    <button class="small-btn" id="settingsBtn">⚙ SETTINGS</button>
+  </div>
 </header>
 
 <main class="board">
@@ -191,25 +207,30 @@ header{padding:8px}
   </div>
 </div>
 
+<div class="overlay hidden" id="historyOverlay">
+  <div class="modal">
+    <h2>📋 MATCH HISTORY</h2>
+    <p id="historySummary"></p>
+    <div class="history-list" id="historyList"></div>
+    <div class="modal-actions">
+      <button class="export-btn" id="exportHistoryBtn">EXPORT CSV</button>
+      <button class="delete-btn" id="clearHistoryBtn">CLEAR HISTORY</button>
+      <button id="closeHistoryBtn">CLOSE</button>
+    </div>
+  </div>
+</div>
+
 <script>
 "use strict";
 
 const $ = id => document.getElementById(id);
+const HISTORY_KEY = "taekwondoScoreboardMatchHistory_v1";
 
 let cfg = {
-  roundTime:120,
-  breakTime:30,
-  format:3,
-  punch:1,
-  body:2,
-  head:3,
-  gap:12,
-  target:0,
-  gamLimit:10,
-  roundGam:true,
-  autoNext:false,
-  sound:true,
-  scoreSize:"medium"
+  roundTime:120, breakTime:30, format:3,
+  punch:1, body:2, head:3, gap:12, target:0,
+  gamLimit:10, roundGam:true, autoNext:false,
+  sound:true, scoreSize:"medium"
 };
 
 function freshFighters(){
@@ -231,50 +252,35 @@ let matchOver=false;
 let history=[];
 let pendingAction="none";
 let audioContext=null;
+let matchStartedAt=new Date().toISOString();
+let matchSaved=false;
 
 function fighterName(side){
   return $(side+"Name").value.trim() ||
     (side==="red" ? "HONG" : "CHONG");
 }
-
-function opponent(side){
-  return side==="red" ? "blue" : "red";
-}
-
-function requiredWins(){
-  return Math.ceil(cfg.format/2);
-}
-
+function opponent(side){return side==="red"?"blue":"red";}
+function requiredWins(){return Math.ceil(cfg.format/2);}
 function fmt(value){
   const s=Math.max(0,Math.floor(value));
   return String(Math.floor(s/60)).padStart(2,"0")+":"+
     String(s%60).padStart(2,"0");
 }
-
-function setStatus(message){
-  $("status").textContent=message;
-}
+function setStatus(message){$("status").textContent=message;}
 
 function snapshot(){
   history.push(JSON.stringify({
-    fighters: fighters,
-    round: round,
-    seconds: seconds,
-    breakSeconds: breakSeconds,
-    inBreak: inBreak,
-    matchOver: matchOver
+    fighters,round,seconds,breakSeconds,inBreak,matchOver
   }));
-  if(history.length>100) history.shift();
+  if(history.length>100)history.shift();
 }
-
 function stopClocks(){
-  if(timerId!==null) clearInterval(timerId);
-  if(breakId!==null) clearInterval(breakId);
+  if(timerId!==null)clearInterval(timerId);
+  if(breakId!==null)clearInterval(breakId);
   timerId=null;
   breakId=null;
   running=false;
 }
-
 function render(){
   for(const side of ["red","blue"]){
     $(side+"Score").textContent=fighters[side].score;
@@ -292,20 +298,15 @@ function render(){
   $("breakBox").classList.toggle("hidden",!inBreak);
 
   document.querySelectorAll(".score").forEach(el=>{
-    if(cfg.scoreSize==="small"){
-      el.style.fontSize="clamp(60px,12vw,120px)";
-    }else if(cfg.scoreSize==="large"){
-      el.style.fontSize="clamp(90px,20vw,200px)";
-    }else{
-      el.style.fontSize="clamp(80px,17vw,180px)";
-    }
+    if(cfg.scoreSize==="small")el.style.fontSize="clamp(60px,12vw,120px)";
+    else if(cfg.scoreSize==="large")el.style.fontSize="clamp(90px,20vw,200px)";
+    else el.style.fontSize="clamp(80px,17vw,180px)";
   });
 
   const locked=matchOver||inBreak;
   document.querySelectorAll(".points button,.gam-box button").forEach(btn=>{
     btn.disabled=locked;
   });
-
   $("startBtn").disabled=matchOver||inBreak||running;
   $("pauseBtn").disabled=!running;
   $("endBtn").disabled=matchOver||inBreak;
@@ -318,10 +319,8 @@ function flash(side){
   void el.offsetWidth;
   el.classList.add("flash");
 }
-
 function sound(type){
   if(!cfg.sound)return;
-
   try{
     const AC=window.AudioContext||window.webkitAudioContext;
     if(!AC)return;
@@ -329,13 +328,9 @@ function sound(type){
     if(audioContext.state==="suspended")audioContext.resume();
 
     const notes={
-      score:[700,0.12],
-      gam:[360,0.18],
-      round:[520,0.25],
-      horn:[850,0.5],
-      undo:[440,0.1]
+      score:[700,0.12],gam:[360,0.18],
+      round:[520,0.25],horn:[850,0.5],undo:[440,0.1]
     };
-
     const now=audioContext.currentTime;
     const [frequency,duration]=notes[type]||notes.score;
     const oscillator=audioContext.createOscillator();
@@ -346,7 +341,6 @@ function sound(type){
     gain.gain.setValueAtTime(0.0001,now);
     gain.gain.exponentialRampToValueAtTime(0.18,now+0.015);
     gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
-
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
     oscillator.start(now);
@@ -358,7 +352,6 @@ function sound(type){
 
 function addPoints(side,type){
   if(matchOver||inBreak)return;
-
   snapshot();
   fighters[side].score+=cfg[type];
   flash(side);
@@ -373,9 +366,7 @@ function changeGam(side,delta){
   const f=fighters[side];
   const opp=fighters[opponent(side)];
 
-  if(delta<0){
-    if(f.gam<=0||f.totalGam<=0||opp.score<=0)return;
-  }
+  if(delta<0&&(f.gam<=0||f.totalGam<=0||opp.score<=0))return;
 
   snapshot();
 
@@ -396,77 +387,42 @@ function changeGam(side,delta){
   render();
 
   if(delta>0){
-    /*
-      IMPORTANT:
-      5 Gam-jeom in ONE round awards that ROUND
-      to the opponent in both Best of 3 and Best of 5.
-    */
-    if(
-      cfg.roundGam &&
-      (cfg.format===3 || cfg.format===5) &&
-      f.gam>=5
-    ){
-      awardRound(
-        opponent(side),
-        fighterName(side)+" received 5 Gam-jeom in this round."
-      );
+    if(cfg.roundGam&&(cfg.format===3||cfg.format===5)&&f.gam>=5){
+      awardRound(opponent(side),
+        fighterName(side)+" received 5 Gam-jeom in this round.");
       return;
     }
 
-    /*
-      The cumulative match Gam-jeom limit is separate
-      from the per-round 5 Gam-jeom rule.
-    */
     if(f.totalGam>=cfg.gamLimit){
-      declareMatchWinner(
-        opponent(side),
-        fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom."
-      );
+      declareMatchWinner(opponent(side),
+        fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom.");
       return;
     }
   }
-
   checkScoreRoundEnd();
 }
 
 function checkScoreRoundEnd(){
   if(matchOver||inBreak)return;
+  const r=fighters.red.score,b=fighters.blue.score;
 
-  const redScore=fighters.red.score;
-  const blueScore=fighters.blue.score;
-
-  if(cfg.target>0&&(redScore>=cfg.target||blueScore>=cfg.target)){
-    if(redScore!==blueScore){
-      awardRound(
-        redScore>blueScore?"red":"blue",
-        "Target score reached."
-      );
-    }
+  if(cfg.target>0&&(r>=cfg.target||b>=cfg.target)){
+    if(r!==b)awardRound(r>b?"red":"blue","Target score reached.");
     return;
   }
-
-  if(cfg.gap>0&&Math.abs(redScore-blueScore)>=cfg.gap){
-    awardRound(
-      redScore>blueScore?"red":"blue",
-      "Point gap reached."
-    );
+  if(cfg.gap>0&&Math.abs(r-b)>=cfg.gap){
+    awardRound(r>b?"red":"blue","Point gap reached.");
   }
 }
 
 function startTimer(){
   if(matchOver||inBreak||running)return;
-
-  if(seconds<=0){
-    endRound();
-    return;
-  }
+  if(seconds<=0){endRound();return;}
 
   try{
     const AC=window.AudioContext||window.webkitAudioContext;
     if(AC&&!audioContext)audioContext=new AC();
-    if(audioContext&&audioContext.state==="suspended"){
-      audioContext.resume();
-    }
+    if(audioContext&&audioContext.state==="suspended")audioContext.resume();
   }catch(error){}
 
   running=true;
@@ -475,18 +431,15 @@ function startTimer(){
 
   timerId=setInterval(()=>{
     seconds--;
-
     if(seconds<=0){
       seconds=0;
       render();
       endRound();
       return;
     }
-
     render();
   },1000);
 }
-
 function pauseTimer(){
   if(!running)return;
   clearInterval(timerId);
@@ -495,85 +448,104 @@ function pauseTimer(){
   setStatus("Paused");
   render();
 }
-
 function adjustTimer(delta){
   if(matchOver||inBreak)return;
   seconds=Math.max(0,seconds+delta);
   render();
 }
-
 function endRound(){
   if(matchOver||inBreak)return;
-
   stopClocks();
 
-  const redScore=fighters.red.score;
-  const blueScore=fighters.blue.score;
-
-  if(redScore===blueScore){
-    showWinner(
-      "ROUND DRAW",
-      "Round "+round+" ended in a draw.",
-      "next"
-    );
+  const r=fighters.red.score,b=fighters.blue.score;
+  if(r===b){
+    showWinner("ROUND DRAW","Round "+round+" ended in a draw.","next");
   }else{
-    awardRound(
-      redScore>blueScore?"red":"blue",
-      "Round ended."
-    );
+    awardRound(r>b?"red":"blue","Round ended.");
   }
 }
-
 function awardRound(side,reason){
   if(matchOver||inBreak)return;
-
   stopClocks();
   snapshot();
 
-  if(side){
-    fighters[side].wins++;
-  }
-
+  if(side)fighters[side].wins++;
   render();
   sound("round");
 
   if(side&&fighters[side].wins>=requiredWins()){
-    declareMatchWinner(
-      side,
-      fighterName(side)+" has won the required number of rounds."
-    );
+    declareMatchWinner(side,
+      fighterName(side)+" has won the required number of rounds.");
     return;
   }
-
   if(!side){
     showWinner("ROUND DRAW",reason,"next");
     return;
   }
+  showWinner("ROUND WINNER",
+    fighterName(side)+" wins Round "+round+".<br>"+reason,"next");
+}
 
-  showWinner(
-    "ROUND WINNER",
-    fighterName(side)+" wins Round "+round+".<br>"+reason,
-    "next"
-  );
+/* MATCH HISTORY: save a completed match once only. */
+function readMatchHistory(){
+  try{
+    const saved=localStorage.getItem(HISTORY_KEY);
+    const data=saved?JSON.parse(saved):[];
+    return Array.isArray(data)?data:[];
+  }catch(error){
+    console.error("Could not read match history",error);
+    return [];
+  }
+}
+
+function saveMatchResult(winnerSide,reason){
+  if(matchSaved)return;
+  matchSaved=true;
+
+  const record={
+    id:"match_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),
+    startedAt:matchStartedAt,
+    finishedAt:new Date().toISOString(),
+    redName:fighterName("red"),
+    blueName:fighterName("blue"),
+    redScore:fighters.red.score,
+    blueScore:fighters.blue.score,
+    redRounds:fighters.red.wins,
+    blueRounds:fighters.blue.wins,
+    redTotalGam:fighters.red.totalGam,
+    blueTotalGam:fighters.blue.totalGam,
+    format:"Best of "+cfg.format,
+    winnerSide:winnerSide,
+    winnerName:winnerSide==="red"?fighterName("red"):fighterName("blue"),
+    reason:reason,
+    roundsPlayed:round
+  };
+
+  try{
+    const records=readMatchHistory();
+    records.unshift(record);
+    localStorage.setItem(HISTORY_KEY,JSON.stringify(records.slice(0,500)));
+    setStatus("Match result saved to history.");
+  }catch(error){
+    console.error("Could not save match history",error);
+    setStatus("Match finished, but browser could not save history.");
+    alert("Match finished, but the browser could not save the history. Check browser storage settings.");
+  }
 }
 
 function declareMatchWinner(side,reason){
   stopClocks();
   matchOver=true;
   inBreak=false;
+  saveMatchResult(side,reason);
   render();
   sound("horn");
-
-  showWinner(
-    "MATCH WINNER",
-    "🏆 "+fighterName(side)+" WINS THE MATCH!<br>"+reason,
-    "close"
-  );
+  showWinner("MATCH WINNER",
+    "🏆 "+fighterName(side)+" WINS THE MATCH!<br>"+reason,"close");
 }
 
 function showWinner(title,message,action){
   pendingAction=action;
-
   $("winnerTitle").textContent=title;
   $("winnerText").innerHTML=message;
   $("winnerNextBtn").classList.toggle("hidden",action!=="next");
@@ -582,14 +554,12 @@ function showWinner(title,message,action){
   $("winnerCloseBtn").classList.remove("hidden");
   $("winnerOverlay").classList.remove("hidden");
 }
-
 function closeWinner(){
   $("winnerOverlay").classList.add("hidden");
   $("winnerNextBtn").classList.remove("hidden");
   $("directRedBtn").classList.add("hidden");
   $("directBlueBtn").classList.add("hidden");
 }
-
 function winnerContinue(){
   if(pendingAction!=="next"||matchOver)return;
   closeWinner();
@@ -598,7 +568,6 @@ function winnerContinue(){
 
 function beginBreak(){
   if(matchOver)return;
-
   stopClocks();
   inBreak=true;
   breakSeconds=cfg.breakTime;
@@ -606,16 +575,12 @@ function beginBreak(){
   render();
 
   if(cfg.breakTime<=0){
-    if(cfg.autoNext){
-      startNextRound();
-    }else{
-      setStatus("Break finished — press START NEXT ROUND.");
-    }
+    if(cfg.autoNext)startNextRound();
+    else setStatus("Break finished — press START NEXT ROUND.");
     return;
   }
 
   setStatus("Break in progress");
-
   breakId=setInterval(()=>{
     if(!inBreak||matchOver){
       clearInterval(breakId);
@@ -631,28 +596,18 @@ function beginBreak(){
       breakId=null;
       breakSeconds=0;
       render();
-
-      if(cfg.autoNext){
-        startNextRound();
-      }else{
-        setStatus("Break finished — press START NEXT ROUND.");
-      }
+      if(cfg.autoNext)startNextRound();
+      else setStatus("Break finished — press START NEXT ROUND.");
     }
   },1000);
 }
 
 function startNextRound(){
   if(matchOver||!inBreak)return;
-
-  if(breakId!==null){
-    clearInterval(breakId);
-    breakId=null;
-  }
-  if(timerId!==null){
-    clearInterval(timerId);
-    timerId=null;
-  }
-
+  if(breakId!==null)clearInterval(breakId);
+  if(timerId!==null)clearInterval(timerId);
+  breakId=null;
+  timerId=null;
   running=false;
   inBreak=false;
   round++;
@@ -660,25 +615,19 @@ function startNextRound(){
   for(const side of ["red","blue"]){
     fighters[side].score=0;
     fighters[side].gam=0;
-    // Match total Gam-jeom and rounds won carry over.
   }
 
   seconds=cfg.roundTime;
   breakSeconds=cfg.breakTime;
   render();
   setStatus("Round "+round+" ready — press START.");
-
-  if(cfg.autoNext){
-    startTimer();
-  }
+  if(cfg.autoNext)startTimer();
 }
 
 function openDirectWinner(){
   if(matchOver)return;
-
   stopClocks();
   pendingAction="direct";
-
   $("winnerTitle").textContent="DECLARE MATCH WINNER";
   $("winnerText").textContent="Choose the winner of this match.";
   $("winnerNextBtn").classList.add("hidden");
@@ -690,7 +639,6 @@ function openDirectWinner(){
 
 function newMatch(){
   if(!confirm("Start a new match? Current scores will be cleared."))return;
-
   stopClocks();
 
   fighters=freshFighters();
@@ -701,11 +649,146 @@ function newMatch(){
   matchOver=false;
   history=[];
   pendingAction="none";
+  matchStartedAt=new Date().toISOString();
+  matchSaved=false;
 
   closeWinner();
   $("settingsOverlay").classList.add("hidden");
   render();
   setStatus("New match ready.");
+}
+
+/* HISTORY WINDOW */
+function formatDate(iso){
+  try{
+    return new Date(iso).toLocaleString();
+  }catch(error){
+    return iso||"Unknown date";
+  }
+}
+
+function safeText(value){
+  return String(value??"").replace(/[&<>"']/g,char=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[char]));
+}
+
+function renderHistory(){
+  const records=readMatchHistory();
+  $("historySummary").textContent=
+    records.length+" saved match"+(records.length===1?"":"es");
+
+  const list=$("historyList");
+  list.replaceChildren();
+
+  if(records.length===0){
+    const empty=document.createElement("div");
+    empty.className="empty-history";
+    empty.textContent="No saved matches yet. Completed matches will appear here.";
+    list.appendChild(empty);
+    return;
+  }
+
+  records.forEach((record,index)=>{
+    const card=document.createElement("article");
+    card.className="history-card";
+
+    const title=document.createElement("h3");
+    title.textContent="#"+(index+1)+" — "+formatDate(record.finishedAt);
+
+    const result=document.createElement("p");
+    result.className="result";
+    result.textContent=(record.winnerName||"Unknown")+" won";
+
+    const names=document.createElement("p");
+    names.textContent=(record.redName||"HONG")+" (Red) "+record.redScore+
+      " : "+record.blueScore+" (Blue) "+(record.blueName||"CHONG");
+
+    const rounds=document.createElement("p");
+    rounds.textContent="Round wins: "+record.redRounds+" - "+record.blueRounds+
+      " | "+record.format;
+
+    const gam=document.createElement("p");
+    gam.textContent="Total Gam-jeom: "+record.redTotalGam+
+      " - "+record.blueTotalGam;
+
+    const reason=document.createElement("p");
+    reason.textContent="Result: "+(record.reason||"Match completed");
+
+    card.append(title,result,names,rounds,gam,reason);
+    list.appendChild(card);
+  });
+}
+
+function openHistory(){
+  renderHistory();
+  $("historyOverlay").classList.remove("hidden");
+}
+function closeHistory(){
+  $("historyOverlay").classList.add("hidden");
+}
+
+function exportHistoryCSV(){
+  const records=readMatchHistory();
+  if(!records.length){
+    alert("There are no match records to export.");
+    return;
+  }
+
+  const columns=[
+    ["Date","finishedAt"],
+    ["Red Name","redName"],
+    ["Blue Name","blueName"],
+    ["Red Score","redScore"],
+    ["Blue Score","blueScore"],
+    ["Red Round Wins","redRounds"],
+    ["Blue Round Wins","blueRounds"],
+    ["Red Total Gam-jeom","redTotalGam"],
+    ["Blue Total Gam-jeom","blueTotalGam"],
+    ["Format","format"],
+    ["Winner","winnerName"],
+    ["Reason","reason"]
+  ];
+
+  const escapeCSV=value=>'"'+String(value??"").replace(/"/g,'""')+'"';
+  const rows=[
+    columns.map(col=>escapeCSV(col[0])).join(","),
+    ...records.map(record=>
+      columns.map(col=>escapeCSV(
+        col[1]==="finishedAt"?formatDate(record[col[1]]):record[col[1]]
+      )).join(",")
+    )
+  ];
+
+  const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{
+    type:"text/csv;charset=utf-8;"
+  });
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="taekwondo-match-history.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function clearMatchHistory(){
+  const records=readMatchHistory();
+  if(!records.length){
+    alert("History is already empty.");
+    return;
+  }
+
+  if(!confirm("Delete all saved match history? This cannot be undone."))return;
+
+  try{
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+    setStatus("Match history cleared.");
+  }catch(error){
+    alert("Unable to clear history in this browser.");
+  }
 }
 
 function openSettings(){
@@ -724,11 +807,9 @@ function openSettings(){
   $("setScoreSize").value=cfg.scoreSize;
   $("settingsOverlay").classList.remove("hidden");
 }
-
 function closeSettings(){
   $("settingsOverlay").classList.add("hidden");
 }
-
 function saveSettings(){
   const num=(id,min,def)=>{
     const value=Number($(id).value);
@@ -749,10 +830,7 @@ function saveSettings(){
   cfg.sound=$("setSound").checked;
   cfg.scoreSize=$("setScoreSize").value;
 
-  if(!running&&!inBreak){
-    seconds=cfg.roundTime;
-  }
-
+  if(!running&&!inBreak)seconds=cfg.roundTime;
   closeSettings();
   render();
   setStatus("Settings saved.");
@@ -765,7 +843,6 @@ function undoLast(){
   }
 
   stopClocks();
-
   const old=JSON.parse(history.pop());
   fighters=old.fighters;
   round=old.round;
@@ -780,13 +857,12 @@ function undoLast(){
   setStatus("Last action undone.");
 }
 
-/* Event handlers are registered once and stay stable. */
+/* Register each button handler once. */
 document.querySelectorAll("[data-side][data-type]").forEach(btn=>{
   btn.addEventListener("click",()=>{
     addPoints(btn.dataset.side,btn.dataset.type);
   });
 });
-
 document.querySelectorAll("[data-gam-side]").forEach(btn=>{
   btn.addEventListener("click",()=>{
     changeGam(btn.dataset.gamSide,Number(btn.dataset.delta));
@@ -794,6 +870,7 @@ document.querySelectorAll("[data-gam-side]").forEach(btn=>{
 });
 
 $("settingsBtn").addEventListener("click",openSettings);
+$("historyBtn").addEventListener("click",openHistory);
 $("startBtn").addEventListener("click",startTimer);
 $("pauseBtn").addEventListener("click",pauseTimer);
 $("endBtn").addEventListener("click",endRound);
@@ -810,7 +887,6 @@ $("directRedBtn").addEventListener("click",()=>{
   closeWinner();
   declareMatchWinner("red","Direct winner declared by referee.");
 });
-
 $("directBlueBtn").addEventListener("click",()=>{
   closeWinner();
   declareMatchWinner("blue","Direct winner declared by referee.");
@@ -818,6 +894,9 @@ $("directBlueBtn").addEventListener("click",()=>{
 
 $("saveSettingsBtn").addEventListener("click",saveSettings);
 $("cancelSettingsBtn").addEventListener("click",closeSettings);
+$("closeHistoryBtn").addEventListener("click",closeHistory);
+$("exportHistoryBtn").addEventListener("click",exportHistoryCSV);
+$("clearHistoryBtn").addEventListener("click",clearMatchHistory);
 
 render();
 </script>
