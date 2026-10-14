@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taekwondo Scoreboard</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#10131a;color:#fff;font-family:Arial,Helvetica,sans-serif}
@@ -38,8 +39,12 @@ header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 .timer-adjust button{font-size:14px}
 .center-actions{width:100%;display:grid;grid-template-columns:1fr;gap:7px}
 .center-actions button{min-height:43px}
-.start{background:#2e7d32}.pause{background:#ef6c00}.end{background:#b71c1c}
-.direct{background:#6a1b9a}.undo{background:#455a64}.new{background:#37474f}
+.start{background:#2e7d32}
+.pause{background:#ef6c00}
+.end{background:#b71c1c}
+.direct{background:#6a1b9a}
+.undo{background:#455a64}
+.new{background:#37474f}
 .break-box{width:100%;text-align:center;border:1px solid #ffffff22;border-radius:10px;padding:9px}
 .break-clock{font-size:28px;font-weight:bold;color:#ffd54f}
 .hidden{display:none!important}
@@ -68,6 +73,7 @@ header{padding:8px}
 }
 </style>
 </head>
+
 <body>
 <header>
   <h1>🥋 TAEKWONDO SCOREBOARD</h1>
@@ -168,7 +174,7 @@ header{padding:8px}
     <label>Point gap (0 = off)<input id="setGap" type="number" min="0" value="12"></label>
     <label>Target score (0 = off)<input id="setTarget" type="number" min="0" value="0"></label>
     <label>Gam-jeom limit for match loss<input id="setGamLimit" type="number" min="1" value="10"></label>
-    <label>Round win by 5 Gam-jeom (Best of 3)<input id="setRoundGam" type="checkbox" checked></label>
+    <label>Round win by 5 Gam-jeom (Best of 3/5)<input id="setRoundGam" type="checkbox" checked></label>
     <label>Auto-start next round after break<input id="setAutoNext" type="checkbox"></label>
     <label>Sound effects<input id="setSound" type="checkbox" checked></label>
     <label>Score size
@@ -186,13 +192,24 @@ header{padding:8px}
 </div>
 
 <script>
+"use strict";
+
 const $ = id => document.getElementById(id);
 
-let cfg={
-  roundTime:120,breakTime:30,format:3,
-  punch:1,body:2,head:3,gap:12,target:0,
-  gamLimit:10,roundGam:true,autoNext:false,
-  sound:true,scoreSize:"medium"
+let cfg = {
+  roundTime:120,
+  breakTime:30,
+  format:3,
+  punch:1,
+  body:2,
+  head:3,
+  gap:12,
+  target:0,
+  gamLimit:10,
+  roundGam:true,
+  autoNext:false,
+  sound:true,
+  scoreSize:"medium"
 };
 
 function freshFighters(){
@@ -201,141 +218,209 @@ function freshFighters(){
     blue:{score:0,gam:0,totalGam:0,wins:0}
   };
 }
+
 let fighters=freshFighters();
-let round=1,seconds=cfg.roundTime,breakSeconds=cfg.breakTime;
-let timerId=null,breakId=null,running=false,inBreak=false,matchOver=false;
-let history=[],pendingAction="none",directMode=false,audioContext=null;
+let round=1;
+let seconds=cfg.roundTime;
+let breakSeconds=cfg.breakTime;
+let timerId=null;
+let breakId=null;
+let running=false;
+let inBreak=false;
+let matchOver=false;
+let history=[];
+let pendingAction="none";
+let audioContext=null;
 
 function fighterName(side){
-  return $(side+"Name").value.trim()||(side==="red"?"HONG":"CHONG");
+  return $(side+"Name").value.trim() ||
+    (side==="red" ? "HONG" : "CHONG");
 }
-function opponent(side){return side==="red"?"blue":"red";}
-function requiredWins(){return Math.ceil(cfg.format/2);}
-function fmt(s){
-  s=Math.max(0,Math.floor(s));
+
+function opponent(side){
+  return side==="red" ? "blue" : "red";
+}
+
+function requiredWins(){
+  return Math.ceil(cfg.format/2);
+}
+
+function fmt(value){
+  const s=Math.max(0,Math.floor(value));
   return String(Math.floor(s/60)).padStart(2,"0")+":"+
-         String(s%60).padStart(2,"0");
+    String(s%60).padStart(2,"0");
 }
-function setStatus(t){$("status").textContent=t;}
+
+function setStatus(message){
+  $("status").textContent=message;
+}
 
 function snapshot(){
   history.push(JSON.stringify({
-    fighters,round,seconds,breakSeconds,inBreak,matchOver
+    fighters: fighters,
+    round: round,
+    seconds: seconds,
+    breakSeconds: breakSeconds,
+    inBreak: inBreak,
+    matchOver: matchOver
   }));
-  if(history.length>100)history.shift();
+  if(history.length>100) history.shift();
 }
+
 function stopClocks(){
-  clearInterval(timerId);clearInterval(breakId);
-  timerId=null;breakId=null;running=false;
+  if(timerId!==null) clearInterval(timerId);
+  if(breakId!==null) clearInterval(breakId);
+  timerId=null;
+  breakId=null;
+  running=false;
 }
+
 function render(){
-  for(const s of ["red","blue"]){
-    $(s+"Score").textContent=fighters[s].score;
-    $(s+"Gam").textContent=fighters[s].gam;
-    $(s+"TotalGam").textContent=fighters[s].totalGam;
-    $(s+"Wins").textContent=fighters[s].wins;
+  for(const side of ["red","blue"]){
+    $(side+"Score").textContent=fighters[side].score;
+    $(side+"Gam").textContent=fighters[side].gam;
+    $(side+"TotalGam").textContent=fighters[side].totalGam;
+    $(side+"Wins").textContent=fighters[side].wins;
+    $(side+"PunchLabel").textContent=cfg.punch;
+    $(side+"BodyLabel").textContent=cfg.body;
+    $(side+"HeadLabel").textContent=cfg.head;
   }
+
   $("roundLabel").textContent="ROUND "+round;
   $("timer").textContent=fmt(seconds);
   $("breakClock").textContent=fmt(breakSeconds);
-  for(const s of ["red","blue"]){
-    $(s+"PunchLabel").textContent=cfg.punch;
-    $(s+"BodyLabel").textContent=cfg.body;
-    $(s+"HeadLabel").textContent=cfg.head;
-  }
   $("breakBox").classList.toggle("hidden",!inBreak);
+
   document.querySelectorAll(".score").forEach(el=>{
-    el.style.fontSize=cfg.scoreSize==="small"?"clamp(60px,12vw,120px)":
-      cfg.scoreSize==="large"?"clamp(90px,20vw,200px)":"clamp(80px,17vw,180px)";
+    if(cfg.scoreSize==="small"){
+      el.style.fontSize="clamp(60px,12vw,120px)";
+    }else if(cfg.scoreSize==="large"){
+      el.style.fontSize="clamp(90px,20vw,200px)";
+    }else{
+      el.style.fontSize="clamp(80px,17vw,180px)";
+    }
   });
+
   const locked=matchOver||inBreak;
-  document.querySelectorAll(".points button,.gam-box button").forEach(b=>b.disabled=locked);
+  document.querySelectorAll(".points button,.gam-box button").forEach(btn=>{
+    btn.disabled=locked;
+  });
+
   $("startBtn").disabled=matchOver||inBreak||running;
   $("pauseBtn").disabled=!running;
   $("endBtn").disabled=matchOver||inBreak;
   $("startNextBtn").disabled=matchOver||!inBreak;
 }
+
 function flash(side){
   const el=$(side+"Score");
-  el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");
+  el.classList.remove("flash");
+  void el.offsetWidth;
+  el.classList.add("flash");
 }
+
 function sound(type){
   if(!cfg.sound)return;
+
   try{
     const AC=window.AudioContext||window.webkitAudioContext;
     if(!AC)return;
     if(!audioContext)audioContext=new AC();
     if(audioContext.state==="suspended")audioContext.resume();
+
+    const notes={
+      score:[700,0.12],
+      gam:[360,0.18],
+      round:[520,0.25],
+      horn:[850,0.5],
+      undo:[440,0.1]
+    };
+
     const now=audioContext.currentTime;
-    const notes={score:[700,.12],gam:[360,.18],round:[520,.25],horn:[850,.5],undo:[440,.1]};
-    const [freq,duration]=notes[type]||notes.score;
-    const osc=audioContext.createOscillator(),gain=audioContext.createGain();
-    osc.type=type==="horn"?"sawtooth":"sine";
-    osc.frequency.setValueAtTime(freq,now);
-    gain.gain.setValueAtTime(.0001,now);
-    gain.gain.exponentialRampToValueAtTime(.18,now+.015);
-    gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
-    osc.connect(gain);gain.connect(audioContext.destination);
-    osc.start(now);osc.stop(now+duration+.02);
-  }catch(e){}
+    const [frequency,duration]=notes[type]||notes.score;
+    const oscillator=audioContext.createOscillator();
+    const gain=audioContext.createGain();
+
+    oscillator.type=type==="horn"?"sawtooth":"sine";
+    oscillator.frequency.setValueAtTime(frequency,now);
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.gain.exponentialRampToValueAtTime(0.18,now+0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(now);
+    oscillator.stop(now+duration+0.02);
+  }catch(error){
+    console.warn("Sound unavailable",error);
+  }
 }
+
 function addPoints(side,type){
   if(matchOver||inBreak)return;
+
   snapshot();
   fighters[side].score+=cfg[type];
-  flash(side);sound("score");render();
+  flash(side);
+  sound("score");
+  render();
   checkScoreRoundEnd();
 }
-function changeGam(side, delta) {
-  if (matchOver || inBreak) return;
 
-  const f = fighters[side];
-  const opp = fighters[opponent(side)];
+function changeGam(side,delta){
+  if(matchOver||inBreak)return;
 
-  if (
-    delta < 0 &&
-    (f.gam <= 0  f.totalGam <= 0  opp.score <= 0)
-  ) return;
+  const f=fighters[side];
+  const opp=fighters[opponent(side)];
+
+  if(delta<0){
+    if(f.gam<=0||f.totalGam<=0||opp.score<=0)return;
+  }
 
   snapshot();
 
-  if (delta > 0) {
+  if(delta>0){
     f.gam++;
     f.totalGam++;
-    opp.score += 1;
+    opp.score+=1;
     sound("gam");
-    setStatus(fighterName(side) + " received Gam-jeom.");
-  } else {
+    setStatus(fighterName(side)+" received Gam-jeom. Opponent gets 1 point.");
+  }else{
     f.gam--;
     f.totalGam--;
-    opp.score = Math.max(0, opp.score - 1);
+    opp.score=Math.max(0,opp.score-1);
     sound("undo");
     setStatus("Gam-jeom corrected.");
   }
 
   render();
 
-  if (delta > 0) {
-    // FIRST: 5 Gam-jeom in the current round
-    // awards the ROUND to the opponent, not the match.
-    if (
+  if(delta>0){
+    /*
+      IMPORTANT:
+      5 Gam-jeom in ONE round awards that ROUND
+      to the opponent in both Best of 3 and Best of 5.
+    */
+    if(
       cfg.roundGam &&
-      cfg.format === 3 &&
-      f.gam >= 5
-    ) {
+      (cfg.format===3 || cfg.format===5) &&
+      f.gam>=5
+    ){
       awardRound(
         opponent(side),
-        fighterName(side) + " received 5 Gam-jeom in this round."
+        fighterName(side)+" received 5 Gam-jeom in this round."
       );
       return;
     }
 
-    // SECOND: cumulative match Gam-jeom limit
-    if (f.totalGam >= cfg.gamLimit) {
+    /*
+      The cumulative match Gam-jeom limit is separate
+      from the per-round 5 Gam-jeom rule.
+    */
+    if(f.totalGam>=cfg.gamLimit){
       declareMatchWinner(
         opponent(side),
-        fighterName(side) + " reached " +
-        cfg.gamLimit + " total Gam-jeom."
+        fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom."
       );
       return;
     }
@@ -343,85 +428,152 @@ function changeGam(side, delta) {
 
   checkScoreRoundEnd();
 }
+
 function checkScoreRoundEnd(){
   if(matchOver||inBreak)return;
-  const r=fighters.red.score,b=fighters.blue.score;
-  if(cfg.target>0&&(r>=cfg.target||b>=cfg.target)){
-    if(r!==b)awardRound(r>b?"red":"blue","Target score reached.");
+
+  const redScore=fighters.red.score;
+  const blueScore=fighters.blue.score;
+
+  if(cfg.target>0&&(redScore>=cfg.target||blueScore>=cfg.target)){
+    if(redScore!==blueScore){
+      awardRound(
+        redScore>blueScore?"red":"blue",
+        "Target score reached."
+      );
+    }
     return;
   }
-  if(cfg.gap>0&&Math.abs(r-b)>=cfg.gap){
-    awardRound(r>b?"red":"blue","Point gap reached.");
+
+  if(cfg.gap>0&&Math.abs(redScore-blueScore)>=cfg.gap){
+    awardRound(
+      redScore>blueScore?"red":"blue",
+      "Point gap reached."
+    );
   }
 }
 
 function startTimer(){
   if(matchOver||inBreak||running)return;
-  if(seconds<=0){endRound();return;}
+
+  if(seconds<=0){
+    endRound();
+    return;
+  }
+
   try{
-    if(!audioContext){
-      const AC=window.AudioContext||window.webkitAudioContext;
-      if(AC)audioContext=new AC();
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC&&!audioContext)audioContext=new AC();
+    if(audioContext&&audioContext.state==="suspended"){
+      audioContext.resume();
     }
-    if(audioContext&&audioContext.state==="suspended")audioContext.resume();
-  }catch(e){}
-  running=true;setStatus("Round in progress");render();
+  }catch(error){}
+
+  running=true;
+  setStatus("Round in progress");
+  render();
+
   timerId=setInterval(()=>{
     seconds--;
-    if(seconds<=0){seconds=0;render();endRound();return;}
+
+    if(seconds<=0){
+      seconds=0;
+      render();
+      endRound();
+      return;
+    }
+
     render();
   },1000);
 }
+
 function pauseTimer(){
   if(!running)return;
-  clearInterval(timerId);timerId=null;running=false;
-  setStatus("Paused");render();
+  clearInterval(timerId);
+  timerId=null;
+  running=false;
+  setStatus("Paused");
+  render();
 }
+
 function adjustTimer(delta){
   if(matchOver||inBreak)return;
-  seconds=Math.max(0,seconds+delta);render();
+  seconds=Math.max(0,seconds+delta);
+  render();
 }
 
 function endRound(){
   if(matchOver||inBreak)return;
+
   stopClocks();
-  const r=fighters.red.score,b=fighters.blue.score;
-  if(r===b){
-    showWinner("ROUND DRAW","Round "+round+" ended in a draw.","next");
+
+  const redScore=fighters.red.score;
+  const blueScore=fighters.blue.score;
+
+  if(redScore===blueScore){
+    showWinner(
+      "ROUND DRAW",
+      "Round "+round+" ended in a draw.",
+      "next"
+    );
   }else{
-    awardRound(r>b?"red":"blue","Round ended.");
+    awardRound(
+      redScore>blueScore?"red":"blue",
+      "Round ended."
+    );
   }
 }
 
 function awardRound(side,reason){
   if(matchOver||inBreak)return;
+
   stopClocks();
   snapshot();
-  if(side)fighters[side].wins++;
-  render();sound("round");
+
+  if(side){
+    fighters[side].wins++;
+  }
+
+  render();
+  sound("round");
 
   if(side&&fighters[side].wins>=requiredWins()){
-    declareMatchWinner(side,"Required rounds won.");
+    declareMatchWinner(
+      side,
+      fighterName(side)+" has won the required number of rounds."
+    );
     return;
   }
+
   if(!side){
     showWinner("ROUND DRAW",reason,"next");
     return;
   }
-  showWinner("ROUND WINNER",
-    fighterName(side)+" wins Round "+round+".<br>"+reason,"next");
+
+  showWinner(
+    "ROUND WINNER",
+    fighterName(side)+" wins Round "+round+".<br>"+reason,
+    "next"
+  );
 }
 
 function declareMatchWinner(side,reason){
-  stopClocks();matchOver=true;inBreak=false;
-  render();sound("horn");
-  showWinner("MATCH WINNER",
-    "🏆 "+fighterName(side)+" WINS THE MATCH!<br>"+reason,"close");
+  stopClocks();
+  matchOver=true;
+  inBreak=false;
+  render();
+  sound("horn");
+
+  showWinner(
+    "MATCH WINNER",
+    "🏆 "+fighterName(side)+" WINS THE MATCH!<br>"+reason,
+    "close"
+  );
 }
 
 function showWinner(title,message,action){
   pendingAction=action;
-  directMode=false;
+
   $("winnerTitle").textContent=title;
   $("winnerText").innerHTML=message;
   $("winnerNextBtn").classList.toggle("hidden",action!=="next");
@@ -433,14 +585,12 @@ function showWinner(title,message,action){
 
 function closeWinner(){
   $("winnerOverlay").classList.add("hidden");
-  directMode=false;
   $("winnerNextBtn").classList.remove("hidden");
   $("directRedBtn").classList.add("hidden");
   $("directBlueBtn").classList.add("hidden");
 }
 
 function winnerContinue(){
-  // Fixed handler: always progresses to the break/next-round flow.
   if(pendingAction!=="next"||matchOver)return;
   closeWinner();
   beginBreak();
@@ -448,6 +598,7 @@ function winnerContinue(){
 
 function beginBreak(){
   if(matchOver)return;
+
   stopClocks();
   inBreak=true;
   breakSeconds=cfg.breakTime;
@@ -455,51 +606,79 @@ function beginBreak(){
   render();
 
   if(cfg.breakTime<=0){
-    if(cfg.autoNext)startNextRound();
-    else setStatus("Break finished — press START NEXT ROUND.");
+    if(cfg.autoNext){
+      startNextRound();
+    }else{
+      setStatus("Break finished — press START NEXT ROUND.");
+    }
     return;
   }
 
   setStatus("Break in progress");
+
   breakId=setInterval(()=>{
     if(!inBreak||matchOver){
-      clearInterval(breakId);breakId=null;return;
+      clearInterval(breakId);
+      breakId=null;
+      return;
     }
+
     breakSeconds--;
     render();
+
     if(breakSeconds<=0){
-      clearInterval(breakId);breakId=null;
-      breakSeconds=0;render();
-      if(cfg.autoNext)startNextRound();
-      else setStatus("Break finished — press START NEXT ROUND.");
+      clearInterval(breakId);
+      breakId=null;
+      breakSeconds=0;
+      render();
+
+      if(cfg.autoNext){
+        startNextRound();
+      }else{
+        setStatus("Break finished — press START NEXT ROUND.");
+      }
     }
   },1000);
 }
 
 function startNextRound(){
   if(matchOver||!inBreak)return;
-  // Stop the break interval before changing state.
-  clearInterval(breakId);breakId=null;
-  clearInterval(timerId);timerId=null;
-  running=false;inBreak=false;
-  round++;
-  for(const s of ["red","blue"]){
-    fighters[s].score=0;
-    fighters[s].gam=0;
-    // totalGam and wins intentionally carry over to the next round.
+
+  if(breakId!==null){
+    clearInterval(breakId);
+    breakId=null;
   }
+  if(timerId!==null){
+    clearInterval(timerId);
+    timerId=null;
+  }
+
+  running=false;
+  inBreak=false;
+  round++;
+
+  for(const side of ["red","blue"]){
+    fighters[side].score=0;
+    fighters[side].gam=0;
+    // Match total Gam-jeom and rounds won carry over.
+  }
+
   seconds=cfg.roundTime;
   breakSeconds=cfg.breakTime;
   render();
   setStatus("Round "+round+" ready — press START.");
-  if(cfg.autoNext)startTimer();
+
+  if(cfg.autoNext){
+    startTimer();
+  }
 }
 
 function openDirectWinner(){
   if(matchOver)return;
+
   stopClocks();
   pendingAction="direct";
-  directMode=true;
+
   $("winnerTitle").textContent="DECLARE MATCH WINNER";
   $("winnerText").textContent="Choose the winner of this match.";
   $("winnerNextBtn").classList.add("hidden");
@@ -511,14 +690,22 @@ function openDirectWinner(){
 
 function newMatch(){
   if(!confirm("Start a new match? Current scores will be cleared."))return;
+
   stopClocks();
+
   fighters=freshFighters();
-  round=1;seconds=cfg.roundTime;breakSeconds=cfg.breakTime;
-  inBreak=false;matchOver=false;history=[];
-  pendingAction="none";directMode=false;
+  round=1;
+  seconds=cfg.roundTime;
+  breakSeconds=cfg.breakTime;
+  inBreak=false;
+  matchOver=false;
+  history=[];
+  pendingAction="none";
+
   closeWinner();
   $("settingsOverlay").classList.add("hidden");
-  render();setStatus("New match ready.");
+  render();
+  setStatus("New match ready.");
 }
 
 function openSettings(){
@@ -537,9 +724,17 @@ function openSettings(){
   $("setScoreSize").value=cfg.scoreSize;
   $("settingsOverlay").classList.remove("hidden");
 }
-function closeSettings(){$("settingsOverlay").classList.add("hidden");}
+
+function closeSettings(){
+  $("settingsOverlay").classList.add("hidden");
+}
+
 function saveSettings(){
-  const num=(id,min,def)=>Math.max(min,Number($(id).value)||def);
+  const num=(id,min,def)=>{
+    const value=Number($(id).value);
+    return Number.isFinite(value)?Math.max(min,value):def;
+  };
+
   cfg.roundTime=num("setRoundTime",10,120);
   cfg.breakTime=num("setBreakTime",0,30);
   cfg.format=Number($("setFormat").value);
@@ -553,13 +748,24 @@ function saveSettings(){
   cfg.autoNext=$("setAutoNext").checked;
   cfg.sound=$("setSound").checked;
   cfg.scoreSize=$("setScoreSize").value;
-  if(!running&&!inBreak)seconds=cfg.roundTime;
-  closeSettings();render();setStatus("Settings saved.");
+
+  if(!running&&!inBreak){
+    seconds=cfg.roundTime;
+  }
+
+  closeSettings();
+  render();
+  setStatus("Settings saved.");
 }
 
 function undoLast(){
-  if(!history.length){setStatus("Nothing to undo.");return;}
+  if(!history.length){
+    setStatus("Nothing to undo.");
+    return;
+  }
+
   stopClocks();
+
   const old=JSON.parse(history.pop());
   fighters=old.fighters;
   round=old.round;
@@ -567,16 +773,24 @@ function undoLast(){
   breakSeconds=old.breakSeconds;
   inBreak=old.inBreak;
   matchOver=old.matchOver;
-  closeWinner();render();sound("undo");
+
+  closeWinner();
+  render();
+  sound("undo");
   setStatus("Last action undone.");
 }
 
-/* Event handlers are assigned once and never overwritten by popups. */
+/* Event handlers are registered once and stay stable. */
 document.querySelectorAll("[data-side][data-type]").forEach(btn=>{
-  btn.addEventListener("click",()=>addPoints(btn.dataset.side,btn.dataset.type));
+  btn.addEventListener("click",()=>{
+    addPoints(btn.dataset.side,btn.dataset.type);
+  });
 });
+
 document.querySelectorAll("[data-gam-side]").forEach(btn=>{
-  btn.addEventListener("click",()=>changeGam(btn.dataset.gamSide,Number(btn.dataset.delta)));
+  btn.addEventListener("click",()=>{
+    changeGam(btn.dataset.gamSide,Number(btn.dataset.delta));
+  });
 });
 
 $("settingsBtn").addEventListener("click",openSettings);
@@ -591,12 +805,17 @@ $("plusFive").addEventListener("click",()=>adjustTimer(5));
 $("startNextBtn").addEventListener("click",startNextRound);
 $("winnerNextBtn").addEventListener("click",winnerContinue);
 $("winnerCloseBtn").addEventListener("click",closeWinner);
+
 $("directRedBtn").addEventListener("click",()=>{
-  closeWinner();declareMatchWinner("red","Direct winner declared by referee.");
+  closeWinner();
+  declareMatchWinner("red","Direct winner declared by referee.");
 });
+
 $("directBlueBtn").addEventListener("click",()=>{
-  closeWinner();declareMatchWinner("blue","Direct winner declared by referee.");
+  closeWinner();
+  declareMatchWinner("blue","Direct winner declared by referee.");
 });
+
 $("saveSettingsBtn").addEventListener("click",saveSettings);
 $("cancelSettingsBtn").addEventListener("click",closeSettings);
 
