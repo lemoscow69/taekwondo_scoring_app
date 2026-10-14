@@ -2,154 +2,150 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Taekwondo Referee Scoring System</title>
 <style>
-:root{--navy:#071329;--cyan:#36e6ff;--gold:#ffe36a}
 *{box-sizing:border-box}
-body{margin:0;background:#030916;color:#f7fbff;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:#030916;color:#fff;font-family:Arial,sans-serif}
 button,input,select{font:inherit}
-button{color:white;cursor:pointer;border:1px solid #ffffff40;border-radius:9px;font-weight:800;touch-action:manipulation}
+button{cursor:pointer;color:#fff;border:1px solid #ffffff50;border-radius:9px;font-weight:bold;touch-action:manipulation}
 button:active{transform:scale(.97)}
 .app{min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(ellipse at top,#142b50,#071329 55%,#030916)}
-.header{min-height:65px;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#050c1d;border-bottom:1px solid #35dfff40}
-.brand{font-size:clamp(17px,2vw,26px);font-weight:1000;letter-spacing:1.5px}
-.brand small{display:block;color:var(--cyan);font-size:10px;letter-spacing:3px;margin-top:4px}
-.settingsButton{background:#102341;padding:12px 16px;border-color:var(--cyan)}
-.board{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,300px) minmax(0,1fr)}
-.fighter{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;padding:24px 34px;overflow:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#050c1d;border-bottom:1px solid #36e6ff50}
+.brand{font-size:clamp(17px,2vw,26px);font-weight:1000;letter-spacing:1px}
+.brand small{display:block;color:#36e6ff;font-size:10px;letter-spacing:3px;margin-top:4px}
+.settingsButton{background:#102341;padding:12px;border-color:#36e6ff}
+.board{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(245px,290px) minmax(0,1fr)}
+.fighter{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;padding:22px 32px;overflow:hidden}
 .red{background:linear-gradient(145deg,#ed183f,#c20d49 65%,#8d1459);border-right:2px solid #ff9db7}
 .blue{background:linear-gradient(145deg,#0789ff,#0764d4 65%,#123e91);border-left:2px solid #78edff}
-.fighterName{width:100%;text-align:center;font-size:clamp(24px,3vw,42px);font-weight:1000;border:0;outline:0;background:transparent;color:white;text-transform:uppercase;padding:8px 0}
-.cornerLabel{margin-top:12px;font-size:clamp(11px,1.1vw,15px);letter-spacing:3px;font-weight:900}
-.score{width:100%;text-align:center;font-size:clamp(100px,14vw,190px);line-height:1;font-weight:1000;letter-spacing:-5px;margin:auto 0 12px;font-variant-numeric:tabular-nums;text-shadow:0 6px 12px #00112d45}
-.scoreAdjust{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-bottom:24px}
-.adjustButton{min-width:48px;min-height:45px;background:#071a37db;border:2px solid #9feaff80;font-size:19px}
-.undoButton{min-height:45px;padding:0 12px;background:#071a37db;border:2px solid #9feaff80;font-size:13px}
-.pointButtons{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-.pointButton{min-height:82px;padding:10px 5px;background:#061c40e8;border:2px solid #c2f5ff75;box-shadow:0 4px 0 #00112b55}
-.pointButton span{display:block;font-size:clamp(11px,1.1vw,15px);margin-bottom:7px}
-.pointButton strong{display:block;font-size:clamp(23px,2.6vw,34px);color:var(--gold)}
-.gamjeom{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;width:54px;padding:8px 5px;border:1px solid #ffffff60;border-radius:13px;background:#06142bf0;z-index:2}
-.red .gamjeom{left:8px}.blue .gamjeom{right:8px}
+.fighterName{width:100%;text-align:center;font-size:clamp(24px,3vw,42px);font-weight:1000;border:0;outline:0;background:transparent;color:#fff;text-transform:uppercase;padding:8px}
+.cornerLabel{margin:10px 0;font-size:12px;letter-spacing:2px;font-weight:900}
+.score{width:100%;text-align:center;font-size:clamp(90px,14vw,185px);line-height:1;font-weight:1000;letter-spacing:-4px;margin:auto 0 12px;font-variant-numeric:tabular-nums;text-shadow:0 5px 15px #00112d55}
+.scoreAdjust{display:flex;justify-content:center;align-items:center;gap:7px;width:100%;margin-bottom:22px}
+.adjustButton{min-width:42px;min-height:40px;background:#071a37;border:2px solid #9feaff80}
+.undoButton{min-height:40px;padding:0 9px;background:#071a37;border:2px solid #9feaff80;font-size:12px}
+.pointButtons{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pointButton{min-height:78px;padding:8px 4px;background:#061c40e8;border:2px solid #c2f5ff75}
+.pointButton span{display:block;font-size:clamp(10px,1.1vw,14px);margin-bottom:6px}
+.pointButton strong{display:block;font-size:clamp(21px,2.5vw,32px);color:#ffe36a}
+.gamjeom{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;width:54px;padding:8px 5px;border:1px solid #ffffff70;border-radius:12px;background:#06142bf5;z-index:2}
+.red .gamjeom{left:7px}.blue .gamjeom{right:7px}
 .gamLabel{text-align:center;font-size:10px;font-weight:1000}
-.gamCount{font-size:19px;font-weight:1000}
-.gamButton{width:40px;height:40px;font-size:24px;border-radius:9px;background:#10264a}
-.gamMinus{border-color:#9dc7ff}.gamPlus{background:#c5223f;border-color:#ffb1c2}
-.blue .gamPlus{background:#0874dd;border-color:#9be8ff}
-.centerColumn{min-width:0;display:flex;flex-direction:column;padding:18px 12px;gap:13px;background:linear-gradient(180deg,#071329,#0a1c3b 55%,#071329);border-left:1px solid #ffffff20;border-right:1px solid #ffffff20}
-.timerRow{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:5px}
-.timeAdjust{min-height:43px;background:#102341;border:1px solid var(--cyan);font-size:13px;padding:3px}
-.clock{text-align:center;font-size:clamp(30px,3.3vw,47px);font-weight:1000;letter-spacing:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.timerCaption{text-align:center;color:var(--cyan);font-weight:1000;font-size:11px;letter-spacing:3px}
-.roundInfo{text-align:center;color:#a8f6ff;font-weight:900;font-size:13px;padding:8px 2px;border-top:1px solid #ffffff15;border-bottom:1px solid #ffffff15}
-.controlGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.controlButton{min-height:49px;padding:8px 5px;font-size:13px}
-.startButton{background:#0e9b55;border-color:#68ffad}
-.pauseButton{background:#bd5429;border-color:#ffc09a}
-.endButton{background:#e62942;border-color:#ff9eaf}
-.winnerButton{background:#087adf;border-color:#8deaff}
-.newButton{background:#163c78;border-color:#83b8ff;grid-column:1/-1}
-.status{margin-top:auto;text-align:center;padding:12px 5px 2px;font-size:11px;line-height:1.5;color:#c0d5f0;border-top:1px solid #ffffff1c;overflow-wrap:anywhere}
-.footer{text-align:center;padding:8px;color:#b9cbe5;background:#040b19;font-size:11px}
-.modal{position:fixed;inset:0;background:#000b1de8;z-index:20;display:none;align-items:center;justify-content:center;padding:16px}
+.gamCount{font-size:20px;font-weight:1000}
+.gamButton{width:40px;height:39px;font-size:24px;background:#10264a}
+.gamPlus{background:#c5223f;border-color:#ffb1c2}
+.blue .gamPlus{background:#0874dd}
+.centerColumn{min-width:0;display:flex;flex-direction:column;padding:18px 12px;gap:12px;background:linear-gradient(180deg,#071329,#0a1c3b,#071329);border-inline:1px solid #ffffff20}
+.timerRow{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center;gap:5px}
+.timeAdjust{min-height:40px;background:#102341;border-color:#36e6ff}
+.clock{text-align:center;font-size:clamp(28px,3.3vw,45px);font-weight:1000;font-variant-numeric:tabular-nums;white-space:nowrap}
+.timerCaption{text-align:center;color:#36e6ff;font-size:11px;letter-spacing:3px;font-weight:1000}
+.roundInfo{text-align:center;color:#a8f6ff;font-weight:900;font-size:13px;padding:8px 2px;border-block:1px solid #ffffff20}
+.controlGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.controlButton{min-height:45px;padding:7px 4px;font-size:12px}
+.startButton{background:#0e9b55}.pauseButton{background:#bd5429}.endButton{background:#e62942}.winnerButton{background:#087adf}.newButton{background:#163c78;grid-column:1/-1}
+.status{margin-top:auto;text-align:center;padding:10px 3px;font-size:11px;line-height:1.5;color:#c0d5f0;border-top:1px solid #ffffff20;overflow-wrap:anywhere}
+.footer{text-align:center;padding:8px;background:#040b19;font-size:11px;color:#b9cbe5}
+.modal{position:fixed;inset:0;background:#000c1fe8;z-index:20;display:none;align-items:center;justify-content:center;padding:14px}
 .modal.show{display:flex}
-.modalCard{width:min(490px,100%);max-height:92vh;overflow-y:auto;padding:23px;background:#0c1c37;border:1px solid var(--cyan);border-radius:17px;box-shadow:0 20px 70px #0009}
-.modalCard h2{margin:0 0 18px;color:var(--cyan)}
-.field{display:flex;flex-direction:column;gap:7px;margin:13px 0;font-size:13px;font-weight:700}
-.field input,.field select{width:100%;padding:11px;background:#061229;color:white;border:1px solid #527092;border-radius:8px}
-.modalActions{display:flex;gap:10px;margin-top:18px}
-.modalActions button{flex:1;min-height:44px;padding:9px;background:#123763}
-.modalActions .confirm{background:#087b55;border-color:#6effbd}
+.modalCard{width:min(490px,100%);max-height:92vh;overflow:auto;padding:22px;background:#0c1c37;border:1px solid #36e6ff;border-radius:16px}
+.modalCard h2{color:#36e6ff;margin-top:0}
+.field{display:flex;flex-direction:column;gap:6px;margin:12px 0;font-size:13px;font-weight:bold}
+.field input,.field select{width:100%;padding:10px;background:#061229;color:white;border:1px solid #527092;border-radius:8px}
+.modalActions{display:flex;gap:8px;margin-top:17px}
+.modalActions button{flex:1;min-height:43px;padding:8px;background:#123763}
+.confirm{background:#087b55!important}
 .winnerTitle{text-align:center;font-size:27px;font-weight:1000;margin:15px 0}
 .winnerText{text-align:center;line-height:1.6}
-.breakPanel{margin:18px 0;padding:15px;border:1px solid #ffffff25;border-radius:12px;background:#06142c;text-align:center}
-.breakLabel{color:var(--cyan);font-size:12px;letter-spacing:2px;font-weight:900}
-.breakCountdown{font-size:40px;font-weight:1000;color:var(--gold);margin:8px 0}
-.breakHint{font-size:12px;color:#c2d5ed;line-height:1.5}
+.breakPanel{text-align:center;margin:15px 0;padding:14px;background:#06142c;border:1px solid #ffffff30;border-radius:12px}
+.breakLabel{color:#36e6ff;font-weight:bold;letter-spacing:2px}
+.breakCountdown{font-size:38px;font-weight:1000;color:#ffe36a;margin:8px}
+.breakHint{font-size:12px;line-height:1.5;color:#c2d5ed}
 .hidden{display:none!important}
-@media(min-width:1200px){.fighter{padding-left:46px;padding-right:46px}.centerColumn{padding:24px 16px}.pointButton{min-height:95px}}
-@media(max-width:900px){.board{grid-template-columns:minmax(0,1fr) minmax(205px,235px) minmax(0,1fr)}.fighter{padding:18px 22px}.gamjeom{width:46px}.gamButton{width:34px;height:36px}.adjustButton{min-width:40px}.centerColumn{padding:14px 9px;gap:11px}}
+@media(max-width:900px){.board{grid-template-columns:minmax(0,1fr) minmax(205px,230px) minmax(0,1fr)}.fighter{padding:16px 20px}.gamjeom{width:44px}.gamButton{width:34px}.centerColumn{padding:12px 8px}}
 @media(max-width:650px){
-.header{min-height:55px;padding:8px 10px}.brand{font-size:16px}.brand small{font-size:8px;letter-spacing:1.5px}.settingsButton{padding:9px;font-size:12px}
-.board{grid-template-columns:minmax(0,1fr) 132px minmax(0,1fr)}.fighter{padding:15px 8px}.fighterName{font-size:clamp(17px,4vw,25px)}
-.cornerLabel{font-size:9px;letter-spacing:1px;margin-top:7px}.score{font-size:clamp(70px,15vw,110px);letter-spacing:-3px}
-.pointButtons{grid-template-columns:1fr;gap:6px}.pointButton{min-height:52px;display:flex;justify-content:space-between;align-items:center;padding:7px 10px}.pointButton span{margin:0;font-size:10px}.pointButton strong{font-size:21px}
-.scoreAdjust{gap:4px;margin-bottom:15px}.adjustButton{min-width:30px;min-height:35px;font-size:14px}.undoButton{min-height:35px;font-size:10px;padding:0 4px}
-.gamjeom{width:34px;padding:5px 2px;gap:5px}.gamLabel{font-size:8px}.gamCount{font-size:14px}.gamButton{width:28px;height:31px;font-size:19px}.red .gamjeom{left:2px}.blue .gamjeom{right:2px}
-.centerColumn{padding:12px 5px;gap:9px}.timerRow{grid-template-columns:27px minmax(0,1fr) 27px;gap:2px}.timeAdjust{min-height:33px;font-size:10px}.clock{font-size:clamp(21px,4.5vw,30px);letter-spacing:0}.timerCaption{font-size:8px;letter-spacing:1px}.roundInfo{font-size:10px;padding:6px 1px}
-.controlGrid{grid-template-columns:1fr;gap:6px}.controlButton{min-height:36px;padding:6px 2px;font-size:10px}.newButton{grid-column:auto}.status{font-size:9px;padding-top:8px}
-.modalCard{padding:18px}.modalActions{gap:7px}.modalActions button{font-size:12px}
+.header{padding:9px}.brand{font-size:16px}.brand small{font-size:8px;letter-spacing:1px}.settingsButton{padding:8px;font-size:11px}
+.board{grid-template-columns:minmax(0,1fr) 128px minmax(0,1fr)}
+.fighter{padding:12px 7px}.fighterName{font-size:clamp(16px,4vw,24px)}.cornerLabel{font-size:9px;letter-spacing:1px}
+.score{font-size:clamp(65px,15vw,105px)}.pointButtons{grid-template-columns:1fr;gap:5px}
+.pointButton{min-height:48px;display:flex;justify-content:space-between;align-items:center;padding:6px 9px}
+.pointButton span{margin:0;font-size:10px}.pointButton strong{font-size:20px}
+.scoreAdjust{gap:3px;margin-bottom:14px}.adjustButton{min-width:28px;min-height:33px;font-size:12px}.undoButton{min-height:33px;padding:0 3px;font-size:9px}
+.gamjeom{width:32px;padding:4px 2px;gap:4px}.gamLabel{font-size:7px}.gamCount{font-size:14px}.gamButton{width:27px;height:30px;font-size:18px}.red .gamjeom{left:2px}.blue .gamjeom{right:2px}
+.centerColumn{padding:10px 4px;gap:8px}.timerRow{grid-template-columns:25px minmax(0,1fr) 25px;gap:2px}
+.timeAdjust{min-height:31px;font-size:9px}.clock{font-size:clamp(20px,4.5vw,29px)}.timerCaption{font-size:8px;letter-spacing:1px}.roundInfo{font-size:9px}
+.controlGrid{grid-template-columns:1fr;gap:5px}.controlButton{min-height:34px;font-size:10px;padding:5px 2px}.newButton{grid-column:auto}.status{font-size:9px}
 }
-@media(max-width:380px){.board{grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr)}.fighter{padding-left:5px;padding-right:5px}.clock{font-size:20px}.timerRow{grid-template-columns:24px minmax(0,1fr) 24px}.timeAdjust{font-size:9px}}
+@media(max-width:380px){.board{grid-template-columns:minmax(0,1fr) 110px minmax(0,1fr)}.clock{font-size:19px}.timerRow{grid-template-columns:23px minmax(0,1fr) 23px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header">
-  <div class="brand">🥋 TAEKWONDO<small>REFEREE SCORING SYSTEM</small></div>
-  <button class="settingsButton" onclick="openSettings()">⚙ SETTINGS</button>
+<div class="brand">🥋 TAEKWONDO<small>REFEREE SCORING SYSTEM</small></div>
+<button class="settingsButton" onclick="openSettings()">⚙ SETTINGS</button>
 </header>
 
 <main class="board">
 <section class="fighter red">
-  <input id="redName" class="fighterName" value="HONG" aria-label="Red player name">
-  <div class="cornerLabel">RED CORNER</div>
-  <div id="redScore" class="score">0</div>
-  <div class="scoreAdjust">
-    <button class="adjustButton" onclick="changeScore('red',-1)">−1</button>
-    <button class="adjustButton" onclick="changeScore('red',1)">+1</button>
-    <button class="undoButton" onclick="undoLast('red')">↶ UNDO</button>
-  </div>
-  <div class="pointButtons">
-    <button class="pointButton" onclick="addPoints('red','Punch')"><span>PUNCH</span><strong id="redPunchLabel">+1</strong></button>
-    <button class="pointButton" onclick="addPoints('red','Body')"><span>BODY</span><strong id="redBodyLabel">+2</strong></button>
-    <button class="pointButton" onclick="addPoints('red','Head')"><span>HEAD</span><strong id="redHeadLabel">+3</strong></button>
-  </div>
-  <div class="gamjeom">
-    <div class="gamLabel">GAM-JEOM</div><div id="redGam" class="gamCount">0</div>
-    <button class="gamButton gamMinus" onclick="changeGam('red',-1)">−</button>
-    <button class="gamButton gamPlus" onclick="changeGam('red',1)">+</button>
-  </div>
+<input id="redName" class="fighterName" value="HONG" aria-label="Red player name">
+<div class="cornerLabel">RED CORNER</div>
+<div id="redScore" class="score">0</div>
+<div class="scoreAdjust">
+  <button class="adjustButton" onclick="changeScore('red',-1)">−1</button>
+  <button class="adjustButton" onclick="changeScore('red',1)">+1</button>
+  <button class="undoButton" onclick="undoLast('red')">↶ UNDO</button>
+</div>
+<div class="pointButtons">
+  <button class="pointButton" onclick="addPoints('red','Punch')"><span>PUNCH</span><strong id="redPunchLabel">+1</strong></button>
+  <button class="pointButton" onclick="addPoints('red','Body')"><span>BODY</span><strong id="redBodyLabel">+2</strong></button>
+  <button class="pointButton" onclick="addPoints('red','Head')"><span>HEAD</span><strong id="redHeadLabel">+3</strong></button>
+</div>
+<div class="gamjeom">
+  <div class="gamLabel">GAM-JEOM</div><div id="redGam" class="gamCount">0</div>
+  <button class="gamButton" onclick="changeGam('red',-1)">−</button>
+  <button class="gamButton gamPlus" onclick="changeGam('red',1)">+</button>
+</div>
 </section>
 
 <section class="centerColumn">
-  <div class="timerRow">
-    <button class="timeAdjust" onclick="adjustTime(-5)">−5</button>
-    <div id="clock" class="clock">01:00</div>
-    <button class="timeAdjust" onclick="adjustTime(5)">+5</button>
-  </div>
-  <div class="timerCaption">ROUND TIMER</div>
-  <div id="roundInfo" class="roundInfo">ROUND 1 · BEST OF 3</div>
-  <div class="controlGrid">
-    <button class="controlButton startButton" onclick="startTimer()">▶ START</button>
-    <button class="controlButton pauseButton" onclick="pauseTimer()">Ⅱ PAUSE</button>
-    <button class="controlButton endButton" onclick="endRound()">■ END ROUND</button>
-    <button class="controlButton winnerButton" onclick="openDirectWinner()">🏆 DIRECT WINNER</button>
-    <button class="controlButton newButton" onclick="newMatch()">↻ NEW MATCH</button>
-  </div>
-  <div id="status" class="status">Ready — press START</div>
+<div class="timerRow">
+  <button class="timeAdjust" onclick="adjustTime(-5)">−5</button>
+  <div id="clock" class="clock">01:00</div>
+  <button class="timeAdjust" onclick="adjustTime(5)">+5</button>
+</div>
+<div class="timerCaption">ROUND TIMER</div>
+<div id="roundInfo" class="roundInfo">ROUND 1 · BEST OF 3</div>
+<div class="controlGrid">
+  <button class="controlButton startButton" onclick="startTimer()">▶ START</button>
+  <button class="controlButton pauseButton" onclick="pauseTimer()">Ⅱ PAUSE</button>
+  <button class="controlButton endButton" onclick="endRound()">■ END ROUND</button>
+  <button class="controlButton winnerButton" onclick="openDirectWinner()">🏆 DIRECT WINNER</button>
+  <button class="controlButton newButton" onclick="newMatch()">↻ NEW MATCH</button>
+</div>
+<div id="status" class="status">Ready — press START</div>
 </section>
 
 <section class="fighter blue">
-  <input id="blueName" class="fighterName" value="CHONG" aria-label="Blue player name">
-  <div class="cornerLabel">BLUE CORNER</div>
-  <div id="blueScore" class="score">0</div>
-  <div class="scoreAdjust">
-    <button class="adjustButton" onclick="changeScore('blue',-1)">−1</button>
-    <button class="adjustButton" onclick="changeScore('blue',1)">+1</button>
-    <button class="undoButton" onclick="undoLast('blue')">↶ UNDO</button>
-  </div>
-  <div class="pointButtons">
-    <button class="pointButton" onclick="addPoints('blue','Punch')"><span>PUNCH</span><strong id="bluePunchLabel">+1</strong></button>
-    <button class="pointButton" onclick="addPoints('blue','Body')"><span>BODY</span><strong id="blueBodyLabel">+2</strong></button>
-    <button class="pointButton" onclick="addPoints('blue','Head')"><span>HEAD</span><strong id="blueHeadLabel">+3</strong></button>
-  </div>
-  <div class="gamjeom">
-    <div class="gamLabel">GAM-JEOM</div><div id="blueGam" class="gamCount">0</div>
-    <button class="gamButton gamMinus" onclick="changeGam('blue',-1)">−</button>
-    <button class="gamButton gamPlus" onclick="changeGam('blue',1)">+</button>
-  </div>
+<input id="blueName" class="fighterName" value="CHONG" aria-label="Blue player name">
+<div class="cornerLabel">BLUE CORNER</div>
+<div id="blueScore" class="score">0</div>
+<div class="scoreAdjust">
+  <button class="adjustButton" onclick="changeScore('blue',-1)">−1</button>
+  <button class="adjustButton" onclick="changeScore('blue',1)">+1</button>
+  <button class="undoButton" onclick="undoLast('blue')">↶ UNDO</button>
+</div>
+<div class="pointButtons">
+  <button class="pointButton" onclick="addPoints('blue','Punch')"><span>PUNCH</span><strong id="bluePunchLabel">+1</strong></button>
+  <button class="pointButton" onclick="addPoints('blue','Body')"><span>BODY</span><strong id="blueBodyLabel">+2</strong></button>
+  <button class="pointButton" onclick="addPoints('blue','Head')"><span>HEAD</span><strong id="blueHeadLabel">+3</strong></button>
+</div>
+<div class="gamjeom">
+  <div class="gamLabel">GAM-JEOM</div><div id="blueGam" class="gamCount">0</div>
+  <button class="gamButton" onclick="changeGam('blue',-1)">−</button>
+  <button class="gamButton gamPlus" onclick="changeGam('blue',1)">+</button>
+</div>
 </section>
 </main>
 <footer class="footer">TAEKWONDO · REFEREE SCORING SYSTEM</footer>
@@ -162,15 +158,17 @@ button:active{transform:scale(.97)}
 <label class="field">Blue player name<input id="setBlueName" value="CHONG"></label>
 <label class="field">Round duration (seconds)<input id="setDuration" type="number" min="10" max="600" value="60"></label>
 <label class="field">Break time (seconds)<input id="setBreak" type="number" min="0" max="300" value="30"></label>
-<label class="field">Automatically start next round after break?
-<select id="setAutoNext"><option value="yes">Yes — automatic</option><option value="no">No — wait for button</option></select></label>
+<label class="field">Automatically prepare next round?
+<select id="setAutoNext"><option value="no">No — wait for button</option><option value="yes">Yes — automatic</option></select></label>
 <label class="field">Number of rounds<select id="setRounds"><option value="3">Best of 3</option><option value="5">Best of 5</option><option value="1">Single round</option></select></label>
 <label class="field">Punch points<input id="setPunch" type="number" min="0" max="20" value="1"></label>
 <label class="field">Body points<input id="setBody" type="number" min="0" max="20" value="2"></label>
 <label class="field">Head points<input id="setHead" type="number" min="0" max="20" value="3"></label>
-<label class="field">Gam-jeom limit<input id="setGamLimit" type="number" min="1" max="20" value="5"></label>
+<label class="field">Gam-jeom disqualification limit<input id="setGamLimit" type="number" min="1" max="20" value="5"></label>
 <label class="field">Point-gap limit (0 = disabled)<input id="setGap" type="number" min="0" max="100" value="0"></label>
 <label class="field">Target score (0 = disabled)<input id="setTarget" type="number" min="0" max="200" value="0"></label>
+<label class="field">Sound effects
+<select id="setSound"><option value="yes">ON</option><option value="no">OFF</option></select></label>
 <div class="modalActions"><button onclick="closeSettings()">CANCEL</button><button class="confirm" onclick="saveSettings()">SAVE SETTINGS</button></div>
 </div>
 </div>
@@ -178,16 +176,16 @@ button:active{transform:scale(.97)}
 <div id="winnerModal" class="modal">
 <div class="modalCard">
 <h2 id="winnerHeading">ROUND RESULT</h2>
-<div id="winnerTitle" class="winnerTitle">ROUND RESULT</div>
+<div id="winnerTitle" class="winnerTitle"></div>
 <div id="winnerText" class="winnerText"></div>
 <div id="breakPanel" class="breakPanel">
-  <div class="breakLabel">BREAK TIME</div>
-  <div id="breakCountdown" class="breakCountdown">00:30</div>
-  <div id="breakHint" class="breakHint"></div>
+<div class="breakLabel">BREAK TIME</div>
+<div id="breakCountdown" class="breakCountdown">00:30</div>
+<div id="breakHint" class="breakHint"></div>
 </div>
 <div class="modalActions">
-  <button id="closeResultButton" onclick="closeWinner()">CLOSE</button>
-  <button id="nextRoundButton" class="confirm" onclick="nextRound()">▶ START NEXT ROUND</button>
+<button id="closeResultButton" onclick="closeWinner()">CLOSE</button>
+<button id="nextRoundButton" class="confirm" onclick="nextRound()">▶ START NEXT ROUND</button>
 </div>
 </div>
 </div>
@@ -195,126 +193,188 @@ button:active{transform:scale(.97)}
 <div id="directModal" class="modal">
 <div class="modalCard">
 <h2>Declare Match Winner</h2><p>Select the winner:</p>
-<div class="modalActions">
-<button class="confirm" onclick="declareWinner('red')">🔴 RED WINS</button>
-<button class="confirm" onclick="declareWinner('blue')">🔵 BLUE WINS</button>
-</div>
+<div class="modalActions"><button class="confirm" onclick="declareWinner('red')">🔴 RED WINS</button><button class="confirm" onclick="declareWinner('blue')">🔵 BLUE WINS</button></div>
 <div class="modalActions"><button onclick="closeDirectWinner()">CANCEL</button></div>
 </div>
 </div>
 
 <script>
 const state={
- red:{score:0,gam:0,roundWins:0,history:[]},
- blue:{score:0,gam:0,roundWins:0,history:[]},
- duration:60,time:60,breakDuration:30,autoNext:false,breakRemaining:30,
- running:false,round:1,totalRounds:3,punch:1,body:2,head:3,
- gamLimit:5,gapLimit:0,target:0,finished:false,roundEnded:false,
- interval:null,breakInterval:null
+red:{score:0,gam:0,roundWins:0,history:[]},
+blue:{score:0,gam:0,roundWins:0,history:[]},
+duration:60,time:60,breakDuration:30,autoNext:false,breakRemaining:30,
+running:false,round:1,totalRounds:3,punch:1,body:2,head:3,
+gamLimit:5,gapLimit:0,target:0,sound:true,finished:false,roundEnded:false,
+interval:null,breakInterval:null
 };
 
+/* Sound effects using Web Audio; no external audio files required. */
+let audioContext=null;
+function audioReady(){
+if(!state.sound)return null;
+try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx)return null;
+  if(!audioContext)audioContext=new Ctx();
+  if(audioContext.state==="suspended")audioContext.resume();
+  return audioContext;
+}catch(e){return null}
+}
+function tone(freq,duration,delay=0,type="sine",volume=.12){
+const ctx=audioReady();if(!ctx)return;
+const osc=ctx.createOscillator(),gain=ctx.createGain();
+osc.type=type;osc.frequency.setValueAtTime(freq,ctx.currentTime+delay);
+gain.gain.setValueAtTime(.001,ctx.currentTime+delay);
+gain.gain.exponentialRampToValueAtTime(volume,ctx.currentTime+delay+.02);
+gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+delay+duration);
+osc.connect(gain);gain.connect(ctx.destination);
+osc.start(ctx.currentTime+delay);osc.stop(ctx.currentTime+delay+duration+.03);
+}
+function playSound(kind){
+if(!state.sound)return;
+if(kind==="score"){tone(720,.10,0,"sine",.08)}
+else if(kind==="gam"){tone(430,.12,0,"square",.07);tone(650,.15,.13,"square",.07)}
+else if(kind==="round"){tone(650,.18);tone(850,.22,.22)}
+else if(kind==="horn"){tone(440,.35,0,"sawtooth",.10);tone(554,.4,.3,"sawtooth",.10);tone(659,.65,.65,"sawtooth",.10)}
+else if(kind==="undo"){tone(520,.09,0,"sine",.06)}
+}
 function formatTime(n){n=Math.max(0,Math.floor(n));return String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0")}
 function getName(s){return document.getElementById(s+"Name").value.trim()||(s==="red"?"RED":"BLUE")}
 function setStatus(t){document.getElementById("status").textContent=t}
 function render(){
- ["red","blue"].forEach(s=>{
+["red","blue"].forEach(s=>{
   document.getElementById(s+"Score").textContent=state[s].score;
   document.getElementById(s+"Gam").textContent=state[s].gam;
   document.getElementById(s+"PunchLabel").textContent="+"+state.punch;
   document.getElementById(s+"BodyLabel").textContent="+"+state.body;
   document.getElementById(s+"HeadLabel").textContent="+"+state.head;
- });
- document.getElementById("clock").textContent=formatTime(state.time);
- document.getElementById("roundInfo").textContent="ROUND "+state.round+" · "+(state.totalRounds===1?"SINGLE ROUND":"BEST OF "+state.totalRounds);
+});
+document.getElementById("clock").textContent=formatTime(state.time);
+document.getElementById("roundInfo").textContent="ROUND "+state.round+" · "+(state.totalRounds===1?"SINGLE ROUND":"BEST OF "+state.totalRounds);
 }
 function canScore(){return !state.finished&&!state.roundEnded}
-function saveHistory(s,a){state[s].history.push({score:state[s].score,gam:state[s].gam,action:a});if(state[s].history.length>100)state[s].history.shift()}
-function addPoints(s,type){
- if(!canScore())return;
- const p={Punch:state.punch,Body:state.body,Head:state.head}[type];
- saveHistory(s,type+" +"+p);state[s].score+=p;render();
- setStatus(getName(s)+" scored "+p+" point(s) — "+type);checkRoundConditions();
+
+/* Store both fighters' values so Undo also reverses the opponent point. */
+function saveHistory(side,action){
+state[side].history.push({
+  redScore:state.red.score,blueScore:state.blue.score,
+  redGam:state.red.gam,blueGam:state.blue.gam,action
+});
+if(state[side].history.length>100)state[side].history.shift();
 }
-function changeScore(s,n){
- if(!canScore())return;saveHistory(s,"Manual score adjustment");
- state[s].score=Math.max(0,state[s].score+n);render();setStatus(getName(s)+" score adjusted");checkRoundConditions();
+function addPoints(side,type){
+if(!canScore())return;
+const p={Punch:state.punch,Body:state.body,Head:state.head}[type];
+saveHistory(side,type+" +"+p);
+state[side].score+=p;render();playSound("score");
+setStatus(getName(side)+" scored "+p+" point(s) — "+type);
+checkRoundConditions();
 }
-function changeGam(s,n){
- if(!canScore())return;saveHistory(s,"Gam-jeom "+(n>0?"+1":"-1"));
- state[s].gam=Math.max(0,state[s].gam+n);render();
- if(state[s].gam>=state.gamLimit){finishMatch(s==="red"?"blue":"red",getName(s)+" reached the Gam-jeom limit.");return}
- setStatus("Gam-jeom updated for "+getName(s));
+function changeScore(side,n){
+if(!canScore())return;
+saveHistory(side,"Manual score adjustment");
+state[side].score=Math.max(0,state[side].score+n);
+render();playSound("score");setStatus(getName(side)+" score adjusted");
+checkRoundConditions();
 }
-function undoLast(s){
- if(state.finished||!state[s].history.length){setStatus("No action available to undo");return}
- const x=state[s].history.pop();state[s].score=x.score;state[s].gam=x.gam;render();setStatus("Undone: "+x.action);
+function changeGam(side,n){
+if(!canScore())return;
+const opponent=side==="red"?"blue":"red";
+if(n>0){
+  if(state[side].gam>=state.gamLimit-1){
+   saveHistory(side,"Gam-jeom disqualification");
+   state[side].gam++;
+   render();playSound("gam");
+   finishMatch(opponent,getName(side)+" reached the Gam-jeom disqualification limit.");
+   return;
+  }
+  saveHistory(side,"Gam-jeom +1; opponent +1 point");
+  state[side].gam++;
+  state[opponent].score+=1;
+  render();playSound("gam");
+  setStatus("Gam-jeom to "+getName(side)+" — 1 point awarded to "+getName(opponent));
+  checkRoundConditions();
+}else{
+  if(state[side].gam<=0){setStatus("Gam-jeom counter is already zero");return}
+  saveHistory(side,"Gam-jeom correction");
+  state[side].gam--;
+  state[opponent].score=Math.max(0,state[opponent].score-1);
+  render();playSound("undo");
+  setStatus("Gam-jeom corrected — 1 point removed from "+getName(opponent));
+}
+}
+function undoLast(side){
+if(state.finished||!state[side].history.length){setStatus("No action available to undo");return}
+const x=state[side].history.pop();
+state.red.score=x.redScore;state.blue.score=x.blueScore;
+state.red.gam=x.redGam;state.blue.gam=x.blueGam;
+render();playSound("undo");setStatus("Last action undone: "+x.action);
 }
 function stopMainTimer(){state.running=false;clearInterval(state.interval);state.interval=null}
 function stopBreakTimer(){clearInterval(state.breakInterval);state.breakInterval=null}
 function startTimer(){
- if(state.finished||state.roundEnded||state.running)return;
- if(state.time<=0){endRound("Round timer finished.");return}
- stopBreakTimer();state.running=true;setStatus("Round "+state.round+" in progress");
- state.interval=setInterval(()=>{
+if(state.finished||state.roundEnded||state.running)return;
+audioReady();playSound("round");
+if(state.time<=0){endRound("Round timer finished.");return}
+stopBreakTimer();state.running=true;setStatus("Round "+state.round+" in progress");
+state.interval=setInterval(()=>{
   state.time--;render();
-  if(state.time<=0){stopMainTimer();endRound("Round timer finished.")}
- },1000);
+  if(state.time<=0){stopMainTimer();endRound("Round timer finished.");}
+},1000);
 }
 function pauseTimer(){stopMainTimer();if(!state.finished&&!state.roundEnded)setStatus("Timer paused")}
 function adjustTime(n){if(state.finished||state.roundEnded)return;state.time=Math.max(0,Math.min(600,state.time+n));render()}
 function checkRoundConditions(){
- if(!canScore())return;
- if(state.target>0&&(state.red.score>=state.target||state.blue.score>=state.target)){
+if(!canScore())return;
+if(state.target>0&&(state.red.score>=state.target||state.blue.score>=state.target)){
   endRound("Target score reached.");return;
- }
- if(state.gapLimit>0&&Math.abs(state.red.score-state.blue.score)>=state.gapLimit){
+}
+if(state.gapLimit>0&&Math.abs(state.red.score-state.blue.score)>=state.gapLimit){
   endRound("Point-gap limit reached.");return;
- }
+}
 }
 function endRound(reason="Round ended by referee."){
- if(state.finished||state.roundEnded)return;
- stopMainTimer();stopBreakTimer();state.roundEnded=true;
- let winner=null;
- if(state.red.score>state.blue.score)winner="red";
- else if(state.blue.score>state.red.score)winner="blue";
- else if(state.red.gam<state.blue.gam)winner="red";
- else if(state.blue.gam<state.red.gam)winner="blue";
- if(winner)state[winner].roundWins++;
- const needed=Math.floor(state.totalRounds/2)+1;
- if(winner&&state[winner].roundWins>=needed){
-  finishMatch(winner,"Required number of round wins reached. "+reason);return;
- }
- if(state.round>=state.totalRounds){
-  if(state.red.roundWins>state.blue.roundWins)finishMatch("red","Rounds completed. "+reason);
-  else if(state.blue.roundWins>state.red.roundWins)finishMatch("blue","Rounds completed. "+reason);
-  else showRoundResult(winner,reason,true);
-  return;
- }
- showRoundResult(winner,reason,false);
+if(state.finished||state.roundEnded)return;
+stopMainTimer();stopBreakTimer();state.roundEnded=true;
+let winner=null;
+if(state.red.score>state.blue.score)winner="red";
+else if(state.blue.score>state.red.score)winner="blue";
+else if(state.red.gam<state.blue.gam)winner="red";
+else if(state.blue.gam<state.red.gam)winner="blue";
+if(winner)state[winner].roundWins++;
+const needed=Math.floor(state.totalRounds/2)+1;
+if(winner&&state[winner].roundWins>=needed){finishMatch(winner,"Required round wins reached. "+reason);return}
+if(state.round>=state.totalRounds){
+  if(state.red.roundWins>state.blue.roundWins){finishMatch("red","Rounds completed. "+reason);return}
+  if(state.blue.roundWins>state.red.roundWins){finishMatch("blue","Rounds completed. "+reason);return}
+  showRoundResult(winner,reason,true);return;
+}
+showRoundResult(winner,reason,false);
 }
 function showRoundResult(winner,reason,lastTie){
- document.getElementById("winnerHeading").textContent="ROUND "+state.round+" RESULT";
- document.getElementById("winnerTitle").textContent=winner?getName(winner)+" WINS THE ROUND":"ROUND DRAW";
- document.getElementById("winnerText").textContent=reason+" Score: "+getName("red")+" "+state.red.score+" — "+state.blue.score+" "+getName("blue")+". Round wins: "+state.red.roundWins+" — "+state.blue.roundWins+".";
- document.getElementById("breakPanel").classList.toggle("hidden",lastTie);
- document.getElementById("nextRoundButton").classList.toggle("hidden",lastTie);
- document.getElementById("closeResultButton").textContent=lastTie?"FINISH MATCH":"CLOSE";
- document.getElementById("closeResultButton").onclick=lastTie?finishTiedFinalRound:closeWinner;
- document.getElementById("breakHint").textContent=state.autoNext?
-  "Next round will be prepared automatically after the break. You may skip the break using the button.":
-  "Press START NEXT ROUND whenever you are ready. You do not need to wait for the countdown.";
- document.getElementById("winnerModal").classList.add("show");
- if(!lastTie)startBreakCountdown();
+playSound("round");
+document.getElementById("winnerHeading").textContent="ROUND "+state.round+" RESULT";
+document.getElementById("winnerTitle").textContent=winner?getName(winner)+" WINS THE ROUND":"ROUND DRAW";
+document.getElementById("winnerText").textContent=reason+" Score: "+getName("red")+" "+state.red.score+" — "+state.blue.score+" "+getName("blue")+". Round wins: "+state.red.roundWins+" — "+state.blue.roundWins+".";
+document.getElementById("breakPanel").classList.toggle("hidden",lastTie);
+document.getElementById("nextRoundButton").classList.toggle("hidden",lastTie);
+document.getElementById("closeResultButton").textContent=lastTie?"FINISH MATCH":"CLOSE";
+document.getElementById("closeResultButton").onclick=lastTie?finishTiedFinalRound:closeWinner;
+document.getElementById("breakHint").textContent=state.autoNext?
+"Next round will be prepared automatically after the break. You may skip the break using the button.":
+"Press START NEXT ROUND whenever ready. You do not need to wait for the countdown.";
+document.getElementById("winnerModal").classList.add("show");
+if(!lastTie)startBreakCountdown();
 }
 function startBreakCountdown(){
- stopBreakTimer();state.breakRemaining=state.breakDuration;
- document.getElementById("breakCountdown").textContent=formatTime(state.breakRemaining);
- if(state.breakRemaining<=0){
+stopBreakTimer();state.breakRemaining=state.breakDuration;
+document.getElementById("breakCountdown").textContent=formatTime(state.breakRemaining);
+if(state.breakRemaining<=0){
   if(state.autoNext)nextRound();
   else document.getElementById("breakHint").textContent="Break finished — press START NEXT ROUND.";
   return;
- }
- state.breakInterval=setInterval(()=>{
+}
+state.breakInterval=setInterval(()=>{
   if(!document.getElementById("winnerModal").classList.contains("show"))return;
   state.breakRemaining--;
   document.getElementById("breakCountdown").textContent=formatTime(state.breakRemaining);
@@ -323,73 +383,77 @@ function startBreakCountdown(){
    if(state.autoNext)nextRound();
    else{document.getElementById("breakHint").textContent="Break finished — press START NEXT ROUND.";setStatus("Break finished — ready for next round");}
   }
- },1000);
+},1000);
 }
 function nextRound(){
- if(state.finished)return;
- if(state.round>=state.totalRounds){finishTiedFinalRound();return}
- stopBreakTimer();stopMainTimer();
- document.getElementById("winnerModal").classList.remove("show");
- state.round++;state.time=state.duration;state.red.score=0;state.blue.score=0;
- state.red.gam=0;state.blue.gam=0;state.red.history=[];state.blue.history=[];
- state.running=false;state.roundEnded=false;
- render();setStatus("Round "+state.round+" ready — press START");
+if(state.finished)return;
+if(state.round>=state.totalRounds){finishTiedFinalRound();return}
+stopBreakTimer();stopMainTimer();
+document.getElementById("winnerModal").classList.remove("show");
+state.round++;state.time=state.duration;
+state.red.score=0;state.blue.score=0;state.red.gam=0;state.blue.gam=0;
+state.red.history=[];state.blue.history=[];
+state.running=false;state.roundEnded=false;
+render();setStatus("Round "+state.round+" ready — press START");
 }
 function finishTiedFinalRound(){
- document.getElementById("winnerModal").classList.remove("show");
- if(state.red.roundWins>state.blue.roundWins)finishMatch("red","Rounds completed.");
- else if(state.blue.roundWins>state.red.roundWins)finishMatch("blue","Rounds completed.");
- else finishMatch(null,"Match ended in a tie.");
+document.getElementById("winnerModal").classList.remove("show");
+if(state.red.roundWins>state.blue.roundWins)finishMatch("red","Rounds completed.");
+else if(state.blue.roundWins>state.red.roundWins)finishMatch("blue","Rounds completed.");
+else finishMatch(null,"Match ended in a tie.");
 }
 function finishMatch(winner,reason){
- stopMainTimer();stopBreakTimer();state.finished=true;state.roundEnded=true;
- document.getElementById("winnerHeading").textContent="MATCH RESULT";
- document.getElementById("winnerTitle").textContent=winner?getName(winner)+" WINS!":"MATCH DRAW";
- document.getElementById("winnerText").textContent=reason+" Final score: "+getName("red")+" "+state.red.score+" — "+state.blue.score+" "+getName("blue")+". Round wins: "+state.red.roundWins+" — "+state.blue.roundWins+".";
- document.getElementById("breakPanel").classList.add("hidden");
- document.getElementById("nextRoundButton").classList.add("hidden");
- document.getElementById("closeResultButton").classList.remove("hidden");
- document.getElementById("closeResultButton").textContent="CLOSE";
- document.getElementById("closeResultButton").onclick=closeWinner;
- document.getElementById("winnerModal").classList.add("show");
- setStatus(winner?getName(winner)+" wins the match":"Match ended in a draw");
+stopMainTimer();stopBreakTimer();state.finished=true;state.roundEnded=true;
+document.getElementById("winnerHeading").textContent="MATCH RESULT";
+document.getElementById("winnerTitle").textContent=winner?getName(winner)+" WINS!":"MATCH DRAW";
+document.getElementById("winnerText").textContent=reason+" Final score: "+getName("red")+" "+state.red.score+" — "+state.blue.score+" "+getName("blue")+". Round wins: "+state.red.roundWins+" — "+state.blue.roundWins+".";
+document.getElementById("breakPanel").classList.add("hidden");
+document.getElementById("nextRoundButton").classList.add("hidden");
+document.getElementById("closeResultButton").classList.remove("hidden");
+document.getElementById("closeResultButton").textContent="CLOSE";
+document.getElementById("closeResultButton").onclick=closeWinner;
+document.getElementById("winnerModal").classList.add("show");
+playSound("horn");
+setStatus(winner?getName(winner)+" wins the match":"Match ended in a draw");
 }
 function closeWinner(){document.getElementById("winnerModal").classList.remove("show")}
 function openDirectWinner(){if(state.finished)return;pauseTimer();stopBreakTimer();document.getElementById("directModal").classList.add("show")}
 function closeDirectWinner(){document.getElementById("directModal").classList.remove("show")}
 function declareWinner(s){closeDirectWinner();finishMatch(s,"Winner declared by the referee.")}
 function newMatch(){
- if(!confirm("Start a new match? Current scores and round wins will be cleared."))return;
- stopMainTimer();stopBreakTimer();
- ["red","blue"].forEach(s=>{state[s].score=0;state[s].gam=0;state[s].roundWins=0;state[s].history=[]});
- state.round=1;state.time=state.duration;state.running=false;state.finished=false;state.roundEnded=false;
- document.getElementById("winnerModal").classList.remove("show");closeDirectWinner();render();setStatus("New match ready — press START");
+if(!confirm("Start a new match? Current scores and round wins will be cleared."))return;
+stopMainTimer();stopBreakTimer();
+["red","blue"].forEach(s=>{state[s].score=0;state[s].gam=0;state[s].roundWins=0;state[s].history=[]});
+state.round=1;state.time=state.duration;state.running=false;state.finished=false;state.roundEnded=false;
+document.getElementById("winnerModal").classList.remove("show");closeDirectWinner();render();setStatus("New match ready — press START");
 }
 function openSettings(){
- document.getElementById("setRedName").value=getName("red");document.getElementById("setBlueName").value=getName("blue");
- document.getElementById("setDuration").value=state.duration;document.getElementById("setBreak").value=state.breakDuration;
- document.getElementById("setAutoNext").value=state.autoNext?"yes":"no";document.getElementById("setRounds").value=state.totalRounds;
- document.getElementById("setPunch").value=state.punch;document.getElementById("setBody").value=state.body;document.getElementById("setHead").value=state.head;
- document.getElementById("setGamLimit").value=state.gamLimit;document.getElementById("setGap").value=state.gapLimit;document.getElementById("setTarget").value=state.target;
- document.getElementById("settingsModal").classList.add("show");
+document.getElementById("setRedName").value=getName("red");document.getElementById("setBlueName").value=getName("blue");
+document.getElementById("setDuration").value=state.duration;document.getElementById("setBreak").value=state.breakDuration;
+document.getElementById("setAutoNext").value=state.autoNext?"yes":"no";document.getElementById("setRounds").value=state.totalRounds;
+document.getElementById("setPunch").value=state.punch;document.getElementById("setBody").value=state.body;document.getElementById("setHead").value=state.head;
+document.getElementById("setGamLimit").value=state.gamLimit;document.getElementById("setGap").value=state.gapLimit;
+document.getElementById("setTarget").value=state.target;document.getElementById("setSound").value=state.sound?"yes":"no";
+document.getElementById("settingsModal").classList.add("show");
 }
 function closeSettings(){document.getElementById("settingsModal").classList.remove("show")}
 function saveSettings(){
- const d=Number(document.getElementById("setDuration").value),b=Number(document.getElementById("setBreak").value);
- if(!Number.isFinite(d)||d<10||d>600){alert("Round duration must be between 10 and 600 seconds.");return}
- if(!Number.isFinite(b)||b<0||b>300){alert("Break time must be between 0 and 300 seconds.");return}
- state.duration=d;state.breakDuration=b;state.autoNext=document.getElementById("setAutoNext").value==="yes";
- state.totalRounds=[1,3,5].includes(Number(document.getElementById("setRounds").value))?Number(document.getElementById("setRounds").value):3;
- state.punch=Math.max(0,Number(document.getElementById("setPunch").value)||0);
- state.body=Math.max(0,Number(document.getElementById("setBody").value)||0);
- state.head=Math.max(0,Number(document.getElementById("setHead").value)||0);
- state.gamLimit=Math.max(1,Number(document.getElementById("setGamLimit").value)||5);
- state.gapLimit=Math.max(0,Number(document.getElementById("setGap").value)||0);
- state.target=Math.max(0,Number(document.getElementById("setTarget").value)||0);
- document.getElementById("redName").value=document.getElementById("setRedName").value.trim()||"HONG";
- document.getElementById("blueName").value=document.getElementById("setBlueName").value.trim()||"CHONG";
- if(!state.running)state.time=state.duration;
- closeSettings();render();setStatus("Settings saved");
+const d=Number(document.getElementById("setDuration").value),b=Number(document.getElementById("setBreak").value);
+if(!Number.isFinite(d)||d<10||d>600){alert("Round duration must be between 10 and 600 seconds.");return}
+if(!Number.isFinite(b)||b<0||b>300){alert("Break time must be between 0 and 300 seconds.");return}
+state.duration=d;state.breakDuration=b;state.autoNext=document.getElementById("setAutoNext").value==="yes";
+state.totalRounds=[1,3,5].includes(Number(document.getElementById("setRounds").value))?Number(document.getElementById("setRounds").value):3;
+state.punch=Math.max(0,Number(document.getElementById("setPunch").value)||0);
+state.body=Math.max(0,Number(document.getElementById("setBody").value)||0);
+state.head=Math.max(0,Number(document.getElementById("setHead").value)||0);
+state.gamLimit=Math.max(1,Number(document.getElementById("setGamLimit").value)||5);
+state.gapLimit=Math.max(0,Number(document.getElementById("setGap").value)||0);
+state.target=Math.max(0,Number(document.getElementById("setTarget").value)||0);
+state.sound=document.getElementById("setSound").value==="yes";
+document.getElementById("redName").value=document.getElementById("setRedName").value.trim()||"HONG";
+document.getElementById("blueName").value=document.getElementById("setBlueName").value.trim()||"CHONG";
+if(!state.running)state.time=state.duration;
+closeSettings();render();setStatus("Settings saved");
 }
 render();
 </script>
