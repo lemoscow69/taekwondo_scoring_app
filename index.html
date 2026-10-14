@@ -286,35 +286,61 @@ function addPoints(side,type){
   flash(side);sound("score");render();
   checkScoreRoundEnd();
 }
-function changeGam(side,delta){
-  if(matchOver||inBreak)return;
-  const f=fighters[side],opp=fighters[opponent(side)];
-  if(delta<0&&(f.gam<=0||f.totalGam<=0||opp.score<=0))return;
+function changeGam(side, delta) {
+  if (matchOver || inBreak) return;
+
+  const f = fighters[side];
+  const opp = fighters[opponent(side)];
+
+  if (
+    delta < 0 &&
+    (f.gam <= 0  f.totalGam <= 0  opp.score <= 0)
+  ) return;
 
   snapshot();
-  if(delta>0){
-    f.gam++;f.totalGam++;
-    opp.score+=1;
+
+  if (delta > 0) {
+    f.gam++;
+    f.totalGam++;
+    opp.score += 1;
     sound("gam");
-    setStatus(fighterName(side)+" received Gam-jeom: opponent gets 1 point.");
-  }else{
-    f.gam--;f.totalGam--;
-    opp.score=Math.max(0,opp.score-1);
+    setStatus(fighterName(side) + " received Gam-jeom.");
+  } else {
+    f.gam--;
+    f.totalGam--;
+    opp.score = Math.max(0, opp.score - 1);
     sound("undo");
     setStatus("Gam-jeom corrected.");
   }
+
   render();
 
-  if(delta>0&&f.totalGam>=cfg.gamLimit){
-    declareMatchWinner(opponent(side),
-      fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom.");
-    return;
+  if (delta > 0) {
+    // FIRST: 5 Gam-jeom in the current round
+    // awards the ROUND to the opponent, not the match.
+    if (
+      cfg.roundGam &&
+      cfg.format === 3 &&
+      f.gam >= 5
+    ) {
+      awardRound(
+        opponent(side),
+        fighterName(side) + " received 5 Gam-jeom in this round."
+      );
+      return;
+    }
+
+    // SECOND: cumulative match Gam-jeom limit
+    if (f.totalGam >= cfg.gamLimit) {
+      declareMatchWinner(
+        opponent(side),
+        fighterName(side) + " reached " +
+        cfg.gamLimit + " total Gam-jeom."
+      );
+      return;
+    }
   }
-  if(delta>0&&cfg.roundGam&&cfg.format===3&&f.gam>=5){
-    awardRound(opponent(side),
-      fighterName(side)+" received 5 Gam-jeom in this round.");
-    return;
-  }
+
   checkScoreRoundEnd();
 }
 function checkScoreRoundEnd(){
