@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Taekwondo Scoreboard</title>
 
 <style>
@@ -65,24 +65,92 @@ header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 .history-card h3{margin:0 0 8px;font-size:16px}
 .history-card p{margin:5px 0;font-size:13px;color:#d7dce5}
 .history-card .result{font-size:16px;font-weight:bold;color:#ffd54f}
-.history-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.export-btn{background:#1565c0}
-.delete-btn{background:#b71c1c}
 .empty-history{padding:24px 10px;text-align:center;color:#cfd8dc}
+
+/* TV DISPLAY: separate display mode, existing referee design stays intact */
+#tvScreen{display:none}
+body.display-mode{background:#080a0f;overflow:hidden}
+body.display-mode header,
+body.display-mode .board,
+body.display-mode .overlay{display:none!important}
+body.display-mode #tvScreen{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  width:100%;
+  padding:clamp(10px,2vw,30px);
+  gap:clamp(10px,2vh,24px);
+}
+.tv-top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;font-weight:bold;color:#dce3ed;
+  font-size:clamp(14px,2vw,25px)
+}
+.tv-match-title{color:#ffd54f;letter-spacing:2px}
+.tv-round{
+  text-align:center;font-weight:900;color:#ffd54f;
+  font-size:clamp(22px,4vw,48px)
+}
+.tv-main{
+  flex:1;display:grid;grid-template-columns:1fr minmax(180px,30%) 1fr;
+  gap:clamp(8px,1.5vw,24px);min-height:0
+}
+.tv-fighter{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:18px;padding:clamp(8px,2vw,25px);min-width:0;
+  text-align:center
+}
+.tv-red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
+.tv-blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
+.tv-name{
+  width:100%;overflow-wrap:anywhere;font-size:clamp(22px,4vw,55px);
+  font-weight:900;text-shadow:0 3px 8px #0005
+}
+.tv-score{
+  font-size:clamp(90px,22vw,300px);font-weight:900;
+  line-height:1.1;text-shadow:0 6px 12px #0006
+}
+.tv-wins{font-size:clamp(16px,2.3vw,30px);font-weight:bold}
+.tv-gam{
+  margin-top:10px;padding:8px 12px;border-radius:8px;
+  background:#0004;font-size:clamp(14px,2vw,25px);font-weight:bold
+}
+.tv-clock-panel{
+  background:#1b202a;border:1px solid #ffffff22;border-radius:18px;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:10px;gap:clamp(10px,2vh,24px)
+}
+.tv-clock{
+  font-size:clamp(36px,7vw,100px);font-weight:900;
+  font-variant-numeric:tabular-nums
+}
+.tv-break{font-size:clamp(15px,2vw,27px);color:#ffd54f;font-weight:bold;text-align:center}
+.tv-footer{text-align:center;color:#cfd8dc;font-size:clamp(12px,1.5vw,20px)}
+.tv-winner{
+  color:#ffd54f;font-size:clamp(20px,3vw,40px);
+  font-weight:900;text-align:center
+}
 @media(max-width:650px){
-header{padding:8px;align-items:flex-start}
-header h1{font-size:16px}
-.small-btn{font-size:11px;padding:8px}
-.board{grid-template-columns:1fr 1fr;gap:6px;padding:6px}
-.center{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:1fr 1fr;align-items:center}
-.center .round-label,.center .timer,.center .timer-adjust,.center .status{grid-column:1/-1}
-.center-actions{grid-template-columns:repeat(2,1fr)}
-.fighter{padding:8px 5px}
-.score{font-size:clamp(70px,19vw,120px)}
-.points button{padding:10px 2px;min-height:48px}
-.gam-box{gap:5px}
-.gam-box button{min-width:38px;min-height:42px}
-.modal{padding:15px}
+  header{padding:8px;align-items:flex-start}
+  header h1{font-size:16px}
+  .small-btn{font-size:11px;padding:8px}
+  .board{grid-template-columns:1fr 1fr;gap:6px;padding:6px}
+  .center{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:1fr 1fr;align-items:center}
+  .center .round-label,.center .timer,.center .timer-adjust,.center .status{grid-column:1/-1}
+  .center-actions{grid-template-columns:repeat(2,1fr)}
+  .fighter{padding:8px 5px}
+  .score{font-size:clamp(70px,19vw,120px)}
+  .points button{padding:10px 2px;min-height:48px}
+  .gam-box{gap:5px}
+  .gam-box button{min-width:38px;min-height:42px}
+  .modal{padding:15px}
+  .tv-main{grid-template-columns:1fr minmax(85px,25%) 1fr;gap:5px}
+  .tv-fighter{padding:5px}
+  .tv-score{font-size:clamp(55px,18vw,120px)}
+  .tv-name{font-size:clamp(15px,4vw,25px)}
+  .tv-gam{font-size:12px;padding:5px}
+  .tv-wins{font-size:12px}
+  .tv-clock{font-size:clamp(25px,8vw,42px)}
 }
 </style>
 </head>
@@ -91,6 +159,7 @@ header h1{font-size:16px}
 <header>
   <h1>🥋 TAEKWONDO SCOREBOARD</h1>
   <div class="header-actions">
+    <button class="small-btn" id="tvOpenBtn">📺 TV DISPLAY</button>
     <button class="small-btn" id="historyBtn">📋 HISTORY</button>
     <button class="small-btn" id="settingsBtn">⚙ SETTINGS</button>
   </div>
@@ -122,13 +191,11 @@ header h1{font-size:16px}
       <button id="minusFive">−5 SEC</button>
       <button id="plusFive">+5 SEC</button>
     </div>
-
     <div class="break-box hidden" id="breakBox">
       <div>BREAK TIME</div>
       <div class="break-clock" id="breakClock">00:30</div>
       <button id="startNextBtn">START NEXT ROUND</button>
     </div>
-
     <div class="center-actions">
       <button class="start" id="startBtn">▶ START</button>
       <button class="pause" id="pauseBtn">Ⅱ PAUSE</button>
@@ -158,6 +225,42 @@ header h1{font-size:16px}
     <div class="round-wins">Rounds won: <b id="blueWins">0</b></div>
   </section>
 </main>
+
+<!-- TV-only scoreboard -->
+<section id="tvScreen">
+  <div class="tv-top">
+    <span>🥋 TAEKWONDO</span>
+    <span class="tv-match-title">LIVE SCOREBOARD</span>
+    <span id="tvFormat">BEST OF 3</span>
+  </div>
+
+  <div class="tv-round" id="tvRound">ROUND 1</div>
+
+  <div class="tv-main">
+    <section class="tv-fighter tv-red">
+      <div class="tv-name" id="tvRedName">HONG</div>
+      <div class="tv-score" id="tvRedScore">0</div>
+      <div class="tv-wins">ROUNDS WON: <span id="tvRedWins">0</span></div>
+      <div class="tv-gam">GAM-JEOM: <span id="tvRedGam">0</span></div>
+    </section>
+
+    <section class="tv-clock-panel">
+      <div class="tv-clock" id="tvTimer">02:00</div>
+      <div class="tv-break hidden" id="tvBreak">BREAK</div>
+      <div class="tv-winner" id="tvWinner"></div>
+      <div class="tv-footer" id="tvStatus">READY</div>
+    </section>
+
+    <section class="tv-fighter tv-blue">
+      <div class="tv-name" id="tvBlueName">CHONG</div>
+      <div class="tv-score" id="tvBlueScore">0</div>
+      <div class="tv-wins">ROUNDS WON: <span id="tvBlueWins">0</span></div>
+      <div class="tv-gam">GAM-JEOM: <span id="tvBlueGam">0</span></div>
+    </section>
+  </div>
+
+  <div class="tv-footer">OFFICIAL SCOREBOARD</div>
+</section>
 
 <div class="overlay hidden" id="winnerOverlay">
   <div class="modal">
@@ -224,13 +327,20 @@ header h1{font-size:16px}
 "use strict";
 
 const $ = id => document.getElementById(id);
-const HISTORY_KEY = "taekwondoScoreboardMatchHistory_v1";
+const HISTORY_KEY="taekwondoScoreboardMatchHistory_v1";
+const LIVE_KEY="taekwondoScoreboardLiveState_v1";
+const isDisplayMode=new URLSearchParams(location.search).get("display")==="1";
 
-let cfg = {
-  roundTime:120, breakTime:30, format:3,
-  punch:1, body:2, head:3, gap:12, target:0,
-  gamLimit:10, roundGam:true, autoNext:false,
-  sound:true, scoreSize:"medium"
+if(isDisplayMode){
+  document.body.classList.add("display-mode");
+  document.title="Taekwondo Live TV Scoreboard";
+}
+
+let cfg={
+  roundTime:120,breakTime:30,format:3,
+  punch:1,body:2,head:3,gap:12,target:0,
+  gamLimit:10,roundGam:true,autoNext:false,
+  sound:true,scoreSize:"medium"
 };
 
 function freshFighters(){
@@ -241,23 +351,14 @@ function freshFighters(){
 }
 
 let fighters=freshFighters();
-let round=1;
-let seconds=cfg.roundTime;
-let breakSeconds=cfg.breakTime;
-let timerId=null;
-let breakId=null;
-let running=false;
-let inBreak=false;
-let matchOver=false;
-let history=[];
-let pendingAction="none";
-let audioContext=null;
-let matchStartedAt=new Date().toISOString();
-let matchSaved=false;
+let round=1,seconds=cfg.roundTime,breakSeconds=cfg.breakTime;
+let timerId=null,breakId=null,running=false,inBreak=false,matchOver=false;
+let history=[],pendingAction="none",audioContext=null;
+let matchStartedAt=new Date().toISOString(),matchSaved=false;
+let lastWinnerText="";
 
 function fighterName(side){
-  return $(side+"Name").value.trim() ||
-    (side==="red" ? "HONG" : "CHONG");
+  return $(side+"Name").value.trim()||(side==="red"?"HONG":"CHONG");
 }
 function opponent(side){return side==="red"?"blue":"red";}
 function requiredWins(){return Math.ceil(cfg.format/2);}
@@ -269,19 +370,107 @@ function fmt(value){
 function setStatus(message){$("status").textContent=message;}
 
 function snapshot(){
-  history.push(JSON.stringify({
-    fighters,round,seconds,breakSeconds,inBreak,matchOver
-  }));
+  history.push(JSON.stringify({fighters,round,seconds,breakSeconds,inBreak,matchOver}));
   if(history.length>100)history.shift();
 }
 function stopClocks(){
   if(timerId!==null)clearInterval(timerId);
   if(breakId!==null)clearInterval(breakId);
-  timerId=null;
-  breakId=null;
-  running=false;
+  timerId=null;breakId=null;running=false;
 }
+
+/* LIVE DISPLAY SYNC */
+function makeLiveState(){
+  return {
+    redName:fighterName("red"),
+    blueName:fighterName("blue"),
+    redScore:fighters.red.score,
+    blueScore:fighters.blue.score,
+    redGam:fighters.red.gam,
+    blueGam:fighters.blue.gam,
+    redTotalGam:fighters.red.totalGam,
+    blueTotalGam:fighters.blue.totalGam,
+    redWins:fighters.red.wins,
+    blueWins:fighters.blue.wins,
+    round:round,
+    seconds:seconds,
+    breakSeconds:breakSeconds,
+    inBreak:inBreak,
+    running:running,
+    matchOver:matchOver,
+    format:cfg.format,
+    status:$("status") ? $("status").textContent : "READY",
+    winner:lastWinnerText,
+    updatedAt:Date.now()
+  };
+}
+
+function publishLiveState(){
+  if(isDisplayMode)return;
+  try{
+    const data=JSON.stringify(makeLiveState());
+    localStorage.setItem(LIVE_KEY,data);
+    if(liveChannel){
+      liveChannel.postMessage(JSON.parse(data));
+    }
+  }catch(error){
+    console.warn("Live display sync unavailable",error);
+  }
+}
+
+function renderTV(data){
+  if(!data)return;
+  $("tvRedName").textContent=data.redName||"HONG";
+  $("tvBlueName").textContent=data.blueName||"CHONG";
+  $("tvRedScore").textContent=data.redScore??0;
+  $("tvBlueScore").textContent=data.blueScore??0;
+  $("tvRedWins").textContent=data.redWins??0;
+  $("tvBlueWins").textContent=data.blueWins??0;
+  $("tvRedGam").textContent=data.redGam??0;
+  $("tvBlueGam").textContent=data.blueGam??0;
+  $("tvRound").textContent="ROUND "+(data.round||1);
+  $("tvTimer").textContent=fmt(data.seconds??0);
+  $("tvFormat").textContent="BEST OF "+(data.format||3);
+  $("tvBreak").textContent="BREAK "+fmt(data.breakSeconds??0);
+  $("tvBreak").classList.toggle("hidden",!data.inBreak);
+  $("tvWinner").textContent=data.winner||"";
+  $("tvStatus").textContent=data.status||"READY";
+}
+
+function readSavedLiveState(){
+  try{
+    const raw=localStorage.getItem(LIVE_KEY);
+    if(raw)renderTV(JSON.parse(raw));
+  }catch(error){
+    console.warn("Could not read saved live state",error);
+  }
+}
+
+let liveChannel=null;
+if("BroadcastChannel" in window){
+  try{
+    liveChannel=new BroadcastChannel("taekwondo-live-scoreboard");
+    liveChannel.onmessage=event=>{
+      if(isDisplayMode)renderTV(event.data);
+    };
+  }catch(error){}
+}
+
+if(isDisplayMode){
+  readSavedLiveState();
+  window.addEventListener("storage",event=>{
+    if(event.key===LIVE_KEY&&event.newValue){
+      try{renderTV(JSON.parse(event.newValue));}catch(error){}
+    }
+  });
+  // Display-only page: do not run referee controls.
+}else{
+  publishLiveState();
+}
+
 function render(){
+  if(isDisplayMode)return;
+
   for(const side of ["red","blue"]){
     $(side+"Score").textContent=fighters[side].score;
     $(side+"Gam").textContent=fighters[side].gam;
@@ -311,6 +500,8 @@ function render(){
   $("pauseBtn").disabled=!running;
   $("endBtn").disabled=matchOver||inBreak;
   $("startNextBtn").disabled=matchOver||!inBreak;
+
+  publishLiveState();
 }
 
 function flash(side){
@@ -326,76 +517,54 @@ function sound(type){
     if(!AC)return;
     if(!audioContext)audioContext=new AC();
     if(audioContext.state==="suspended")audioContext.resume();
-
-    const notes={
-      score:[700,0.12],gam:[360,0.18],
-      round:[520,0.25],horn:[850,0.5],undo:[440,0.1]
-    };
+    const notes={score:[700,.12],gam:[360,.18],round:[520,.25],horn:[850,.5],undo:[440,.1]};
     const now=audioContext.currentTime;
     const [frequency,duration]=notes[type]||notes.score;
     const oscillator=audioContext.createOscillator();
     const gain=audioContext.createGain();
-
     oscillator.type=type==="horn"?"sawtooth":"sine";
     oscillator.frequency.setValueAtTime(frequency,now);
-    gain.gain.setValueAtTime(0.0001,now);
-    gain.gain.exponentialRampToValueAtTime(0.18,now+0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(.18,now+.015);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
     oscillator.start(now);
-    oscillator.stop(now+duration+0.02);
-  }catch(error){
-    console.warn("Sound unavailable",error);
-  }
+    oscillator.stop(now+duration+.02);
+  }catch(error){}
 }
 
 function addPoints(side,type){
   if(matchOver||inBreak)return;
   snapshot();
   fighters[side].score+=cfg[type];
-  flash(side);
-  sound("score");
-  render();
+  flash(side);sound("score");render();
   checkScoreRoundEnd();
 }
 
 function changeGam(side,delta){
   if(matchOver||inBreak)return;
-
-  const f=fighters[side];
-  const opp=fighters[opponent(side)];
-
+  const f=fighters[side],opp=fighters[opponent(side)];
   if(delta<0&&(f.gam<=0||f.totalGam<=0||opp.score<=0))return;
 
   snapshot();
-
   if(delta>0){
-    f.gam++;
-    f.totalGam++;
-    opp.score+=1;
+    f.gam++;f.totalGam++;opp.score+=1;
     sound("gam");
     setStatus(fighterName(side)+" received Gam-jeom. Opponent gets 1 point.");
   }else{
-    f.gam--;
-    f.totalGam--;
-    opp.score=Math.max(0,opp.score-1);
-    sound("undo");
-    setStatus("Gam-jeom corrected.");
+    f.gam--;f.totalGam--;opp.score=Math.max(0,opp.score-1);
+    sound("undo");setStatus("Gam-jeom corrected.");
   }
-
   render();
 
   if(delta>0){
     if(cfg.roundGam&&(cfg.format===3||cfg.format===5)&&f.gam>=5){
-      awardRound(opponent(side),
-        fighterName(side)+" received 5 Gam-jeom in this round.");
+      awardRound(opponent(side),fighterName(side)+" received 5 Gam-jeom in this round.");
       return;
     }
-
     if(f.totalGam>=cfg.gamLimit){
-      declareMatchWinner(opponent(side),
-        fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom.");
+      declareMatchWinner(opponent(side),fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom.");
       return;
     }
   }
@@ -405,7 +574,6 @@ function changeGam(side,delta){
 function checkScoreRoundEnd(){
   if(matchOver||inBreak)return;
   const r=fighters.red.score,b=fighters.blue.score;
-
   if(cfg.target>0&&(r>=cfg.target||b>=cfg.target)){
     if(r!==b)awardRound(r>b?"red":"blue","Target score reached.");
     return;
@@ -418,132 +586,87 @@ function checkScoreRoundEnd(){
 function startTimer(){
   if(matchOver||inBreak||running)return;
   if(seconds<=0){endRound();return;}
-
   try{
     const AC=window.AudioContext||window.webkitAudioContext;
     if(AC&&!audioContext)audioContext=new AC();
     if(audioContext&&audioContext.state==="suspended")audioContext.resume();
   }catch(error){}
 
-  running=true;
-  setStatus("Round in progress");
-  render();
-
+  running=true;setStatus("Round in progress");render();
   timerId=setInterval(()=>{
     seconds--;
-    if(seconds<=0){
-      seconds=0;
-      render();
-      endRound();
-      return;
-    }
+    if(seconds<=0){seconds=0;render();endRound();return;}
     render();
   },1000);
 }
 function pauseTimer(){
   if(!running)return;
-  clearInterval(timerId);
-  timerId=null;
-  running=false;
-  setStatus("Paused");
-  render();
+  clearInterval(timerId);timerId=null;running=false;
+  setStatus("Paused");render();
 }
 function adjustTimer(delta){
   if(matchOver||inBreak)return;
-  seconds=Math.max(0,seconds+delta);
-  render();
+  seconds=Math.max(0,seconds+delta);render();
 }
 function endRound(){
   if(matchOver||inBreak)return;
   stopClocks();
-
   const r=fighters.red.score,b=fighters.blue.score;
-  if(r===b){
-    showWinner("ROUND DRAW","Round "+round+" ended in a draw.","next");
-  }else{
-    awardRound(r>b?"red":"blue","Round ended.");
-  }
+  if(r===b)showWinner("ROUND DRAW","Round "+round+" ended in a draw.","next");
+  else awardRound(r>b?"red":"blue","Round ended.");
 }
 function awardRound(side,reason){
   if(matchOver||inBreak)return;
-  stopClocks();
-  snapshot();
-
+  stopClocks();snapshot();
   if(side)fighters[side].wins++;
-  render();
-  sound("round");
+  render();sound("round");
 
   if(side&&fighters[side].wins>=requiredWins()){
-    declareMatchWinner(side,
-      fighterName(side)+" has won the required number of rounds.");
+    declareMatchWinner(side,fighterName(side)+" has won the required number of rounds.");
     return;
   }
-  if(!side){
-    showWinner("ROUND DRAW",reason,"next");
-    return;
-  }
-  showWinner("ROUND WINNER",
-    fighterName(side)+" wins Round "+round+".<br>"+reason,"next");
+  if(!side){showWinner("ROUND DRAW",reason,"next");return;}
+  showWinner("ROUND WINNER",fighterName(side)+" wins Round "+round+".<br>"+reason,"next");
 }
 
-/* MATCH HISTORY: save a completed match once only. */
 function readMatchHistory(){
   try{
     const saved=localStorage.getItem(HISTORY_KEY);
     const data=saved?JSON.parse(saved):[];
     return Array.isArray(data)?data:[];
-  }catch(error){
-    console.error("Could not read match history",error);
-    return [];
-  }
+  }catch(error){return [];}
 }
-
 function saveMatchResult(winnerSide,reason){
   if(matchSaved)return;
   matchSaved=true;
-
   const record={
     id:"match_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),
-    startedAt:matchStartedAt,
-    finishedAt:new Date().toISOString(),
-    redName:fighterName("red"),
-    blueName:fighterName("blue"),
-    redScore:fighters.red.score,
-    blueScore:fighters.blue.score,
-    redRounds:fighters.red.wins,
-    blueRounds:fighters.blue.wins,
-    redTotalGam:fighters.red.totalGam,
-    blueTotalGam:fighters.blue.totalGam,
-    format:"Best of "+cfg.format,
-    winnerSide:winnerSide,
+    startedAt:matchStartedAt,finishedAt:new Date().toISOString(),
+    redName:fighterName("red"),blueName:fighterName("blue"),
+    redScore:fighters.red.score,blueScore:fighters.blue.score,
+    redRounds:fighters.red.wins,blueRounds:fighters.blue.wins,
+    redTotalGam:fighters.red.totalGam,blueTotalGam:fighters.blue.totalGam,
+    format:"Best of "+cfg.format,winnerSide,
     winnerName:winnerSide==="red"?fighterName("red"):fighterName("blue"),
-    reason:reason,
-    roundsPlayed:round
+    reason:reason,roundsPlayed:round
   };
-
   try{
     const records=readMatchHistory();
     records.unshift(record);
     localStorage.setItem(HISTORY_KEY,JSON.stringify(records.slice(0,500)));
     setStatus("Match result saved to history.");
   }catch(error){
-    console.error("Could not save match history",error);
     setStatus("Match finished, but browser could not save history.");
-    alert("Match finished, but the browser could not save the history. Check browser storage settings.");
   }
 }
 
 function declareMatchWinner(side,reason){
-  stopClocks();
-  matchOver=true;
-  inBreak=false;
+  stopClocks();matchOver=true;inBreak=false;
+  lastWinnerText="🏆 "+fighterName(side)+" WINS THE MATCH!";
   saveMatchResult(side,reason);
-  render();
-  sound("horn");
-  showWinner("MATCH WINNER",
-    "🏆 "+fighterName(side)+" WINS THE MATCH!<br>"+reason,"close");
+  render();sound("horn");
+  showWinner("MATCH WINNER",lastWinnerText+"<br>"+reason,"close");
 }
-
 function showWinner(title,message,action){
   pendingAction=action;
   $("winnerTitle").textContent=title;
@@ -553,81 +676,66 @@ function showWinner(title,message,action){
   $("directBlueBtn").classList.add("hidden");
   $("winnerCloseBtn").classList.remove("hidden");
   $("winnerOverlay").classList.remove("hidden");
+  if(action==="next")lastWinnerText=title;
+  render();
 }
 function closeWinner(){
   $("winnerOverlay").classList.add("hidden");
   $("winnerNextBtn").classList.remove("hidden");
   $("directRedBtn").classList.add("hidden");
   $("directBlueBtn").classList.add("hidden");
+  render();
 }
 function winnerContinue(){
   if(pendingAction!=="next"||matchOver)return;
-  closeWinner();
-  beginBreak();
+  closeWinner();beginBreak();
 }
 
 function beginBreak(){
   if(matchOver)return;
-  stopClocks();
-  inBreak=true;
-  breakSeconds=cfg.breakTime;
-  seconds=0;
-  render();
+  stopClocks();inBreak=true;
+  breakSeconds=cfg.breakTime;seconds=0;
+  setStatus("Break in progress");render();
 
   if(cfg.breakTime<=0){
     if(cfg.autoNext)startNextRound();
     else setStatus("Break finished — press START NEXT ROUND.");
-    return;
+    render();return;
   }
 
-  setStatus("Break in progress");
   breakId=setInterval(()=>{
     if(!inBreak||matchOver){
-      clearInterval(breakId);
-      breakId=null;
-      return;
+      clearInterval(breakId);breakId=null;return;
     }
-
-    breakSeconds--;
-    render();
-
+    breakSeconds--;render();
     if(breakSeconds<=0){
-      clearInterval(breakId);
-      breakId=null;
-      breakSeconds=0;
-      render();
+      clearInterval(breakId);breakId=null;breakSeconds=0;render();
       if(cfg.autoNext)startNextRound();
       else setStatus("Break finished — press START NEXT ROUND.");
+      render();
     }
   },1000);
 }
-
 function startNextRound(){
   if(matchOver||!inBreak)return;
   if(breakId!==null)clearInterval(breakId);
   if(timerId!==null)clearInterval(timerId);
-  breakId=null;
-  timerId=null;
-  running=false;
-  inBreak=false;
+  breakId=null;timerId=null;running=false;inBreak=false;
   round++;
-
   for(const side of ["red","blue"]){
     fighters[side].score=0;
     fighters[side].gam=0;
   }
-
-  seconds=cfg.roundTime;
-  breakSeconds=cfg.breakTime;
+  seconds=cfg.roundTime;breakSeconds=cfg.breakTime;
+  lastWinnerText="";
+  render();setStatus("Round "+round+" ready — press START.");
   render();
-  setStatus("Round "+round+" ready — press START.");
   if(cfg.autoNext)startTimer();
 }
 
 function openDirectWinner(){
   if(matchOver)return;
-  stopClocks();
-  pendingAction="direct";
+  stopClocks();pendingAction="direct";
   $("winnerTitle").textContent="DECLARE MATCH WINNER";
   $("winnerText").textContent="Choose the winner of this match.";
   $("winnerNextBtn").classList.add("hidden");
@@ -635,160 +743,75 @@ function openDirectWinner(){
   $("directBlueBtn").classList.remove("hidden");
   $("winnerCloseBtn").classList.remove("hidden");
   $("winnerOverlay").classList.remove("hidden");
+  render();
 }
 
 function newMatch(){
   if(!confirm("Start a new match? Current scores will be cleared."))return;
-  stopClocks();
-
-  fighters=freshFighters();
-  round=1;
-  seconds=cfg.roundTime;
-  breakSeconds=cfg.breakTime;
-  inBreak=false;
-  matchOver=false;
-  history=[];
-  pendingAction="none";
-  matchStartedAt=new Date().toISOString();
-  matchSaved=false;
-
-  closeWinner();
-  $("settingsOverlay").classList.add("hidden");
-  render();
-  setStatus("New match ready.");
+  stopClocks();fighters=freshFighters();
+  round=1;seconds=cfg.roundTime;breakSeconds=cfg.breakTime;
+  inBreak=false;matchOver=false;history=[];pendingAction="none";
+  matchStartedAt=new Date().toISOString();matchSaved=false;lastWinnerText="";
+  closeWinner();$("settingsOverlay").classList.add("hidden");
+  setStatus("New match ready.");render();
 }
 
-/* HISTORY WINDOW */
 function formatDate(iso){
-  try{
-    return new Date(iso).toLocaleString();
-  }catch(error){
-    return iso||"Unknown date";
-  }
+  try{return new Date(iso).toLocaleString();}catch(error){return iso||"Unknown date";}
 }
-
-function safeText(value){
-  return String(value??"").replace(/[&<>"']/g,char=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[char]));
-}
-
 function renderHistory(){
   const records=readMatchHistory();
-  $("historySummary").textContent=
-    records.length+" saved match"+(records.length===1?"":"es");
-
-  const list=$("historyList");
-  list.replaceChildren();
-
-  if(records.length===0){
+  $("historySummary").textContent=records.length+" saved match"+(records.length===1?"":"es");
+  const list=$("historyList");list.replaceChildren();
+  if(!records.length){
     const empty=document.createElement("div");
     empty.className="empty-history";
     empty.textContent="No saved matches yet. Completed matches will appear here.";
-    list.appendChild(empty);
-    return;
+    list.appendChild(empty);return;
   }
-
   records.forEach((record,index)=>{
-    const card=document.createElement("article");
-    card.className="history-card";
-
-    const title=document.createElement("h3");
-    title.textContent="#"+(index+1)+" — "+formatDate(record.finishedAt);
-
-    const result=document.createElement("p");
-    result.className="result";
-    result.textContent=(record.winnerName||"Unknown")+" won";
-
+    const card=document.createElement("article");card.className="history-card";
+    const title=document.createElement("h3");title.textContent="#"+(index+1)+" — "+formatDate(record.finishedAt);
+    const result=document.createElement("p");result.className="result";result.textContent=(record.winnerName||"Unknown")+" won";
     const names=document.createElement("p");
-    names.textContent=(record.redName||"HONG")+" (Red) "+record.redScore+
-      " : "+record.blueScore+" (Blue) "+(record.blueName||"CHONG");
-
-    const rounds=document.createElement("p");
-    rounds.textContent="Round wins: "+record.redRounds+" - "+record.blueRounds+
-      " | "+record.format;
-
-    const gam=document.createElement("p");
-    gam.textContent="Total Gam-jeom: "+record.redTotalGam+
-      " - "+record.blueTotalGam;
-
-    const reason=document.createElement("p");
-    reason.textContent="Result: "+(record.reason||"Match completed");
-
-    card.append(title,result,names,rounds,gam,reason);
-    list.appendChild(card);
+    names.textContent=(record.redName||"HONG")+" (Red) "+record.redScore+" : "+record.blueScore+" (Blue) "+(record.blueName||"CHONG");
+    const rounds=document.createElement("p");rounds.textContent="Round wins: "+record.redRounds+" - "+record.blueRounds+" | "+record.format;
+    const gam=document.createElement("p");gam.textContent="Total Gam-jeom: "+record.redTotalGam+" - "+record.blueTotalGam;
+    const reason=document.createElement("p");reason.textContent="Result: "+(record.reason||"Match completed");
+    card.append(title,result,names,rounds,gam,reason);list.appendChild(card);
   });
 }
-
-function openHistory(){
-  renderHistory();
-  $("historyOverlay").classList.remove("hidden");
-}
-function closeHistory(){
-  $("historyOverlay").classList.add("hidden");
-}
-
+function openHistory(){renderHistory();$("historyOverlay").classList.remove("hidden");}
+function closeHistory(){$("historyOverlay").classList.add("hidden");}
 function exportHistoryCSV(){
   const records=readMatchHistory();
-  if(!records.length){
-    alert("There are no match records to export.");
-    return;
-  }
-
+  if(!records.length){alert("There are no match records to export.");return;}
   const columns=[
-    ["Date","finishedAt"],
-    ["Red Name","redName"],
-    ["Blue Name","blueName"],
-    ["Red Score","redScore"],
-    ["Blue Score","blueScore"],
-    ["Red Round Wins","redRounds"],
-    ["Blue Round Wins","blueRounds"],
-    ["Red Total Gam-jeom","redTotalGam"],
-    ["Blue Total Gam-jeom","blueTotalGam"],
-    ["Format","format"],
-    ["Winner","winnerName"],
-    ["Reason","reason"]
+    ["Date","finishedAt"],["Red Name","redName"],["Blue Name","blueName"],
+    ["Red Score","redScore"],["Blue Score","blueScore"],
+    ["Red Round Wins","redRounds"],["Blue Round Wins","blueRounds"],
+    ["Red Total Gam-jeom","redTotalGam"],["Blue Total Gam-jeom","blueTotalGam"],
+    ["Format","format"],["Winner","winnerName"],["Reason","reason"]
   ];
-
   const escapeCSV=value=>'"'+String(value??"").replace(/"/g,'""')+'"';
-  const rows=[
-    columns.map(col=>escapeCSV(col[0])).join(","),
-    ...records.map(record=>
-      columns.map(col=>escapeCSV(
-        col[1]==="finishedAt"?formatDate(record[col[1]]):record[col[1]]
-      )).join(",")
-    )
-  ];
-
-  const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{
-    type:"text/csv;charset=utf-8;"
-  });
+  const rows=[columns.map(col=>escapeCSV(col[0])).join(","),
+    ...records.map(record=>columns.map(col=>escapeCSV(
+      col[1]==="finishedAt"?formatDate(record[col[1]]):record[col[1]]
+    )).join(","))];
+  const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8;"});
   const url=URL.createObjectURL(blob);
   const link=document.createElement("a");
-  link.href=url;
-  link.download="taekwondo-match-history.csv";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+  link.href=url;link.download="taekwondo-match-history.csv";
+  document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
 }
-
 function clearMatchHistory(){
   const records=readMatchHistory();
-  if(!records.length){
-    alert("History is already empty.");
-    return;
-  }
-
+  if(!records.length){alert("History is already empty.");return;}
   if(!confirm("Delete all saved match history? This cannot be undone."))return;
-
   try{
     localStorage.removeItem(HISTORY_KEY);
-    renderHistory();
-    setStatus("Match history cleared.");
-  }catch(error){
-    alert("Unable to clear history in this browser.");
-  }
+    renderHistory();setStatus("Match history cleared.");
+  }catch(error){alert("Unable to clear history in this browser.");}
 }
 
 function openSettings(){
@@ -807,15 +830,12 @@ function openSettings(){
   $("setScoreSize").value=cfg.scoreSize;
   $("settingsOverlay").classList.remove("hidden");
 }
-function closeSettings(){
-  $("settingsOverlay").classList.add("hidden");
-}
+function closeSettings(){$("settingsOverlay").classList.add("hidden");}
 function saveSettings(){
   const num=(id,min,def)=>{
     const value=Number($(id).value);
     return Number.isFinite(value)?Math.max(min,value):def;
   };
-
   cfg.roundTime=num("setRoundTime",10,120);
   cfg.breakTime=num("setBreakTime",0,30);
   cfg.format=Number($("setFormat").value);
@@ -829,76 +849,68 @@ function saveSettings(){
   cfg.autoNext=$("setAutoNext").checked;
   cfg.sound=$("setSound").checked;
   cfg.scoreSize=$("setScoreSize").value;
-
   if(!running&&!inBreak)seconds=cfg.roundTime;
-  closeSettings();
-  render();
-  setStatus("Settings saved.");
+  closeSettings();setStatus("Settings saved.");render();
 }
 
 function undoLast(){
-  if(!history.length){
-    setStatus("Nothing to undo.");
-    return;
-  }
-
+  if(!history.length){setStatus("Nothing to undo.");return;}
   stopClocks();
   const old=JSON.parse(history.pop());
-  fighters=old.fighters;
-  round=old.round;
-  seconds=old.seconds;
-  breakSeconds=old.breakSeconds;
-  inBreak=old.inBreak;
-  matchOver=old.matchOver;
-
-  closeWinner();
-  render();
-  sound("undo");
-  setStatus("Last action undone.");
+  fighters=old.fighters;round=old.round;seconds=old.seconds;
+  breakSeconds=old.breakSeconds;inBreak=old.inBreak;matchOver=old.matchOver;
+  lastWinnerText="";
+  closeWinner();render();sound("undo");setStatus("Last action undone.");render();
 }
 
-/* Register each button handler once. */
-document.querySelectorAll("[data-side][data-type]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    addPoints(btn.dataset.side,btn.dataset.type);
+/* REFEREE BUTTONS */
+if(!isDisplayMode){
+  document.querySelectorAll("[data-side][data-type]").forEach(btn=>{
+    btn.addEventListener("click",()=>addPoints(btn.dataset.side,btn.dataset.type));
   });
-});
-document.querySelectorAll("[data-gam-side]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    changeGam(btn.dataset.gamSide,Number(btn.dataset.delta));
+  document.querySelectorAll("[data-gam-side]").forEach(btn=>{
+    btn.addEventListener("click",()=>changeGam(btn.dataset.gamSide,Number(btn.dataset.delta)));
   });
-});
 
-$("settingsBtn").addEventListener("click",openSettings);
-$("historyBtn").addEventListener("click",openHistory);
-$("startBtn").addEventListener("click",startTimer);
-$("pauseBtn").addEventListener("click",pauseTimer);
-$("endBtn").addEventListener("click",endRound);
-$("undoBtn").addEventListener("click",undoLast);
-$("newBtn").addEventListener("click",newMatch);
-$("directBtn").addEventListener("click",openDirectWinner);
-$("minusFive").addEventListener("click",()=>adjustTimer(-5));
-$("plusFive").addEventListener("click",()=>adjustTimer(5));
-$("startNextBtn").addEventListener("click",startNextRound);
-$("winnerNextBtn").addEventListener("click",winnerContinue);
-$("winnerCloseBtn").addEventListener("click",closeWinner);
+  $("settingsBtn").addEventListener("click",openSettings);
+  $("historyBtn").addEventListener("click",openHistory);
+  $("startBtn").addEventListener("click",startTimer);
+  $("pauseBtn").addEventListener("click",pauseTimer);
+  $("endBtn").addEventListener("click",endRound);
+  $("undoBtn").addEventListener("click",undoLast);
+  $("newBtn").addEventListener("click",newMatch);
+  $("directBtn").addEventListener("click",openDirectWinner);
+  $("minusFive").addEventListener("click",()=>adjustTimer(-5));
+  $("plusFive").addEventListener("click",()=>adjustTimer(5));
+  $("startNextBtn").addEventListener("click",startNextRound);
+  $("winnerNextBtn").addEventListener("click",winnerContinue);
+  $("winnerCloseBtn").addEventListener("click",closeWinner);
+  $("directRedBtn").addEventListener("click",()=>{
+    closeWinner();declareMatchWinner("red","Direct winner declared by referee.");
+  });
+  $("directBlueBtn").addEventListener("click",()=>{
+    closeWinner();declareMatchWinner("blue","Direct winner declared by referee.");
+  });
+  $("saveSettingsBtn").addEventListener("click",saveSettings);
+  $("cancelSettingsBtn").addEventListener("click",closeSettings);
+  $("closeHistoryBtn").addEventListener("click",closeHistory);
+  $("exportHistoryBtn").addEventListener("click",exportHistoryCSV);
+  $("clearHistoryBtn").addEventListener("click",clearMatchHistory);
 
-$("directRedBtn").addEventListener("click",()=>{
-  closeWinner();
-  declareMatchWinner("red","Direct winner declared by referee.");
-});
-$("directBlueBtn").addEventListener("click",()=>{
-  closeWinner();
-  declareMatchWinner("blue","Direct winner declared by referee.");
-});
+  $("tvOpenBtn").addEventListener("click",()=>{
+    const url=new URL(location.href);
+    url.searchParams.set("display","1");
+    window.open(url.href,"TaekwondoTVDisplay");
+  });
 
-$("saveSettingsBtn").addEventListener("click",saveSettings);
-$("cancelSettingsBtn").addEventListener("click",closeSettings);
-$("closeHistoryBtn").addEventListener("click",closeHistory);
-$("exportHistoryBtn").addEventListener("click",exportHistoryCSV);
-$("clearHistoryBtn").addEventListener("click",clearMatchHistory);
+  // Keep TV updated even when fighter names are edited directly.
+  ["redName","blueName"].forEach(id=>{
+    $(id).addEventListener("input",publishLiveState);
+    $(id).addEventListener("change",publishLiveState);
+  });
 
-render();
+  render();
+}
 </script>
 </body>
 </html>
