@@ -7,148 +7,503 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#10131a;color:#fff;font-family:Arial,Helvetica,sans-serif}
+body{
+  margin:0;
+  background:#10131a;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif
+}
 button,input,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:9px;padding:10px 12px;font-weight:bold;color:white;background:#394150}
+button{
+  cursor:pointer;
+  border:0;
+  border-radius:9px;
+  padding:10px 12px;
+  font-weight:bold;
+  color:white;
+  background:#394150
+}
 button:active{transform:scale(.97)}
 button:disabled{opacity:.45;cursor:not-allowed}
-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#080a0f;gap:10px}
-header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
-.header-actions{display:flex;gap:6px;flex-wrap:wrap}
-.small-btn{font-size:13px;padding:9px}
-.board{display:grid;grid-template-columns:1fr minmax(150px,25%) 1fr;min-height:calc(100vh - 58px);gap:8px;padding:8px}
-.fighter{border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;min-width:0}
-.red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
-.blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
-.fighter-name{width:100%;font-weight:bold;font-size:clamp(18px,3vw,30px);text-align:center;background:#0003;color:white;border:1px solid #ffffff55;border-radius:8px;padding:8px}
-.score{font-size:clamp(80px,17vw,180px);font-weight:900;line-height:1.1;text-shadow:0 4px 8px #0005}
-.score.flash{animation:flash .3s ease}
-@keyframes flash{50%{transform:scale(1.12);color:#ffd54f}}
-.points{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin:8px 0}
-.points button{background:#111a;font-size:clamp(12px,1.5vw,17px);padding:14px 4px;min-height:55px}
-.points button span{display:block;font-size:22px;margin-top:4px}
-.gam-box{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0;width:100%}
-.gam-box button{font-size:23px;min-width:48px;min-height:48px;background:#111a}
-.gam-count{font-size:25px;font-weight:900;min-width:30px;text-align:center}
-.gam-label{font-size:13px;font-weight:bold}
-.total-gam{font-size:12px;background:#0003;padding:5px 9px;border-radius:6px}
-.round-wins{font-size:14px;text-align:center;color:#ddd}
-.center{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;background:#1b202a;border-radius:14px;padding:12px 8px}
-.round-label{font-size:17px;font-weight:bold;color:#ffd54f;text-align:center}
-.timer{font-size:clamp(38px,7vw,75px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:1px}
-.timer-adjust{display:flex;gap:8px}
-.timer-adjust button{font-size:14px}
-.center-actions{width:100%;display:grid;grid-template-columns:1fr;gap:7px}
-.center-actions button{min-height:43px}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 14px;
+  background:#080a0f;
+  gap:10px
+}
+header h1{
+  font-size:clamp(16px,2.5vw,26px);
+  margin:0
+}
+.header-actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap
+}
+.small-btn{
+  font-size:13px;
+  padding:9px
+}
+
+.board{
+  display:grid;
+  grid-template-columns:1fr minmax(150px,25%) 1fr;
+  min-height:calc(100vh - 58px);
+  gap:8px;
+  padding:8px
+}
+
+.fighter{
+  border-radius:14px;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:0
+}
+.red{
+  background:linear-gradient(160deg,#b71c1c,#ef5350)
+}
+.blue{
+  background:linear-gradient(160deg,#0d47a1,#2196f3)
+}
+.fighter-name{
+  width:100%;
+  font-weight:bold;
+  font-size:clamp(18px,3vw,30px);
+  text-align:center;
+  background:#0003;
+  color:white;
+  border:1px solid #ffffff55;
+  border-radius:8px;
+  padding:8px
+}
+.score{
+  font-size:clamp(80px,17vw,180px);
+  font-weight:900;
+  line-height:1.1;
+  text-shadow:0 4px 8px #0005
+}
+.score.flash{
+  animation:flash .3s ease
+}
+@keyframes flash{
+  50%{
+    transform:scale(1.12);
+    color:#ffd54f
+  }
+}
+
+.points{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  width:100%;
+  margin:8px 0
+}
+.points button{
+  background:#111a;
+  font-size:clamp(12px,1.5vw,17px);
+  padding:14px 4px;
+  min-height:55px
+}
+.points button span{
+  display:block;
+  font-size:22px;
+  margin-top:4px
+}
+
+.gam-box{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:10px 0;
+  width:100%
+}
+.gam-box button{
+  font-size:23px;
+  min-width:48px;
+  min-height:48px;
+  background:#111a
+}
+.gam-count{
+  font-size:25px;
+  font-weight:900;
+  min-width:30px;
+  text-align:center
+}
+.gam-label{
+  font-size:13px;
+  font-weight:bold
+}
+.total-gam{
+  font-size:12px;
+  background:#0003;
+  padding:5px 9px;
+  border-radius:6px
+}
+.round-wins{
+  font-size:14px;
+  text-align:center;
+  color:#ddd
+}
+
+.center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+  background:#1b202a;
+  border-radius:14px;
+  padding:12px 8px
+}
+.round-label{
+  font-size:17px;
+  font-weight:bold;
+  color:#ffd54f;
+  text-align:center
+}
+.timer{
+  font-size:clamp(38px,7vw,75px);
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:1px
+}
+.timer-adjust{
+  display:flex;
+  gap:8px
+}
+.timer-adjust button{
+  font-size:14px
+}
+.center-actions{
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:7px
+}
+.center-actions button{
+  min-height:43px
+}
 .start{background:#2e7d32}
 .pause{background:#ef6c00}
 .end{background:#b71c1c}
 .direct{background:#6a1b9a}
 .undo{background:#455a64}
 .new{background:#37474f}
-.break-box{width:100%;text-align:center;border:1px solid #ffffff22;border-radius:10px;padding:9px}
-.break-clock{font-size:28px;font-weight:bold;color:#ffd54f}
+
+.break-box{
+  width:100%;
+  text-align:center;
+  border:1px solid #ffffff22;
+  border-radius:10px;
+  padding:9px
+}
+.break-clock{
+  font-size:28px;
+  font-weight:bold;
+  color:#ffd54f
+}
+
 .hidden{display:none!important}
-.status{font-size:12px;color:#cfd8dc;text-align:center;line-height:1.4}
-.overlay{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
-.modal{width:min(600px,100%);max-height:90vh;overflow:auto;background:#202631;border:1px solid #ffffff33;border-radius:16px;padding:22px;text-align:center}
-.modal h2{font-size:clamp(25px,5vw,40px);margin:8px 0 14px}
-.modal p{line-height:1.5}
-.modal-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+.status{
+  font-size:12px;
+  color:#cfd8dc;
+  text-align:center;
+  line-height:1.4
+}
+
+.firebase-status{
+  width:100%;
+  padding:7px 8px;
+  border-radius:7px;
+  font-size:11px;
+  text-align:center;
+  background:#0005;
+  color:#cfd8dc
+}
+.firebase-status.connected{
+  color:#b9f6ca
+}
+.firebase-status.error{
+  color:#ffb4ab
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:#000c;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:10
+}
+.modal{
+  width:min(600px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#202631;
+  border:1px solid #ffffff33;
+  border-radius:16px;
+  padding:22px;
+  text-align:center
+}
+.modal h2{
+  font-size:clamp(25px,5vw,40px);
+  margin:8px 0 14px
+}
+.modal p{
+  line-height:1.5
+}
+.modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:16px
+}
 .settings{text-align:left}
 .settings h2{text-align:center}
-.settings label{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0;font-size:14px}
-.settings input,.settings select{width:130px;max-width:50%;padding:8px;border-radius:6px;border:1px solid #777;background:#111821;color:white}
+.settings label{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin:12px 0;
+  font-size:14px
+}
+.settings input,
+.settings select{
+  width:130px;
+  max-width:50%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #777;
+  background:#111821;
+  color:white
+}
 .settings input[type=checkbox]{width:22px}
-.history-list{display:grid;gap:10px;text-align:left}
-.history-card{background:#111821;border:1px solid #ffffff22;border-radius:10px;padding:12px}
-.history-card h3{margin:0 0 8px;font-size:16px}
-.history-card p{margin:5px 0;font-size:13px;color:#d7dce5}
-.history-card .result{font-size:16px;font-weight:bold;color:#ffd54f}
-.empty-history{padding:24px 10px;text-align:center;color:#cfd8dc}
 
-/* TV DISPLAY: separate display mode, existing referee design stays intact */
+.history-list{
+  display:grid;
+  gap:10px;
+  text-align:left
+}
+.history-card{
+  background:#111821;
+  border:1px solid #ffffff22;
+  border-radius:10px;
+  padding:12px
+}
+.history-card h3{
+  margin:0 0 8px;
+  font-size:16px
+}
+.history-card p{
+  margin:5px 0;
+  font-size:13px;
+  color:#d7dce5
+}
+.history-card .result{
+  font-size:16px;
+  font-weight:bold;
+  color:#ffd54f
+}
+.empty-history{
+  padding:24px 10px;
+  text-align:center;
+  color:#cfd8dc
+}
+
+/* TV DISPLAY */
 #tvScreen{display:none}
-body.display-mode{background:#080a0f;overflow:hidden}
+
+body.display-mode{
+  background:#080a0f;
+  overflow:hidden
+}
 body.display-mode header,
 body.display-mode .board,
-body.display-mode .overlay{display:none!important}
+body.display-mode .overlay{
+  display:none!important
+}
 body.display-mode #tvScreen{
   display:flex;
   flex-direction:column;
   min-height:100vh;
   width:100%;
   padding:clamp(10px,2vw,30px);
-  gap:clamp(10px,2vh,24px);
+  gap:clamp(10px,2vh,24px)
 }
+
 .tv-top{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;font-weight:bold;color:#dce3ed;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  font-weight:bold;
+  color:#dce3ed;
   font-size:clamp(14px,2vw,25px)
 }
-.tv-match-title{color:#ffd54f;letter-spacing:2px}
+.tv-match-title{
+  color:#ffd54f;
+  letter-spacing:2px
+}
 .tv-round{
-  text-align:center;font-weight:900;color:#ffd54f;
+  text-align:center;
+  font-weight:900;
+  color:#ffd54f;
   font-size:clamp(22px,4vw,48px)
 }
 .tv-main{
-  flex:1;display:grid;grid-template-columns:1fr minmax(180px,30%) 1fr;
-  gap:clamp(8px,1.5vw,24px);min-height:0
+  flex:1;
+  display:grid;
+  grid-template-columns:1fr minmax(180px,30%) 1fr;
+  gap:clamp(8px,1.5vw,24px);
+  min-height:0
 }
 .tv-fighter{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-radius:18px;padding:clamp(8px,2vw,25px);min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  padding:clamp(8px,2vw,25px);
+  min-width:0;
   text-align:center
 }
-.tv-red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
-.tv-blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
+.tv-red{
+  background:linear-gradient(160deg,#b71c1c,#ef5350)
+}
+.tv-blue{
+  background:linear-gradient(160deg,#0d47a1,#2196f3)
+}
 .tv-name{
-  width:100%;overflow-wrap:anywhere;font-size:clamp(22px,4vw,55px);
-  font-weight:900;text-shadow:0 3px 8px #0005
+  width:100%;
+  overflow-wrap:anywhere;
+  font-size:clamp(22px,4vw,55px);
+  font-weight:900;
+  text-shadow:0 3px 8px #0005
 }
 .tv-score{
-  font-size:clamp(90px,22vw,300px);font-weight:900;
-  line-height:1.1;text-shadow:0 6px 12px #0006
+  font-size:clamp(90px,22vw,300px);
+  font-weight:900;
+  line-height:1.1;
+  text-shadow:0 6px 12px #0006
 }
-.tv-wins{font-size:clamp(16px,2.3vw,30px);font-weight:bold}
+.tv-wins{
+  font-size:clamp(16px,2.3vw,30px);
+  font-weight:bold
+}
 .tv-gam{
-  margin-top:10px;padding:8px 12px;border-radius:8px;
-  background:#0004;font-size:clamp(14px,2vw,25px);font-weight:bold
+  margin-top:10px;
+  padding:8px 12px;
+  border-radius:8px;
+  background:#0004;
+  font-size:clamp(14px,2vw,25px);
+  font-weight:bold
 }
 .tv-clock-panel{
-  background:#1b202a;border:1px solid #ffffff22;border-radius:18px;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:10px;gap:clamp(10px,2vh,24px)
+  background:#1b202a;
+  border:1px solid #ffffff22;
+  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+  gap:clamp(10px,2vh,24px)
 }
 .tv-clock{
-  font-size:clamp(36px,7vw,100px);font-weight:900;
+  font-size:clamp(36px,7vw,100px);
+  font-weight:900;
   font-variant-numeric:tabular-nums
 }
-.tv-break{font-size:clamp(15px,2vw,27px);color:#ffd54f;font-weight:bold;text-align:center}
-.tv-footer{text-align:center;color:#cfd8dc;font-size:clamp(12px,1.5vw,20px)}
-.tv-winner{
-  color:#ffd54f;font-size:clamp(20px,3vw,40px);
-  font-weight:900;text-align:center
+.tv-break{
+  font-size:clamp(15px,2vw,27px);
+  color:#ffd54f;
+  font-weight:bold;
+  text-align:center
 }
+.tv-footer{
+  text-align:center;
+  color:#cfd8dc;
+  font-size:clamp(12px,1.5vw,20px)
+}
+.tv-winner{
+  color:#ffd54f;
+  font-size:clamp(20px,3vw,40px);
+  font-weight:900;
+  text-align:center
+}
+.tv-firebase{
+  font-size:12px;
+  color:#b9f6ca;
+  text-align:center
+}
+
 @media(max-width:650px){
-  header{padding:8px;align-items:flex-start}
+  header{
+    padding:8px;
+    align-items:flex-start
+  }
   header h1{font-size:16px}
-  .small-btn{font-size:11px;padding:8px}
-  .board{grid-template-columns:1fr 1fr;gap:6px;padding:6px}
-  .center{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:1fr 1fr;align-items:center}
-  .center .round-label,.center .timer,.center .timer-adjust,.center .status{grid-column:1/-1}
-  .center-actions{grid-template-columns:repeat(2,1fr)}
+  .small-btn{
+    font-size:11px;
+    padding:8px
+  }
+  .board{
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    padding:6px
+  }
+  .center{
+    grid-column:1/-1;
+    grid-row:1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:center
+  }
+  .center .round-label,
+  .center .timer,
+  .center .timer-adjust,
+  .center .status,
+  .center .firebase-status{
+    grid-column:1/-1
+  }
+  .center-actions{
+    grid-template-columns:repeat(2,1fr)
+  }
   .fighter{padding:8px 5px}
   .score{font-size:clamp(70px,19vw,120px)}
-  .points button{padding:10px 2px;min-height:48px}
+  .points button{
+    padding:10px 2px;
+    min-height:48px
+  }
   .gam-box{gap:5px}
-  .gam-box button{min-width:38px;min-height:42px}
+  .gam-box button{
+    min-width:38px;
+    min-height:42px
+  }
   .modal{padding:15px}
-  .tv-main{grid-template-columns:1fr minmax(85px,25%) 1fr;gap:5px}
+  .tv-main{
+    grid-template-columns:1fr minmax(85px,25%) 1fr;
+    gap:5px
+  }
   .tv-fighter{padding:5px}
   .tv-score{font-size:clamp(55px,18vw,120px)}
   .tv-name{font-size:clamp(15px,4vw,25px)}
-  .tv-gam{font-size:12px;padding:5px}
+  .tv-gam{
+    font-size:12px;
+    padding:5px
+  }
   .tv-wins{font-size:12px}
   .tv-clock{font-size:clamp(25px,8vw,42px)}
 }
@@ -156,8 +511,10 @@ body.display-mode #tvScreen{
 </head>
 
 <body>
+
 <header>
   <h1>🥋 TAEKWONDO SCOREBOARD</h1>
+
   <div class="header-actions">
     <button class="small-btn" id="tvOpenBtn">📺 TV DISPLAY</button>
     <button class="small-btn" id="historyBtn">📋 HISTORY</button>
@@ -166,751 +523,3638 @@ body.display-mode #tvScreen{
 </header>
 
 <main class="board">
+
+  <!-- RED -->
   <section class="fighter red">
-    <input class="fighter-name" id="redName" value="HONG" aria-label="Red fighter name">
+
+    <input
+      class="fighter-name"
+      id="redName"
+      value="HONG"
+      aria-label="Red fighter name"
+    >
+
     <div class="score" id="redScore">0</div>
+
     <div class="points">
-      <button data-side="red" data-type="punch">PUNCH<span id="redPunchLabel">1</span></button>
-      <button data-side="red" data-type="body">BODY<span id="redBodyLabel">2</span></button>
-      <button data-side="red" data-type="head">HEAD<span id="redHeadLabel">3</span></button>
+      <button data-side="red" data-type="punch">
+        PUNCH<span id="redPunchLabel">1</span>
+      </button>
+
+      <button data-side="red" data-type="body">
+        BODY<span id="redBodyLabel">2</span>
+      </button>
+
+      <button data-side="red" data-type="head">
+        HEAD<span id="redHeadLabel">3</span>
+      </button>
     </div>
+
     <div class="gam-label">GAM-JEOM — THIS ROUND</div>
+
     <div class="gam-box">
       <button data-gam-side="red" data-delta="-1">−</button>
       <div class="gam-count" id="redGam">0</div>
       <button data-gam-side="red" data-delta="1">+</button>
     </div>
-    <div class="total-gam">Match total: <b id="redTotalGam">0</b></div>
-    <div class="round-wins">Rounds won: <b id="redWins">0</b></div>
+
+    <div class="total-gam">
+      Match total: <b id="redTotalGam">0</b>
+    </div>
+
+    <div class="round-wins">
+      Rounds won: <b id="redWins">0</b>
+    </div>
+
   </section>
 
+
+  <!-- CENTER -->
   <section class="center">
-    <div class="round-label" id="roundLabel">ROUND 1</div>
-    <div class="timer" id="timer">02:00</div>
+
+    <div class="round-label" id="roundLabel">
+      ROUND 1
+    </div>
+
+    <div class="timer" id="timer">
+      02:00
+    </div>
+
     <div class="timer-adjust">
       <button id="minusFive">−5 SEC</button>
       <button id="plusFive">+5 SEC</button>
     </div>
+
     <div class="break-box hidden" id="breakBox">
       <div>BREAK TIME</div>
-      <div class="break-clock" id="breakClock">00:30</div>
-      <button id="startNextBtn">START NEXT ROUND</button>
+
+      <div class="break-clock" id="breakClock">
+        00:30
+      </div>
+
+      <button id="startNextBtn">
+        START NEXT ROUND
+      </button>
     </div>
+
     <div class="center-actions">
-      <button class="start" id="startBtn">▶ START</button>
-      <button class="pause" id="pauseBtn">Ⅱ PAUSE</button>
-      <button class="end" id="endBtn">■ END ROUND</button>
-      <button class="undo" id="undoBtn">↶ UNDO LAST</button>
-      <button class="direct" id="directBtn">🏆 DIRECT WINNER</button>
-      <button class="new" id="newBtn">↻ NEW MATCH</button>
+
+      <button class="start" id="startBtn">
+        ▶ START
+      </button>
+
+      <button class="pause" id="pauseBtn">
+        Ⅱ PAUSE
+      </button>
+
+      <button class="end" id="endBtn">
+        ■ END ROUND
+      </button>
+
+      <button class="undo" id="undoBtn">
+        ↶ UNDO LAST
+      </button>
+
+      <button class="direct" id="directBtn">
+        🏆 DIRECT WINNER
+      </button>
+
+      <button class="new" id="newBtn">
+        ↻ NEW MATCH
+      </button>
+
     </div>
-    <div class="status" id="status">Ready to start</div>
+
+    <div class="status" id="status">
+      Ready to start
+    </div>
+
+    <div class="firebase-status" id="firebaseStatus">
+      🔄 Firebase connecting...
+    </div>
+
   </section>
 
+
+  <!-- BLUE -->
   <section class="fighter blue">
-    <input class="fighter-name" id="blueName" value="CHONG" aria-label="Blue fighter name">
+
+    <input
+      class="fighter-name"
+      id="blueName"
+      value="CHONG"
+      aria-label="Blue fighter name"
+    >
+
     <div class="score" id="blueScore">0</div>
+
     <div class="points">
-      <button data-side="blue" data-type="punch">PUNCH<span id="bluePunchLabel">1</span></button>
-      <button data-side="blue" data-type="body">BODY<span id="blueBodyLabel">2</span></button>
-      <button data-side="blue" data-type="head">HEAD<span id="blueHeadLabel">3</span></button>
+
+      <button data-side="blue" data-type="punch">
+        PUNCH<span id="bluePunchLabel">1</span>
+      </button>
+
+      <button data-side="blue" data-type="body">
+        BODY<span id="blueBodyLabel">2</span>
+      </button>
+
+      <button data-side="blue" data-type="head">
+        HEAD<span id="blueHeadLabel">3</span>
+      </button>
+
     </div>
-    <div class="gam-label">GAM-JEOM — THIS ROUND</div>
+
+    <div class="gam-label">
+      GAM-JEOM — THIS ROUND
+    </div>
+
     <div class="gam-box">
       <button data-gam-side="blue" data-delta="-1">−</button>
       <div class="gam-count" id="blueGam">0</div>
       <button data-gam-side="blue" data-delta="1">+</button>
     </div>
-    <div class="total-gam">Match total: <b id="blueTotalGam">0</b></div>
-    <div class="round-wins">Rounds won: <b id="blueWins">0</b></div>
+
+    <div class="total-gam">
+      Match total: <b id="blueTotalGam">0</b>
+    </div>
+
+    <div class="round-wins">
+      Rounds won: <b id="blueWins">0</b>
+    </div>
+
   </section>
+
 </main>
 
-<!-- TV-only scoreboard -->
+
+<!-- ================= TV DISPLAY ================= -->
+
 <section id="tvScreen">
+
   <div class="tv-top">
+
     <span>🥋 TAEKWONDO</span>
-    <span class="tv-match-title">LIVE SCOREBOARD</span>
-    <span id="tvFormat">BEST OF 3</span>
+
+    <span class="tv-match-title">
+      LIVE SCOREBOARD
+    </span>
+
+    <span id="tvFormat">
+      BEST OF 3
+    </span>
+
   </div>
 
-  <div class="tv-round" id="tvRound">ROUND 1</div>
+  <div class="tv-round" id="tvRound">
+    ROUND 1
+  </div>
 
   <div class="tv-main">
+
+    <!-- TV RED -->
     <section class="tv-fighter tv-red">
-      <div class="tv-name" id="tvRedName">HONG</div>
-      <div class="tv-score" id="tvRedScore">0</div>
-      <div class="tv-wins">ROUNDS WON: <span id="tvRedWins">0</span></div>
-      <div class="tv-gam">GAM-JEOM: <span id="tvRedGam">0</span></div>
+
+      <div class="tv-name" id="tvRedName">
+        HONG
+      </div>
+
+      <div class="tv-score" id="tvRedScore">
+        0
+      </div>
+
+      <div class="tv-wins">
+        ROUNDS WON:
+        <span id="tvRedWins">0</span>
+      </div>
+
+      <div class="tv-gam">
+        GAM-JEOM:
+        <span id="tvRedGam">0</span>
+      </div>
+
     </section>
 
+
+    <!-- TV CENTER -->
     <section class="tv-clock-panel">
-      <div class="tv-clock" id="tvTimer">02:00</div>
-      <div class="tv-break hidden" id="tvBreak">BREAK</div>
+
+      <div class="tv-clock" id="tvTimer">
+        02:00
+      </div>
+
+      <div class="tv-break hidden" id="tvBreak">
+        BREAK
+      </div>
+
       <div class="tv-winner" id="tvWinner"></div>
-      <div class="tv-footer" id="tvStatus">READY</div>
+
+      <div class="tv-footer" id="tvStatus">
+        READY
+      </div>
+
+      <div class="tv-firebase" id="tvFirebase">
+        ● CONNECTING
+      </div>
+
     </section>
 
+
+    <!-- TV BLUE -->
     <section class="tv-fighter tv-blue">
-      <div class="tv-name" id="tvBlueName">CHONG</div>
-      <div class="tv-score" id="tvBlueScore">0</div>
-      <div class="tv-wins">ROUNDS WON: <span id="tvBlueWins">0</span></div>
-      <div class="tv-gam">GAM-JEOM: <span id="tvBlueGam">0</span></div>
+
+      <div class="tv-name" id="tvBlueName">
+        CHONG
+      </div>
+
+      <div class="tv-score" id="tvBlueScore">
+        0
+      </div>
+
+      <div class="tv-wins">
+        ROUNDS WON:
+        <span id="tvBlueWins">0</span>
+      </div>
+
+      <div class="tv-gam">
+        GAM-JEOM:
+        <span id="tvBlueGam">0</span>
+      </div>
+
     </section>
+
   </div>
 
-  <div class="tv-footer">OFFICIAL SCOREBOARD</div>
+  <div class="tv-footer">
+    OFFICIAL SCOREBOARD
+  </div>
+
 </section>
 
+
+<!-- ================= WINNER ================= -->
+
 <div class="overlay hidden" id="winnerOverlay">
+
   <div class="modal">
-    <h2 id="winnerTitle">ROUND WINNER</h2>
+
+    <h2 id="winnerTitle">
+      ROUND WINNER
+    </h2>
+
     <p id="winnerText"></p>
+
     <div class="modal-actions">
-      <button class="start" id="winnerNextBtn">NEXT ROUND</button>
-      <button id="directRedBtn" class="hidden">RED WINS</button>
-      <button id="directBlueBtn" class="hidden">BLUE WINS</button>
-      <button id="winnerCloseBtn">CLOSE</button>
+
+      <button class="start" id="winnerNextBtn">
+        NEXT ROUND
+      </button>
+
+      <button id="directRedBtn" class="hidden">
+        RED WINS
+      </button>
+
+      <button id="directBlueBtn" class="hidden">
+        BLUE WINS
+      </button>
+
+      <button id="winnerCloseBtn">
+        CLOSE
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
+
+<!-- ================= SETTINGS ================= -->
+
 <div class="overlay hidden" id="settingsOverlay">
+
   <div class="modal settings">
+
     <h2>MATCH SETTINGS</h2>
-    <label>Round time (seconds)<input id="setRoundTime" type="number" min="10" value="120"></label>
-    <label>Break time (seconds)<input id="setBreakTime" type="number" min="0" value="30"></label>
-    <label>Match format
+
+    <label>
+      Round time (seconds)
+      <input id="setRoundTime" type="number" min="10" value="120">
+    </label>
+
+    <label>
+      Break time (seconds)
+      <input id="setBreakTime" type="number" min="0" value="30">
+    </label>
+
+    <label>
+      Match format
+
       <select id="setFormat">
         <option value="1">Best of 1</option>
         <option value="3" selected>Best of 3</option>
         <option value="5">Best of 5</option>
       </select>
     </label>
-    <label>Punch points<input id="setPunch" type="number" min="0" value="1"></label>
-    <label>Body points<input id="setBody" type="number" min="0" value="2"></label>
-    <label>Head points<input id="setHead" type="number" min="0" value="3"></label>
-    <label>Point gap (0 = off)<input id="setGap" type="number" min="0" value="12"></label>
-    <label>Target score (0 = off)<input id="setTarget" type="number" min="0" value="0"></label>
-    <label>Gam-jeom limit for match loss<input id="setGamLimit" type="number" min="1" value="10"></label>
-    <label>Round win by 5 Gam-jeom (Best of 3/5)<input id="setRoundGam" type="checkbox" checked></label>
-    <label>Auto-start next round after break<input id="setAutoNext" type="checkbox"></label>
-    <label>Sound effects<input id="setSound" type="checkbox" checked></label>
-    <label>Score size
+
+    <label>
+      Punch points
+      <input id="setPunch" type="number" min="0" value="1">
+    </label>
+
+    <label>
+      Body points
+      <input id="setBody" type="number" min="0" value="2">
+    </label>
+
+    <label>
+      Head points
+      <input id="setHead" type="number" min="0" value="3">
+    </label>
+
+    <label>
+      Point gap (0 = off)
+      <input id="setGap" type="number" min="0" value="12">
+    </label>
+
+    <label>
+      Target score (0 = off)
+      <input id="setTarget" type="number" min="0" value="0">
+    </label>
+
+    <label>
+      Gam-jeom limit for match loss
+      <input id="setGamLimit" type="number" min="1" value="10">
+    </label>
+
+    <label>
+      Round win by 5 Gam-jeom (Best of 3/5)
+      <input id="setRoundGam" type="checkbox" checked>
+    </label>
+
+    <label>
+      Auto-start next round after break
+      <input id="setAutoNext" type="checkbox">
+    </label>
+
+    <label>
+      Sound effects
+      <input id="setSound" type="checkbox" checked>
+    </label>
+
+    <label>
+      Score size
+
       <select id="setScoreSize">
         <option value="small">Small</option>
         <option value="medium" selected>Medium</option>
         <option value="large">Large</option>
       </select>
+
     </label>
+
     <div class="modal-actions">
-      <button class="start" id="saveSettingsBtn">SAVE SETTINGS</button>
-      <button id="cancelSettingsBtn">CANCEL</button>
+
+      <button class="start" id="saveSettingsBtn">
+        SAVE SETTINGS
+      </button>
+
+      <button id="cancelSettingsBtn">
+        CANCEL
+      </button>
+
     </div>
+
   </div>
+
 </div>
+
+
+<!-- ================= HISTORY ================= -->
 
 <div class="overlay hidden" id="historyOverlay">
+
   <div class="modal">
+
     <h2>📋 MATCH HISTORY</h2>
+
     <p id="historySummary"></p>
+
     <div class="history-list" id="historyList"></div>
+
     <div class="modal-actions">
-      <button class="export-btn" id="exportHistoryBtn">EXPORT CSV</button>
-      <button class="delete-btn" id="clearHistoryBtn">CLEAR HISTORY</button>
-      <button id="closeHistoryBtn">CLOSE</button>
+
+      <button id="exportHistoryBtn">
+        EXPORT CSV
+      </button>
+
+      <button id="clearHistoryBtn">
+        CLEAR HISTORY
+      </button>
+
+      <button id="closeHistoryBtn">
+        CLOSE
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
-<script>
-"use strict";
 
-const $ = id => document.getElementById(id);
-const HISTORY_KEY="taekwondoScoreboardMatchHistory_v1";
-const LIVE_KEY="taekwondoScoreboardLiveState_v1";
-const isDisplayMode=new URLSearchParams(location.search).get("display")==="1";
+<!-- =========================================================
+     FIREBASE
+     ========================================================= -->
 
-if(isDisplayMode){
-  document.body.classList.add("display-mode");
-  document.title="Taekwondo Live TV Scoreboard";
-}
+<script type="module">
 
-let cfg={
-  roundTime:120,breakTime:30,format:3,
-  punch:1,body:2,head:3,gap:12,target:0,
-  gamLimit:10,roundGam:true,autoNext:false,
-  sound:true,scoreSize:"medium"
+/*
+==============================================================
+ FIREBASE CONFIGURATION
+==============================================================
+
+Firebase Console:
+
+Project Settings
+      ↓
+Your apps
+      ↓
+Web app
+      ↓
+SDK setup and configuration
+
+Wahan se values yahan paste karo.
+==============================================================
+*/
+
+const firebaseConfig = {
+
+  apiKey: "PASTE_YOUR_FIREBASE_API_KEY",
+
+  authDomain:
+    "taekwondo-referee-system.firebaseapp.com",
+
+  databaseURL:
+    "https://taekwondo-referee-system-default-rtdb.firebaseio.com",
+
+  projectId:
+    "taekwondo-referee-system",
+
+  storageBucket:
+    "taekwondo-referee-system.firebasestorage.app",
+
+  messagingSenderId:
+    "PASTE_YOUR_MESSAGING_SENDER_ID",
+
+  appId:
+    "PASTE_YOUR_FIREBASE_APP_ID"
+
 };
 
-function freshFighters(){
-  return {
-    red:{score:0,gam:0,totalGam:0,wins:0},
-    blue:{score:0,gam:0,totalGam:0,wins:0}
-  };
-}
 
-let fighters=freshFighters();
-let round=1,seconds=cfg.roundTime,breakSeconds=cfg.breakTime;
-let timerId=null,breakId=null,running=false,inBreak=false,matchOver=false;
-let history=[],pendingAction="none",audioContext=null;
-let matchStartedAt=new Date().toISOString(),matchSaved=false;
-let lastWinnerText="";
+/* Firebase imports */
 
-function fighterName(side){
-  return $(side+"Name").value.trim()||(side==="red"?"HONG":"CHONG");
-}
-function opponent(side){return side==="red"?"blue":"red";}
-function requiredWins(){return Math.ceil(cfg.format/2);}
-function fmt(value){
-  const s=Math.max(0,Math.floor(value));
-  return String(Math.floor(s/60)).padStart(2,"0")+":"+
-    String(s%60).padStart(2,"0");
-}
-function setStatus(message){$("status").textContent=message;}
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 
-function snapshot(){
-  history.push(JSON.stringify({fighters,round,seconds,breakSeconds,inBreak,matchOver}));
-  if(history.length>100)history.shift();
-}
-function stopClocks(){
-  if(timerId!==null)clearInterval(timerId);
-  if(breakId!==null)clearInterval(breakId);
-  timerId=null;breakId=null;running=false;
-}
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-/* LIVE DISPLAY SYNC */
-function makeLiveState(){
-  return {
-    redName:fighterName("red"),
-    blueName:fighterName("blue"),
-    redScore:fighters.red.score,
-    blueScore:fighters.blue.score,
-    redGam:fighters.red.gam,
-    blueGam:fighters.blue.gam,
-    redTotalGam:fighters.red.totalGam,
-    blueTotalGam:fighters.blue.totalGam,
-    redWins:fighters.red.wins,
-    blueWins:fighters.blue.wins,
-    round:round,
-    seconds:seconds,
-    breakSeconds:breakSeconds,
-    inBreak:inBreak,
-    running:running,
-    matchOver:matchOver,
-    format:cfg.format,
-    status:$("status") ? $("status").textContent : "READY",
-    winner:lastWinnerText,
-    updatedAt:Date.now()
-  };
-}
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-function publishLiveState(){
-  if(isDisplayMode)return;
-  try{
-    const data=JSON.stringify(makeLiveState());
-    localStorage.setItem(LIVE_KEY,data);
-    if(liveChannel){
-      liveChannel.postMessage(JSON.parse(data));
-    }
-  }catch(error){
-    console.warn("Live display sync unavailable",error);
-  }
-}
 
-function renderTV(data){
-  if(!data)return;
-  $("tvRedName").textContent=data.redName||"HONG";
-  $("tvBlueName").textContent=data.blueName||"CHONG";
-  $("tvRedScore").textContent=data.redScore??0;
-  $("tvBlueScore").textContent=data.blueScore??0;
-  $("tvRedWins").textContent=data.redWins??0;
-  $("tvBlueWins").textContent=data.blueWins??0;
-  $("tvRedGam").textContent=data.redGam??0;
-  $("tvBlueGam").textContent=data.blueGam??0;
-  $("tvRound").textContent="ROUND "+(data.round||1);
-  $("tvTimer").textContent=fmt(data.seconds??0);
-  $("tvFormat").textContent="BEST OF "+(data.format||3);
-  $("tvBreak").textContent="BREAK "+fmt(data.breakSeconds??0);
-  $("tvBreak").classList.toggle("hidden",!data.inBreak);
-  $("tvWinner").textContent=data.winner||"";
-  $("tvStatus").textContent=data.status||"READY";
-}
+/* =========================================================
+   BASIC VARIABLES
+   ========================================================= */
 
-function readSavedLiveState(){
-  try{
-    const raw=localStorage.getItem(LIVE_KEY);
-    if(raw)renderTV(JSON.parse(raw));
-  }catch(error){
-    console.warn("Could not read saved live state",error);
-  }
-}
+const $ = id => document.getElementById(id);
 
-let liveChannel=null;
-if("BroadcastChannel" in window){
-  try{
-    liveChannel=new BroadcastChannel("taekwondo-live-scoreboard");
-    liveChannel.onmessage=event=>{
-      if(isDisplayMode)renderTV(event.data);
-    };
-  }catch(error){}
-}
+const HISTORY_KEY =
+  "taekwondoScoreboardMatchHistory_v1";
+
+const LIVE_KEY =
+  "taekwondoScoreboardLiveState_v2";
+
+const isDisplayMode =
+  new URLSearchParams(location.search).get("display") === "1";
+
 
 if(isDisplayMode){
-  readSavedLiveState();
-  window.addEventListener("storage",event=>{
-    if(event.key===LIVE_KEY&&event.newValue){
-      try{renderTV(JSON.parse(event.newValue));}catch(error){}
-    }
-  });
-  // Display-only page: do not run referee controls.
-}else{
-  publishLiveState();
+
+  document.body.classList.add("display-mode");
+
+  document.title =
+    "Taekwondo Live TV Scoreboard";
 }
 
-function render(){
+
+/* =========================================================
+   FIREBASE INITIALIZATION
+   ========================================================= */
+
+let firebaseApp = null;
+let firebaseAuth = null;
+let firebaseDB = null;
+let liveRef = null;
+
+let firebaseReady = false;
+let firebaseUser = null;
+
+
+/* Firebase config validation */
+
+function firebaseConfigLooksValid(){
+
+  return (
+    firebaseConfig.apiKey &&
+    !firebaseConfig.apiKey.startsWith("PASTE_") &&
+    firebaseConfig.projectId &&
+    firebaseConfig.appId &&
+    !firebaseConfig.appId.startsWith("PASTE_")
+  );
+}
+
+
+async function initializeFirebase(){
+
+  if(!firebaseConfigLooksValid()){
+
+    setFirebaseStatus(
+      "⚠ Firebase config missing"
+    );
+
+    if(isDisplayMode){
+
+      $("tvFirebase").textContent =
+        "⚠ FIREBASE CONFIG MISSING";
+    }
+
+    return;
+  }
+
+
+  try{
+
+    firebaseApp =
+      initializeApp(firebaseConfig);
+
+    firebaseAuth =
+      getAuth(firebaseApp);
+
+    firebaseDB =
+      getDatabase(firebaseApp);
+
+    liveRef =
+      ref(firebaseDB,"liveScoreboard/current");
+
+
+    onAuthStateChanged(
+      firebaseAuth,
+      user => {
+
+        firebaseUser = user;
+
+        if(user){
+
+          firebaseReady = true;
+
+          setFirebaseStatus(
+            "🟢 Firebase connected"
+          );
+
+          if(isDisplayMode){
+
+            $("tvFirebase").textContent =
+              "● LIVE CONNECTED";
+          }
+
+          startFirebaseSync();
+
+        }else{
+
+          firebaseReady = false;
+
+          setFirebaseStatus(
+            "🔄 Firebase signing in..."
+          );
+        }
+
+      }
+    );
+
+
+    await signInAnonymously(firebaseAuth);
+
+
+  }catch(error){
+
+    console.error(
+      "Firebase initialization error:",
+      error
+    );
+
+    firebaseReady = false;
+
+    setFirebaseStatus(
+      "🔴 Firebase error"
+    );
+
+    if(isDisplayMode){
+
+      $("tvFirebase").textContent =
+        "🔴 FIREBASE ERROR";
+    }
+
+  }
+
+}
+
+
+function setFirebaseStatus(message){
+
+  const el=$("firebaseStatus");
+
+  if(!el)return;
+
+  el.textContent=message;
+
+  el.classList.remove(
+    "connected",
+    "error"
+  );
+
+  if(message.includes("connected")){
+
+    el.classList.add("connected");
+
+  }
+
+  if(message.includes("error")){
+
+    el.classList.add("error");
+
+  }
+
+}
+
+
+/* =========================================================
+   MATCH CONFIG
+   ========================================================= */
+
+let cfg={
+
+  roundTime:120,
+  breakTime:30,
+
+  format:3,
+
+  punch:1,
+  body:2,
+  head:3,
+
+  gap:12,
+  target:0,
+
+  gamLimit:10,
+  roundGam:true,
+
+  autoNext:false,
+  sound:true,
+
+  scoreSize:"medium"
+
+};
+
+
+/* =========================================================
+   FIGHTERS
+   ========================================================= */
+
+function freshFighters(){
+
+  return {
+
+    red:{
+      score:0,
+      gam:0,
+      totalGam:0,
+      wins:0
+    },
+
+    blue:{
+      score:0,
+      gam:0,
+      totalGam:0,
+      wins:0
+    }
+
+  };
+
+}
+
+
+let fighters =
+  freshFighters();
+
+
+let round=1;
+
+let seconds =
+  cfg.roundTime;
+
+let breakSeconds =
+  cfg.breakTime;
+
+
+let timerId=null;
+let breakId=null;
+
+let running=false;
+let inBreak=false;
+let matchOver=false;
+
+let history=[];
+
+let pendingAction="none";
+
+let audioContext=null;
+
+let matchStartedAt =
+  new Date().toISOString();
+
+let matchSaved=false;
+
+let lastWinnerText="";
+
+
+/* =========================================================
+   BASIC FUNCTIONS
+   ========================================================= */
+
+function fighterName(side){
+
+  return (
+    $(side+"Name").value.trim() ||
+    (side==="red"?"HONG":"CHONG")
+  );
+
+}
+
+
+function opponent(side){
+
+  return side==="red"?"blue":"red";
+
+}
+
+
+function requiredWins(){
+
+  return Math.ceil(
+    cfg.format/2
+  );
+
+}
+
+
+function fmt(value){
+
+  const s =
+    Math.max(0,Math.floor(value));
+
+  return (
+    String(Math.floor(s/60))
+      .padStart(2,"0")
+    +":"+
+    String(s%60)
+      .padStart(2,"0")
+  );
+
+}
+
+
+function setStatus(message){
+
+  if($("status")){
+
+    $("status").textContent =
+      message;
+
+  }
+
+}
+
+
+/* =========================================================
+   UNDO
+   ========================================================= */
+
+function snapshot(){
+
+  history.push(
+    JSON.stringify({
+
+      fighters,
+      round,
+      seconds,
+      breakSeconds,
+      inBreak,
+      matchOver
+
+    })
+  );
+
+
+  if(history.length>100){
+
+    history.shift();
+
+  }
+
+}
+
+
+function stopClocks(){
+
+  if(timerId!==null){
+
+    clearInterval(timerId);
+
+  }
+
+  if(breakId!==null){
+
+    clearInterval(breakId);
+
+  }
+
+  timerId=null;
+  breakId=null;
+  running=false;
+
+}
+
+
+/* =========================================================
+   LIVE STATE
+   ========================================================= */
+
+function makeLiveState(){
+
+  return {
+
+    redName:
+      fighterName("red"),
+
+    blueName:
+      fighterName("blue"),
+
+    redScore:
+      fighters.red.score,
+
+    blueScore:
+      fighters.blue.score,
+
+    redGam:
+      fighters.red.gam,
+
+    blueGam:
+      fighters.blue.gam,
+
+    redTotalGam:
+      fighters.red.totalGam,
+
+    blueTotalGam:
+      fighters.blue.totalGam,
+
+    redWins:
+      fighters.red.wins,
+
+    blueWins:
+      fighters.blue.wins,
+
+    round,
+
+    seconds,
+
+    breakSeconds,
+
+    inBreak,
+
+    running,
+
+    matchOver,
+
+    format:
+      cfg.format,
+
+    status:
+      $("status")
+        ? $("status").textContent
+        : "READY",
+
+    winner:
+      lastWinnerText,
+
+    updatedAt:
+      Date.now()
+
+  };
+
+}
+
+
+/* =========================================================
+   FIREBASE WRITE
+   ========================================================= */
+
+let lastPublishedJSON="";
+
+
+async function publishLiveState(){
+
   if(isDisplayMode)return;
 
-  for(const side of ["red","blue"]){
-    $(side+"Score").textContent=fighters[side].score;
-    $(side+"Gam").textContent=fighters[side].gam;
-    $(side+"TotalGam").textContent=fighters[side].totalGam;
-    $(side+"Wins").textContent=fighters[side].wins;
-    $(side+"PunchLabel").textContent=cfg.punch;
-    $(side+"BodyLabel").textContent=cfg.body;
-    $(side+"HeadLabel").textContent=cfg.head;
+  const state =
+    makeLiveState();
+
+
+  const json =
+    JSON.stringify(state);
+
+
+  /*
+  Don't send exactly identical
+  state repeatedly.
+  */
+
+  if(json===lastPublishedJSON){
+
+    return;
+
   }
 
-  $("roundLabel").textContent="ROUND "+round;
-  $("timer").textContent=fmt(seconds);
-  $("breakClock").textContent=fmt(breakSeconds);
-  $("breakBox").classList.toggle("hidden",!inBreak);
 
-  document.querySelectorAll(".score").forEach(el=>{
-    if(cfg.scoreSize==="small")el.style.fontSize="clamp(60px,12vw,120px)";
-    else if(cfg.scoreSize==="large")el.style.fontSize="clamp(90px,20vw,200px)";
-    else el.style.fontSize="clamp(80px,17vw,180px)";
-  });
+  lastPublishedJSON=json;
 
-  const locked=matchOver||inBreak;
-  document.querySelectorAll(".points button,.gam-box button").forEach(btn=>{
-    btn.disabled=locked;
-  });
-  $("startBtn").disabled=matchOver||inBreak||running;
-  $("pauseBtn").disabled=!running;
-  $("endBtn").disabled=matchOver||inBreak;
-  $("startNextBtn").disabled=matchOver||!inBreak;
+
+  /*
+  Local backup
+  */
+
+  try{
+
+    localStorage.setItem(
+      LIVE_KEY,
+      json
+    );
+
+  }catch(error){}
+
+
+  /*
+  Firebase
+  */
+
+  if(
+    firebaseReady &&
+    liveRef
+  ){
+
+    try{
+
+      await set(
+        liveRef,
+        state
+      );
+
+    }catch(error){
+
+      console.error(
+        "Firebase live write failed:",
+        error
+      );
+
+      setFirebaseStatus(
+        "🔴 Firebase error"
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   TV DISPLAY
+   ========================================================= */
+
+function renderTV(data){
+
+  if(!data)return;
+
+
+  $("tvRedName").textContent =
+    data.redName || "HONG";
+
+  $("tvBlueName").textContent =
+    data.blueName || "CHONG";
+
+
+  $("tvRedScore").textContent =
+    data.redScore ?? 0;
+
+  $("tvBlueScore").textContent =
+    data.blueScore ?? 0;
+
+
+  $("tvRedWins").textContent =
+    data.redWins ?? 0;
+
+  $("tvBlueWins").textContent =
+    data.blueWins ?? 0;
+
+
+  $("tvRedGam").textContent =
+    data.redGam ?? 0;
+
+  $("tvBlueGam").textContent =
+    data.blueGam ?? 0;
+
+
+  $("tvRound").textContent =
+    "ROUND "+(data.round||1);
+
+
+  $("tvTimer").textContent =
+    fmt(data.seconds ?? 0);
+
+
+  $("tvFormat").textContent =
+    "BEST OF "+(data.format||3);
+
+
+  $("tvBreak").textContent =
+    "BREAK "+fmt(
+      data.breakSeconds ?? 0
+    );
+
+
+  $("tvBreak")
+    .classList
+    .toggle(
+      "hidden",
+      !data.inBreak
+    );
+
+
+  $("tvWinner").textContent =
+    data.winner || "";
+
+
+  $("tvStatus").textContent =
+    data.status || "READY";
+
+}
+
+
+/* =========================================================
+   LOCAL BACKUP READ
+   ========================================================= */
+
+function readSavedLiveState(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        LIVE_KEY
+      );
+
+    if(raw){
+
+      renderTV(
+        JSON.parse(raw)
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Could not read saved live state",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FIREBASE TV LISTENER
+   ========================================================= */
+
+let firebaseListenerStarted=false;
+
+
+function startFirebaseSync(){
+
+  if(
+    !firebaseReady ||
+    !liveRef ||
+    firebaseListenerStarted
+  ){
+
+    return;
+
+  }
+
+
+  firebaseListenerStarted=true;
+
+
+  onValue(
+    liveRef,
+    snapshot => {
+
+      const data =
+        snapshot.val();
+
+
+      if(data){
+
+        renderTV(data);
+
+
+        /*
+        Save local backup
+        */
+
+        try{
+
+          localStorage.setItem(
+            LIVE_KEY,
+            JSON.stringify(data)
+          );
+
+        }catch(error){}
+
+      }
+
+    },
+
+    error => {
+
+      console.error(
+        "Firebase listener error:",
+        error
+      );
+
+
+      if(isDisplayMode){
+
+        $("tvFirebase").textContent =
+          "🔴 CONNECTION ERROR";
+
+      }else{
+
+        setFirebaseStatus(
+          "🔴 Firebase error"
+        );
+
+      }
+
+    }
+
+  );
+
+}
+
+
+/* =========================================================
+   INITIALIZE FIREBASE
+   ========================================================= */
+
+initializeFirebase();
+
+
+/* =========================================================
+   DISPLAY MODE
+   ========================================================= */
+
+if(isDisplayMode){
+
+  readSavedLiveState();
+
+
+  /*
+  Also listen to localStorage
+  in case Firebase is temporarily
+  unavailable.
+  */
+
+  window.addEventListener(
+    "storage",
+    event => {
+
+      if(
+        event.key===LIVE_KEY &&
+        event.newValue
+      ){
+
+        try{
+
+          renderTV(
+            JSON.parse(
+              event.newValue
+            )
+          );
+
+        }catch(error){}
+
+      }
+
+    }
+  );
+
+
+}
+
+
+/* =========================================================
+   REFEREE RENDER
+   ========================================================= */
+
+function render(){
+
+  if(isDisplayMode)return;
+
+
+  for(
+    const side of ["red","blue"]
+  ){
+
+    $(side+"Score").textContent =
+      fighters[side].score;
+
+    $(side+"Gam").textContent =
+      fighters[side].gam;
+
+    $(side+"TotalGam").textContent =
+      fighters[side].totalGam;
+
+    $(side+"Wins").textContent =
+      fighters[side].wins;
+
+    $(side+"PunchLabel").textContent =
+      cfg.punch;
+
+    $(side+"BodyLabel").textContent =
+      cfg.body;
+
+    $(side+"HeadLabel").textContent =
+      cfg.head;
+
+  }
+
+
+  $("roundLabel").textContent =
+    "ROUND "+round;
+
+
+  $("timer").textContent =
+    fmt(seconds);
+
+
+  $("breakClock").textContent =
+    fmt(breakSeconds);
+
+
+  $("breakBox")
+    .classList
+    .toggle(
+      "hidden",
+      !inBreak
+    );
+
+
+  /*
+  Score size
+  */
+
+  document
+    .querySelectorAll(".score")
+    .forEach(el=>{
+
+      if(
+        cfg.scoreSize==="small"
+      ){
+
+        el.style.fontSize =
+          "clamp(60px,12vw,120px)";
+
+      }else if(
+        cfg.scoreSize==="large"
+      ){
+
+        el.style.fontSize =
+          "clamp(90px,20vw,200px)";
+
+      }else{
+
+        el.style.fontSize =
+          "clamp(80px,17vw,180px)";
+
+      }
+
+    });
+
+
+  const locked =
+    matchOver || inBreak;
+
+
+  document
+    .querySelectorAll(
+      ".points button,.gam-box button"
+    )
+    .forEach(btn=>{
+
+      btn.disabled=locked;
+
+    });
+
+
+  $("startBtn").disabled =
+    matchOver ||
+    inBreak ||
+    running;
+
+
+  $("pauseBtn").disabled =
+    !running;
+
+
+  $("endBtn").disabled =
+    matchOver ||
+    inBreak;
+
+
+  $("startNextBtn").disabled =
+    matchOver ||
+    !inBreak;
+
+
+  /*
+  IMPORTANT:
+  status is updated first,
+  then Firebase receives the
+  latest complete state.
+  */
 
   publishLiveState();
+
 }
+
+
+/* =========================================================
+   FLASH
+   ========================================================= */
 
 function flash(side){
-  const el=$(side+"Score");
-  el.classList.remove("flash");
+
+  const el =
+    $(side+"Score");
+
+  el.classList.remove(
+    "flash"
+  );
+
   void el.offsetWidth;
-  el.classList.add("flash");
+
+  el.classList.add(
+    "flash"
+  );
+
 }
+
+
+/* =========================================================
+   SOUND
+   ========================================================= */
+
 function sound(type){
+
   if(!cfg.sound)return;
+
+
   try{
-    const AC=window.AudioContext||window.webkitAudioContext;
+
+    const AC =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+
     if(!AC)return;
-    if(!audioContext)audioContext=new AC();
-    if(audioContext.state==="suspended")audioContext.resume();
-    const notes={score:[700,.12],gam:[360,.18],round:[520,.25],horn:[850,.5],undo:[440,.1]};
-    const now=audioContext.currentTime;
-    const [frequency,duration]=notes[type]||notes.score;
-    const oscillator=audioContext.createOscillator();
-    const gain=audioContext.createGain();
-    oscillator.type=type==="horn"?"sawtooth":"sine";
-    oscillator.frequency.setValueAtTime(frequency,now);
-    gain.gain.setValueAtTime(.0001,now);
-    gain.gain.exponentialRampToValueAtTime(.18,now+.015);
-    gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+
+
+    if(!audioContext){
+
+      audioContext =
+        new AC();
+
+    }
+
+
+    if(
+      audioContext.state===
+      "suspended"
+    ){
+
+      audioContext.resume();
+
+    }
+
+
+    const notes={
+
+      score:[700,.12],
+      gam:[360,.18],
+      round:[520,.25],
+      horn:[850,.5],
+      undo:[440,.1]
+
+    };
+
+
+    const now =
+      audioContext.currentTime;
+
+
+    const [
+      frequency,
+      duration
+    ] =
+      notes[type] ||
+      notes.score;
+
+
+    const oscillator =
+      audioContext
+        .createOscillator();
+
+
+    const gain =
+      audioContext
+        .createGain();
+
+
+    oscillator.type =
+      type==="horn"
+        ? "sawtooth"
+        : "sine";
+
+
+    oscillator.frequency
+      .setValueAtTime(
+        frequency,
+        now
+      );
+
+
+    gain.gain
+      .setValueAtTime(
+        .0001,
+        now
+      );
+
+
+    gain.gain
+      .exponentialRampToValueAtTime(
+        .18,
+        now+.015
+      );
+
+
+    gain.gain
+      .exponentialRampToValueAtTime(
+        .0001,
+        now+duration
+      );
+
+
     oscillator.connect(gain);
-    gain.connect(audioContext.destination);
+    gain.connect(
+      audioContext.destination
+    );
+
+
     oscillator.start(now);
-    oscillator.stop(now+duration+.02);
+
+    oscillator.stop(
+      now+duration+.02
+    );
+
   }catch(error){}
+
 }
+
+
+/* =========================================================
+   POINTS
+   ========================================================= */
 
 function addPoints(side,type){
-  if(matchOver||inBreak)return;
+
+  if(
+    matchOver ||
+    inBreak
+  )return;
+
+
   snapshot();
-  fighters[side].score+=cfg[type];
-  flash(side);sound("score");render();
+
+
+  fighters[side].score +=
+    cfg[type];
+
+
+  flash(side);
+
+  sound("score");
+
+  setStatus(
+    fighterName(side)+
+    " scored "+cfg[type]+" point(s)."
+  );
+
+
+  render();
+
+
   checkScoreRoundEnd();
+
 }
+
+
+/* =========================================================
+   GAM-JEOM
+   ========================================================= */
 
 function changeGam(side,delta){
-  if(matchOver||inBreak)return;
-  const f=fighters[side],opp=fighters[opponent(side)];
-  if(delta<0&&(f.gam<=0||f.totalGam<=0||opp.score<=0))return;
+
+  if(
+    matchOver ||
+    inBreak
+  )return;
+
+
+  const f =
+    fighters[side];
+
+  const opp =
+    fighters[
+      opponent(side)
+    ];
+
+
+  if(
+    delta<0 &&
+    (
+      f.gam<=0 ||
+      f.totalGam<=0 ||
+      opp.score<=0
+    )
+  ){
+
+    return;
+
+  }
+
 
   snapshot();
-  if(delta>0){
-    f.gam++;f.totalGam++;opp.score+=1;
-    sound("gam");
-    setStatus(fighterName(side)+" received Gam-jeom. Opponent gets 1 point.");
-  }else{
-    f.gam--;f.totalGam--;opp.score=Math.max(0,opp.score-1);
-    sound("undo");setStatus("Gam-jeom corrected.");
-  }
-  render();
+
 
   if(delta>0){
-    if(cfg.roundGam&&(cfg.format===3||cfg.format===5)&&f.gam>=5){
-      awardRound(opponent(side),fighterName(side)+" received 5 Gam-jeom in this round.");
-      return;
-    }
-    if(f.totalGam>=cfg.gamLimit){
-      declareMatchWinner(opponent(side),fighterName(side)+" reached "+cfg.gamLimit+" total Gam-jeom.");
-      return;
-    }
+
+    f.gam++;
+
+    f.totalGam++;
+
+    opp.score+=1;
+
+    sound("gam");
+
+
+    setStatus(
+      fighterName(side)+
+      " received Gam-jeom. "+
+      "Opponent gets 1 point."
+    );
+
+
+  }else{
+
+    f.gam--;
+
+    f.totalGam--;
+
+    opp.score =
+      Math.max(
+        0,
+        opp.score-1
+      );
+
+
+    sound("undo");
+
+
+    setStatus(
+      "Gam-jeom corrected."
+    );
+
   }
+
+
+  render();
+
+
+  if(delta>0){
+
+    /*
+    Round Gam-jeom rule
+    */
+
+    if(
+      cfg.roundGam &&
+      (
+        cfg.format===3 ||
+        cfg.format===5
+      ) &&
+      f.gam>=5
+    ){
+
+      awardRound(
+        opponent(side),
+        fighterName(side)+
+        " received 5 Gam-jeom in this round."
+      );
+
+      return;
+
+    }
+
+
+    /*
+    Match Gam-jeom limit
+    */
+
+    if(
+      f.totalGam>=
+      cfg.gamLimit
+    ){
+
+      declareMatchWinner(
+        opponent(side),
+        fighterName(side)+
+        " reached "+
+        cfg.gamLimit+
+        " total Gam-jeom."
+      );
+
+      return;
+
+    }
+
+  }
+
+
   checkScoreRoundEnd();
+
 }
+
+
+/* =========================================================
+   SCORE END CONDITIONS
+   ========================================================= */
 
 function checkScoreRoundEnd(){
-  if(matchOver||inBreak)return;
-  const r=fighters.red.score,b=fighters.blue.score;
-  if(cfg.target>0&&(r>=cfg.target||b>=cfg.target)){
-    if(r!==b)awardRound(r>b?"red":"blue","Target score reached.");
+
+  if(
+    matchOver ||
+    inBreak
+  )return;
+
+
+  const r =
+    fighters.red.score;
+
+  const b =
+    fighters.blue.score;
+
+
+  /*
+  Target score
+  */
+
+  if(
+    cfg.target>0 &&
+    (
+      r>=cfg.target ||
+      b>=cfg.target
+    )
+  ){
+
+    if(r!==b){
+
+      awardRound(
+        r>b?"red":"blue",
+        "Target score reached."
+      );
+
+    }
+
     return;
+
   }
-  if(cfg.gap>0&&Math.abs(r-b)>=cfg.gap){
-    awardRound(r>b?"red":"blue","Point gap reached.");
+
+
+  /*
+  Point gap
+  */
+
+  if(
+    cfg.gap>0 &&
+    Math.abs(r-b)>=cfg.gap
+  ){
+
+    awardRound(
+      r>b?"red":"blue",
+      "Point gap reached."
+    );
+
   }
+
 }
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
 
 function startTimer(){
-  if(matchOver||inBreak||running)return;
-  if(seconds<=0){endRound();return;}
+
+  if(
+    matchOver ||
+    inBreak ||
+    running
+  )return;
+
+
+  if(seconds<=0){
+
+    endRound();
+
+    return;
+
+  }
+
+
   try{
-    const AC=window.AudioContext||window.webkitAudioContext;
-    if(AC&&!audioContext)audioContext=new AC();
-    if(audioContext&&audioContext.state==="suspended")audioContext.resume();
+
+    const AC =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+
+    if(
+      AC &&
+      !audioContext
+    ){
+
+      audioContext =
+        new AC();
+
+    }
+
+
+    if(
+      audioContext &&
+      audioContext.state===
+      "suspended"
+    ){
+
+      audioContext.resume();
+
+    }
+
   }catch(error){}
 
-  running=true;setStatus("Round in progress");render();
-  timerId=setInterval(()=>{
-    seconds--;
-    if(seconds<=0){seconds=0;render();endRound();return;}
-    render();
-  },1000);
-}
-function pauseTimer(){
-  if(!running)return;
-  clearInterval(timerId);timerId=null;running=false;
-  setStatus("Paused");render();
-}
-function adjustTimer(delta){
-  if(matchOver||inBreak)return;
-  seconds=Math.max(0,seconds+delta);render();
-}
-function endRound(){
-  if(matchOver||inBreak)return;
-  stopClocks();
-  const r=fighters.red.score,b=fighters.blue.score;
-  if(r===b)showWinner("ROUND DRAW","Round "+round+" ended in a draw.","next");
-  else awardRound(r>b?"red":"blue","Round ended.");
-}
-function awardRound(side,reason){
-  if(matchOver||inBreak)return;
-  stopClocks();snapshot();
-  if(side)fighters[side].wins++;
-  render();sound("round");
 
-  if(side&&fighters[side].wins>=requiredWins()){
-    declareMatchWinner(side,fighterName(side)+" has won the required number of rounds.");
-    return;
-  }
-  if(!side){showWinner("ROUND DRAW",reason,"next");return;}
-  showWinner("ROUND WINNER",fighterName(side)+" wins Round "+round+".<br>"+reason,"next");
+  running=true;
+
+  setStatus(
+    "Round in progress"
+  );
+
+  render();
+
+
+  timerId =
+    setInterval(()=>{
+
+      seconds--;
+
+
+      if(seconds<=0){
+
+        seconds=0;
+
+        render();
+
+        endRound();
+
+        return;
+
+      }
+
+
+      render();
+
+    },1000);
+
 }
+
+
+function pauseTimer(){
+
+  if(!running)return;
+
+
+  clearInterval(
+    timerId
+  );
+
+
+  timerId=null;
+
+  running=false;
+
+
+  setStatus(
+    "Paused"
+  );
+
+
+  render();
+
+}
+
+
+function adjustTimer(delta){
+
+  if(
+    matchOver ||
+    inBreak
+  )return;
+
+
+  seconds =
+    Math.max(
+      0,
+      seconds+delta
+    );
+
+
+  render();
+
+}
+
+
+/* =========================================================
+   END ROUND
+   ========================================================= */
+
+function endRound(){
+
+  if(
+    matchOver ||
+    inBreak
+  )return;
+
+
+  stopClocks();
+
+
+  const r =
+    fighters.red.score;
+
+  const b =
+    fighters.blue.score;
+
+
+  if(r===b){
+
+    showWinner(
+      "ROUND DRAW",
+      "Round "+round+
+      " ended in a draw.",
+      "next"
+    );
+
+  }else{
+
+    awardRound(
+      r>b?"red":"blue",
+      "Round ended."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   AWARD ROUND
+   ========================================================= */
+
+function awardRound(side,reason){
+
+  if(
+    matchOver ||
+    inBreak
+  )return;
+
+
+  stopClocks();
+
+  snapshot();
+
+
+  if(side){
+
+    fighters[side].wins++;
+
+  }
+
+
+  if(side){
+
+    setStatus(
+      fighterName(side)+
+      " wins Round "+
+      round+"."
+    );
+
+  }
+
+
+  render();
+
+  sound("round");
+
+
+  /*
+  Match winner
+  */
+
+  if(
+    side &&
+    fighters[side].wins>=
+    requiredWins()
+  ){
+
+    declareMatchWinner(
+      side,
+      fighterName(side)+
+      " has won the required number of rounds."
+    );
+
+    return;
+
+  }
+
+
+  if(!side){
+
+    showWinner(
+      "ROUND DRAW",
+      reason,
+      "next"
+    );
+
+    return;
+
+  }
+
+
+  showWinner(
+    "ROUND WINNER",
+    fighterName(side)+
+      " wins Round "+
+      round+
+      ".<br>"+
+      reason,
+    "next"
+  );
+
+}
+
+
+/* =========================================================
+   MATCH HISTORY
+   ========================================================= */
 
 function readMatchHistory(){
+
   try{
-    const saved=localStorage.getItem(HISTORY_KEY);
-    const data=saved?JSON.parse(saved):[];
-    return Array.isArray(data)?data:[];
-  }catch(error){return [];}
-}
-function saveMatchResult(winnerSide,reason){
-  if(matchSaved)return;
-  matchSaved=true;
-  const record={
-    id:"match_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),
-    startedAt:matchStartedAt,finishedAt:new Date().toISOString(),
-    redName:fighterName("red"),blueName:fighterName("blue"),
-    redScore:fighters.red.score,blueScore:fighters.blue.score,
-    redRounds:fighters.red.wins,blueRounds:fighters.blue.wins,
-    redTotalGam:fighters.red.totalGam,blueTotalGam:fighters.blue.totalGam,
-    format:"Best of "+cfg.format,winnerSide,
-    winnerName:winnerSide==="red"?fighterName("red"):fighterName("blue"),
-    reason:reason,roundsPlayed:round
-  };
-  try{
-    const records=readMatchHistory();
-    records.unshift(record);
-    localStorage.setItem(HISTORY_KEY,JSON.stringify(records.slice(0,500)));
-    setStatus("Match result saved to history.");
+
+    const saved =
+      localStorage.getItem(
+        HISTORY_KEY
+      );
+
+
+    const data =
+      saved
+        ? JSON.parse(saved)
+        : [];
+
+
+    return Array.isArray(data)
+      ? data
+      : [];
+
+
   }catch(error){
-    setStatus("Match finished, but browser could not save history.");
+
+    return [];
+
   }
+
 }
 
-function declareMatchWinner(side,reason){
-  stopClocks();matchOver=true;inBreak=false;
-  lastWinnerText="🏆 "+fighterName(side)+" WINS THE MATCH!";
-  saveMatchResult(side,reason);
-  render();sound("horn");
-  showWinner("MATCH WINNER",lastWinnerText+"<br>"+reason,"close");
+
+function saveMatchResult(
+  winnerSide,
+  reason
+){
+
+  if(matchSaved)return;
+
+  matchSaved=true;
+
+
+  const record={
+
+    id:
+      "match_"+
+      Date.now()+
+      "_"+
+      Math.random()
+        .toString(36)
+        .slice(2,8),
+
+    startedAt:
+      matchStartedAt,
+
+    finishedAt:
+      new Date().toISOString(),
+
+    redName:
+      fighterName("red"),
+
+    blueName:
+      fighterName("blue"),
+
+    redScore:
+      fighters.red.score,
+
+    blueScore:
+      fighters.blue.score,
+
+    redRounds:
+      fighters.red.wins,
+
+    blueRounds:
+      fighters.blue.wins,
+
+    redTotalGam:
+      fighters.red.totalGam,
+
+    blueTotalGam:
+      fighters.blue.totalGam,
+
+    format:
+      "Best of "+cfg.format,
+
+    winnerSide,
+
+    winnerName:
+      winnerSide==="red"
+        ? fighterName("red")
+        : fighterName("blue"),
+
+    reason,
+
+    roundsPlayed:
+      round
+
+  };
+
+
+  try{
+
+    const records =
+      readMatchHistory();
+
+
+    records.unshift(
+      record
+    );
+
+
+    localStorage.setItem(
+      HISTORY_KEY,
+      JSON.stringify(
+        records.slice(0,500)
+      )
+    );
+
+
+    setStatus(
+      "Match result saved to history."
+    );
+
+
+  }catch(error){
+
+    setStatus(
+      "Match finished, but browser could not save history."
+    );
+
+  }
+
 }
-function showWinner(title,message,action){
+
+
+/* =========================================================
+   MATCH WINNER
+   ========================================================= */
+
+function declareMatchWinner(
+  side,
+  reason
+){
+
+  stopClocks();
+
+  matchOver=true;
+
+  inBreak=false;
+
+
+  lastWinnerText =
+    "🏆 "+
+    fighterName(side)+
+    " WINS THE MATCH!";
+
+
+  saveMatchResult(
+    side,
+    reason
+  );
+
+
+  setStatus(
+    lastWinnerText
+  );
+
+
+  render();
+
+  sound("horn");
+
+
+  showWinner(
+    "MATCH WINNER",
+    lastWinnerText+
+      "<br>"+
+      reason,
+    "close"
+  );
+
+}
+
+
+/* =========================================================
+   WINNER POPUP
+   ========================================================= */
+
+function showWinner(
+  title,
+  message,
+  action
+){
+
   pendingAction=action;
-  $("winnerTitle").textContent=title;
-  $("winnerText").innerHTML=message;
-  $("winnerNextBtn").classList.toggle("hidden",action!=="next");
-  $("directRedBtn").classList.add("hidden");
-  $("directBlueBtn").classList.add("hidden");
-  $("winnerCloseBtn").classList.remove("hidden");
-  $("winnerOverlay").classList.remove("hidden");
-  if(action==="next")lastWinnerText=title;
+
+
+  $("winnerTitle")
+    .textContent=title;
+
+
+  $("winnerText")
+    .innerHTML=message;
+
+
+  $("winnerNextBtn")
+    .classList
+    .toggle(
+      "hidden",
+      action!=="next"
+    );
+
+
+  $("directRedBtn")
+    .classList
+    .add("hidden");
+
+
+  $("directBlueBtn")
+    .classList
+    .add("hidden");
+
+
+  $("winnerCloseBtn")
+    .classList
+    .remove("hidden");
+
+
+  $("winnerOverlay")
+    .classList
+    .remove("hidden");
+
+
+  if(
+    action==="next"
+  ){
+
+    lastWinnerText =
+      title;
+
+  }
+
+
   render();
+
 }
+
+
 function closeWinner(){
-  $("winnerOverlay").classList.add("hidden");
-  $("winnerNextBtn").classList.remove("hidden");
-  $("directRedBtn").classList.add("hidden");
-  $("directBlueBtn").classList.add("hidden");
+
+  $("winnerOverlay")
+    .classList
+    .add("hidden");
+
+
+  $("winnerNextBtn")
+    .classList
+    .remove("hidden");
+
+
+  $("directRedBtn")
+    .classList
+    .add("hidden");
+
+
+  $("directBlueBtn")
+    .classList
+    .add("hidden");
+
+
   render();
+
 }
+
+
 function winnerContinue(){
-  if(pendingAction!=="next"||matchOver)return;
-  closeWinner();beginBreak();
+
+  if(
+    pendingAction!=="next" ||
+    matchOver
+  )return;
+
+
+  closeWinner();
+
+  beginBreak();
+
 }
+
+
+/* =========================================================
+   BREAK
+   ========================================================= */
 
 function beginBreak(){
+
   if(matchOver)return;
-  stopClocks();inBreak=true;
-  breakSeconds=cfg.breakTime;seconds=0;
-  setStatus("Break in progress");render();
 
-  if(cfg.breakTime<=0){
-    if(cfg.autoNext)startNextRound();
-    else setStatus("Break finished — press START NEXT ROUND.");
-    render();return;
-  }
 
-  breakId=setInterval(()=>{
-    if(!inBreak||matchOver){
-      clearInterval(breakId);breakId=null;return;
-    }
-    breakSeconds--;render();
-    if(breakSeconds<=0){
-      clearInterval(breakId);breakId=null;breakSeconds=0;render();
-      if(cfg.autoNext)startNextRound();
-      else setStatus("Break finished — press START NEXT ROUND.");
-      render();
-    }
-  },1000);
-}
-function startNextRound(){
-  if(matchOver||!inBreak)return;
-  if(breakId!==null)clearInterval(breakId);
-  if(timerId!==null)clearInterval(timerId);
-  breakId=null;timerId=null;running=false;inBreak=false;
-  round++;
-  for(const side of ["red","blue"]){
-    fighters[side].score=0;
-    fighters[side].gam=0;
-  }
-  seconds=cfg.roundTime;breakSeconds=cfg.breakTime;
-  lastWinnerText="";
-  render();setStatus("Round "+round+" ready — press START.");
+  stopClocks();
+
+
+  inBreak=true;
+
+  breakSeconds =
+    cfg.breakTime;
+
+  seconds=0;
+
+
+  setStatus(
+    "Break in progress"
+  );
+
+
   render();
-  if(cfg.autoNext)startTimer();
+
+
+  if(
+    cfg.breakTime<=0
+  ){
+
+    if(cfg.autoNext){
+
+      startNextRound();
+
+    }else{
+
+      setStatus(
+        "Break finished — press START NEXT ROUND."
+      );
+
+    }
+
+
+    render();
+
+    return;
+
+  }
+
+
+  breakId =
+    setInterval(()=>{
+
+      if(
+        !inBreak ||
+        matchOver
+      ){
+
+        clearInterval(
+          breakId
+        );
+
+        breakId=null;
+
+        return;
+
+      }
+
+
+      breakSeconds--;
+
+      render();
+
+
+      if(
+        breakSeconds<=0
+      ){
+
+        clearInterval(
+          breakId
+        );
+
+        breakId=null;
+
+        breakSeconds=0;
+
+        render();
+
+
+        if(
+          cfg.autoNext
+        ){
+
+          startNextRound();
+
+        }else{
+
+          setStatus(
+            "Break finished — press START NEXT ROUND."
+          );
+
+        }
+
+
+        render();
+
+      }
+
+    },1000);
+
 }
+
+
+/* =========================================================
+   NEXT ROUND
+   ========================================================= */
+
+function startNextRound(){
+
+  if(
+    matchOver ||
+    !inBreak
+  )return;
+
+
+  if(
+    breakId!==null
+  ){
+
+    clearInterval(
+      breakId
+    );
+
+  }
+
+
+  if(
+    timerId!==null
+  ){
+
+    clearInterval(
+      timerId
+    );
+
+  }
+
+
+  breakId=null;
+
+  timerId=null;
+
+  running=false;
+
+  inBreak=false;
+
+
+  round++;
+
+
+  for(
+    const side of ["red","blue"]
+  ){
+
+    fighters[side].score=0;
+
+    fighters[side].gam=0;
+
+  }
+
+
+  seconds =
+    cfg.roundTime;
+
+  breakSeconds =
+    cfg.breakTime;
+
+
+  lastWinnerText="";
+
+
+  setStatus(
+    "Round "+
+    round+
+    " ready — press START."
+  );
+
+
+  render();
+
+
+  if(cfg.autoNext){
+
+    startTimer();
+
+  }
+
+}
+
+
+/* =========================================================
+   DIRECT WINNER
+   ========================================================= */
 
 function openDirectWinner(){
+
   if(matchOver)return;
-  stopClocks();pendingAction="direct";
-  $("winnerTitle").textContent="DECLARE MATCH WINNER";
-  $("winnerText").textContent="Choose the winner of this match.";
-  $("winnerNextBtn").classList.add("hidden");
-  $("directRedBtn").classList.remove("hidden");
-  $("directBlueBtn").classList.remove("hidden");
-  $("winnerCloseBtn").classList.remove("hidden");
-  $("winnerOverlay").classList.remove("hidden");
+
+
+  stopClocks();
+
+  pendingAction="direct";
+
+
+  $("winnerTitle")
+    .textContent=
+    "DECLARE MATCH WINNER";
+
+
+  $("winnerText")
+    .textContent=
+    "Choose the winner of this match.";
+
+
+  $("winnerNextBtn")
+    .classList
+    .add("hidden");
+
+
+  $("directRedBtn")
+    .classList
+    .remove("hidden");
+
+
+  $("directBlueBtn")
+    .classList
+    .remove("hidden");
+
+
+  $("winnerCloseBtn")
+    .classList
+    .remove("hidden");
+
+
+  $("winnerOverlay")
+    .classList
+    .remove("hidden");
+
+
   render();
+
 }
+
+
+/* =========================================================
+   NEW MATCH
+   ========================================================= */
 
 function newMatch(){
-  if(!confirm("Start a new match? Current scores will be cleared."))return;
-  stopClocks();fighters=freshFighters();
-  round=1;seconds=cfg.roundTime;breakSeconds=cfg.breakTime;
-  inBreak=false;matchOver=false;history=[];pendingAction="none";
-  matchStartedAt=new Date().toISOString();matchSaved=false;lastWinnerText="";
-  closeWinner();$("settingsOverlay").classList.add("hidden");
-  setStatus("New match ready.");render();
-}
 
-function formatDate(iso){
-  try{return new Date(iso).toLocaleString();}catch(error){return iso||"Unknown date";}
-}
-function renderHistory(){
-  const records=readMatchHistory();
-  $("historySummary").textContent=records.length+" saved match"+(records.length===1?"":"es");
-  const list=$("historyList");list.replaceChildren();
-  if(!records.length){
-    const empty=document.createElement("div");
-    empty.className="empty-history";
-    empty.textContent="No saved matches yet. Completed matches will appear here.";
-    list.appendChild(empty);return;
+  if(
+    !confirm(
+      "Start a new match? Current scores will be cleared."
+    )
+  ){
+
+    return;
+
   }
-  records.forEach((record,index)=>{
-    const card=document.createElement("article");card.className="history-card";
-    const title=document.createElement("h3");title.textContent="#"+(index+1)+" — "+formatDate(record.finishedAt);
-    const result=document.createElement("p");result.className="result";result.textContent=(record.winnerName||"Unknown")+" won";
-    const names=document.createElement("p");
-    names.textContent=(record.redName||"HONG")+" (Red) "+record.redScore+" : "+record.blueScore+" (Blue) "+(record.blueName||"CHONG");
-    const rounds=document.createElement("p");rounds.textContent="Round wins: "+record.redRounds+" - "+record.blueRounds+" | "+record.format;
-    const gam=document.createElement("p");gam.textContent="Total Gam-jeom: "+record.redTotalGam+" - "+record.blueTotalGam;
-    const reason=document.createElement("p");reason.textContent="Result: "+(record.reason||"Match completed");
-    card.append(title,result,names,rounds,gam,reason);list.appendChild(card);
-  });
-}
-function openHistory(){renderHistory();$("historyOverlay").classList.remove("hidden");}
-function closeHistory(){$("historyOverlay").classList.add("hidden");}
-function exportHistoryCSV(){
-  const records=readMatchHistory();
-  if(!records.length){alert("There are no match records to export.");return;}
-  const columns=[
-    ["Date","finishedAt"],["Red Name","redName"],["Blue Name","blueName"],
-    ["Red Score","redScore"],["Blue Score","blueScore"],
-    ["Red Round Wins","redRounds"],["Blue Round Wins","blueRounds"],
-    ["Red Total Gam-jeom","redTotalGam"],["Blue Total Gam-jeom","blueTotalGam"],
-    ["Format","format"],["Winner","winnerName"],["Reason","reason"]
-  ];
-  const escapeCSV=value=>'"'+String(value??"").replace(/"/g,'""')+'"';
-  const rows=[columns.map(col=>escapeCSV(col[0])).join(","),
-    ...records.map(record=>columns.map(col=>escapeCSV(
-      col[1]==="finishedAt"?formatDate(record[col[1]]):record[col[1]]
-    )).join(","))];
-  const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8;"});
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement("a");
-  link.href=url;link.download="taekwondo-match-history.csv";
-  document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
-}
-function clearMatchHistory(){
-  const records=readMatchHistory();
-  if(!records.length){alert("History is already empty.");return;}
-  if(!confirm("Delete all saved match history? This cannot be undone."))return;
-  try{
-    localStorage.removeItem(HISTORY_KEY);
-    renderHistory();setStatus("Match history cleared.");
-  }catch(error){alert("Unable to clear history in this browser.");}
-}
 
-function openSettings(){
-  $("setRoundTime").value=cfg.roundTime;
-  $("setBreakTime").value=cfg.breakTime;
-  $("setFormat").value=cfg.format;
-  $("setPunch").value=cfg.punch;
-  $("setBody").value=cfg.body;
-  $("setHead").value=cfg.head;
-  $("setGap").value=cfg.gap;
-  $("setTarget").value=cfg.target;
-  $("setGamLimit").value=cfg.gamLimit;
-  $("setRoundGam").checked=cfg.roundGam;
-  $("setAutoNext").checked=cfg.autoNext;
-  $("setSound").checked=cfg.sound;
-  $("setScoreSize").value=cfg.scoreSize;
-  $("settingsOverlay").classList.remove("hidden");
-}
-function closeSettings(){$("settingsOverlay").classList.add("hidden");}
-function saveSettings(){
-  const num=(id,min,def)=>{
-    const value=Number($(id).value);
-    return Number.isFinite(value)?Math.max(min,value):def;
-  };
-  cfg.roundTime=num("setRoundTime",10,120);
-  cfg.breakTime=num("setBreakTime",0,30);
-  cfg.format=Number($("setFormat").value);
-  cfg.punch=num("setPunch",0,1);
-  cfg.body=num("setBody",0,2);
-  cfg.head=num("setHead",0,3);
-  cfg.gap=num("setGap",0,0);
-  cfg.target=num("setTarget",0,0);
-  cfg.gamLimit=num("setGamLimit",1,10);
-  cfg.roundGam=$("setRoundGam").checked;
-  cfg.autoNext=$("setAutoNext").checked;
-  cfg.sound=$("setSound").checked;
-  cfg.scoreSize=$("setScoreSize").value;
-  if(!running&&!inBreak)seconds=cfg.roundTime;
-  closeSettings();setStatus("Settings saved.");render();
-}
 
-function undoLast(){
-  if(!history.length){setStatus("Nothing to undo.");return;}
   stopClocks();
-  const old=JSON.parse(history.pop());
-  fighters=old.fighters;round=old.round;seconds=old.seconds;
-  breakSeconds=old.breakSeconds;inBreak=old.inBreak;matchOver=old.matchOver;
+
+
+  fighters =
+    freshFighters();
+
+
+  round=1;
+
+  seconds =
+    cfg.roundTime;
+
+  breakSeconds =
+    cfg.breakTime;
+
+
+  inBreak=false;
+
+  matchOver=false;
+
+  history=[];
+
+  pendingAction="none";
+
+
+  matchStartedAt =
+    new Date().toISOString();
+
+
+  matchSaved=false;
+
   lastWinnerText="";
-  closeWinner();render();sound("undo");setStatus("Last action undone.");render();
-}
 
-/* REFEREE BUTTONS */
-if(!isDisplayMode){
-  document.querySelectorAll("[data-side][data-type]").forEach(btn=>{
-    btn.addEventListener("click",()=>addPoints(btn.dataset.side,btn.dataset.type));
-  });
-  document.querySelectorAll("[data-gam-side]").forEach(btn=>{
-    btn.addEventListener("click",()=>changeGam(btn.dataset.gamSide,Number(btn.dataset.delta)));
-  });
 
-  $("settingsBtn").addEventListener("click",openSettings);
-  $("historyBtn").addEventListener("click",openHistory);
-  $("startBtn").addEventListener("click",startTimer);
-  $("pauseBtn").addEventListener("click",pauseTimer);
-  $("endBtn").addEventListener("click",endRound);
-  $("undoBtn").addEventListener("click",undoLast);
-  $("newBtn").addEventListener("click",newMatch);
-  $("directBtn").addEventListener("click",openDirectWinner);
-  $("minusFive").addEventListener("click",()=>adjustTimer(-5));
-  $("plusFive").addEventListener("click",()=>adjustTimer(5));
-  $("startNextBtn").addEventListener("click",startNextRound);
-  $("winnerNextBtn").addEventListener("click",winnerContinue);
-  $("winnerCloseBtn").addEventListener("click",closeWinner);
-  $("directRedBtn").addEventListener("click",()=>{
-    closeWinner();declareMatchWinner("red","Direct winner declared by referee.");
-  });
-  $("directBlueBtn").addEventListener("click",()=>{
-    closeWinner();declareMatchWinner("blue","Direct winner declared by referee.");
-  });
-  $("saveSettingsBtn").addEventListener("click",saveSettings);
-  $("cancelSettingsBtn").addEventListener("click",closeSettings);
-  $("closeHistoryBtn").addEventListener("click",closeHistory);
-  $("exportHistoryBtn").addEventListener("click",exportHistoryCSV);
-  $("clearHistoryBtn").addEventListener("click",clearMatchHistory);
+  closeWinner();
 
-  $("tvOpenBtn").addEventListener("click",()=>{
-    const url=new URL(location.href);
-    url.searchParams.set("display","1");
-    window.open(url.href,"TaekwondoTVDisplay");
-  });
 
-  // Keep TV updated even when fighter names are edited directly.
-  ["redName","blueName"].forEach(id=>{
-    $(id).addEventListener("input",publishLiveState);
-    $(id).addEventListener("change",publishLiveState);
-  });
+  $("settingsOverlay")
+    .classList
+    .add("hidden");
+
+
+  setStatus(
+    "New match ready."
+  );
+
 
   render();
+
 }
+
+
+/* =========================================================
+   HISTORY UI
+   ========================================================= */
+
+function formatDate(iso){
+
+  try{
+
+    return new Date(
+      iso
+    ).toLocaleString();
+
+  }catch(error){
+
+    return iso||"Unknown date";
+
+  }
+
+}
+
+
+function renderHistory(){
+
+  const records =
+    readMatchHistory();
+
+
+  $("historySummary")
+    .textContent =
+      records.length+
+      " saved match"+
+      (
+        records.length===1
+          ?""
+          :"es"
+      );
+
+
+  const list =
+    $("historyList");
+
+
+  list.replaceChildren();
+
+
+  if(!records.length){
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+
+    empty.className =
+      "empty-history";
+
+
+    empty.textContent =
+      "No saved matches yet. Completed matches will appear here.";
+
+
+    list.appendChild(
+      empty
+    );
+
+
+    return;
+
+  }
+
+
+  records.forEach(
+    (record,index)=>{
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+
+      card.className =
+        "history-card";
+
+
+      const title =
+        document.createElement(
+          "h3"
+        );
+
+
+      title.textContent =
+        "#"+
+        (index+1)+
+        " — "+
+        formatDate(
+          record.finishedAt
+        );
+
+
+      const result =
+        document.createElement(
+          "p"
+        );
+
+
+      result.className =
+        "result";
+
+
+      result.textContent =
+        (record.winnerName||
+        "Unknown")+
+        " won";
+
+
+      const names =
+        document.createElement(
+          "p"
+        );
+
+
+      names.textContent =
+        (record.redName||
+        "HONG")+
+        " (Red) "+
+        record.redScore+
+        " : "+
+        record.blueScore+
+        " (Blue) "+
+        (record.blueName||
+        "CHONG");
+
+
+      const rounds =
+        document.createElement(
+          "p"
+        );
+
+
+      rounds.textContent =
+        "Round wins: "+
+        record.redRounds+
+        " - "+
+        record.blueRounds+
+        " | "+
+        record.format;
+
+
+      const gam =
+        document.createElement(
+          "p"
+        );
+
+
+      gam.textContent =
+        "Total Gam-jeom: "+
+        record.redTotalGam+
+        " - "+
+        record.blueTotalGam;
+
+
+      const reason =
+        document.createElement(
+          "p"
+        );
+
+
+      reason.textContent =
+        "Result: "+
+        (
+          record.reason||
+          "Match completed"
+        );
+
+
+      card.append(
+        title,
+        result,
+        names,
+        rounds,
+        gam,
+        reason
+      );
+
+
+      list.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+function openHistory(){
+
+  renderHistory();
+
+  $("historyOverlay")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function closeHistory(){
+
+  $("historyOverlay")
+    .classList
+    .add("hidden");
+
+}
+
+
+/* =========================================================
+   CSV EXPORT
+   ========================================================= */
+
+function exportHistoryCSV(){
+
+  const records =
+    readMatchHistory();
+
+
+  if(!records.length){
+
+    alert(
+      "There are no match records to export."
+    );
+
+    return;
+
+  }
+
+
+  const columns=[
+
+    ["Date","finishedAt"],
+
+    ["Red Name","redName"],
+
+    ["Blue Name","blueName"],
+
+    ["Red Score","redScore"],
+
+    ["Blue Score","blueScore"],
+
+    ["Red Round Wins","redRounds"],
+
+    ["Blue Round Wins","blueRounds"],
+
+    ["Red Total Gam-jeom","redTotalGam"],
+
+    ["Blue Total Gam-jeom","blueTotalGam"],
+
+    ["Format","format"],
+
+    ["Winner","winnerName"],
+
+    ["Reason","reason"]
+
+  ];
+
+
+  const escapeCSV =
+    value =>
+      '"'+
+      String(value??"")
+        .replace(/"/g,'""')+
+      '"';
+
+
+  const rows=[
+
+    columns
+      .map(
+        col =>
+          escapeCSV(col[0])
+      )
+      .join(","),
+
+
+    ...records.map(
+      record =>
+        columns
+          .map(
+            col =>
+              escapeCSV(
+                col[1]==="finishedAt"
+                  ?formatDate(
+                    record[col[1]]
+                  )
+                  :record[col[1]]
+              )
+          )
+          .join(",")
+    )
+
+  ];
+
+
+  const blob =
+    new Blob(
+      [
+        "\uFEFF"+
+        rows.join("\r\n")
+      ],
+      {
+        type:
+          "text/csv;charset=utf-8;"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const link =
+    document.createElement(
+      "a"
+    );
+
+
+  link.href=url;
+
+  link.download =
+    "taekwondo-match-history.csv";
+
+
+  document.body.appendChild(
+    link
+  );
+
+
+  link.click();
+
+  link.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+}
+
+
+/* =========================================================
+   CLEAR HISTORY
+   ========================================================= */
+
+function clearMatchHistory(){
+
+  const records =
+    readMatchHistory();
+
+
+  if(!records.length){
+
+    alert(
+      "History is already empty."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !confirm(
+      "Delete all saved match history? This cannot be undone."
+    )
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    localStorage.removeItem(
+      HISTORY_KEY
+    );
+
+
+    renderHistory();
+
+
+    setStatus(
+      "Match history cleared."
+    );
+
+
+  }catch(error){
+
+    alert(
+      "Unable to clear history in this browser."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+function openSettings(){
+
+  $("setRoundTime").value =
+    cfg.roundTime;
+
+  $("setBreakTime").value =
+    cfg.breakTime;
+
+  $("setFormat").value =
+    cfg.format;
+
+  $("setPunch").value =
+    cfg.punch;
+
+  $("setBody").value =
+    cfg.body;
+
+  $("setHead").value =
+    cfg.head;
+
+  $("setGap").value =
+    cfg.gap;
+
+  $("setTarget").value =
+    cfg.target;
+
+  $("setGamLimit").value =
+    cfg.gamLimit;
+
+  $("setRoundGam").checked =
+    cfg.roundGam;
+
+  $("setAutoNext").checked =
+    cfg.autoNext;
+
+  $("setSound").checked =
+    cfg.sound;
+
+  $("setScoreSize").value =
+    cfg.scoreSize;
+
+
+  $("settingsOverlay")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function closeSettings(){
+
+  $("settingsOverlay")
+    .classList
+    .add("hidden");
+
+}
+
+
+function saveSettings(){
+
+  const num =
+    (
+      id,
+      min,
+      def
+    )=>{
+
+      const value =
+        Number(
+          $(id).value
+        );
+
+
+      return Number.isFinite(value)
+        ?Math.max(min,value)
+        :def;
+
+    };
+
+
+  cfg.roundTime =
+    num(
+      "setRoundTime",
+      10,
+      120
+    );
+
+
+  cfg.breakTime =
+    num(
+      "setBreakTime",
+      0,
+      30
+    );
+
+
+  cfg.format =
+    Number(
+      $("setFormat").value
+    );
+
+
+  cfg.punch =
+    num(
+      "setPunch",
+      0,
+      1
+    );
+
+
+  cfg.body =
+    num(
+      "setBody",
+      0,
+      2
+    );
+
+
+  cfg.head =
+    num(
+      "setHead",
+      0,
+      3
+    );
+
+
+  cfg.gap =
+    num(
+      "setGap",
+      0,
+      0
+    );
+
+
+  cfg.target =
+    num(
+      "setTarget",
+      0,
+      0
+    );
+
+
+  cfg.gamLimit =
+    num(
+      "setGamLimit",
+      1,
+      10
+    );
+
+
+  cfg.roundGam =
+    $("setRoundGam")
+      .checked;
+
+
+  cfg.autoNext =
+    $("setAutoNext")
+      .checked;
+
+
+  cfg.sound =
+    $("setSound")
+      .checked;
+
+
+  cfg.scoreSize =
+    $("setScoreSize")
+      .value;
+
+
+  if(
+    !running &&
+    !inBreak
+  ){
+
+    seconds =
+      cfg.roundTime;
+
+  }
+
+
+  closeSettings();
+
+
+  setStatus(
+    "Settings saved."
+  );
+
+
+  render();
+
+}
+
+
+/* =========================================================
+   UNDO
+   ========================================================= */
+
+function undoLast(){
+
+  if(!history.length){
+
+    setStatus(
+      "Nothing to undo."
+    );
+
+    return;
+
+  }
+
+
+  stopClocks();
+
+
+  const old =
+    JSON.parse(
+      history.pop()
+    );
+
+
+  fighters =
+    old.fighters;
+
+
+  round =
+    old.round;
+
+
+  seconds =
+    old.seconds;
+
+
+  breakSeconds =
+    old.breakSeconds;
+
+
+  inBreak =
+    old.inBreak;
+
+
+  matchOver =
+    old.matchOver;
+
+
+  lastWinnerText="";
+
+
+  closeWinner();
+
+
+  render();
+
+
+  sound("undo");
+
+
+  setStatus(
+    "Last action undone."
+  );
+
+
+  render();
+
+}
+
+
+/* =========================================================
+   REFEREE BUTTONS
+   ========================================================= */
+
+if(!isDisplayMode){
+
+  /*
+  Point buttons
+  */
+
+  document
+    .querySelectorAll(
+      "[data-side][data-type]"
+    )
+    .forEach(btn=>{
+
+      btn.addEventListener(
+        "click",
+        ()=>{
+
+          addPoints(
+            btn.dataset.side,
+            btn.dataset.type
+          );
+
+        }
+      );
+
+    });
+
+
+  /*
+  Gam-jeom buttons
+  */
+
+  document
+    .querySelectorAll(
+      "[data-gam-side]"
+    )
+    .forEach(btn=>{
+
+      btn.addEventListener(
+        "click",
+        ()=>{
+
+          changeGam(
+            btn.dataset.gamSide,
+            Number(
+              btn.dataset.delta
+            )
+          );
+
+        }
+      );
+
+    });
+
+
+  $("settingsBtn")
+    .addEventListener(
+      "click",
+      openSettings
+    );
+
+
+  $("historyBtn")
+    .addEventListener(
+      "click",
+      openHistory
+    );
+
+
+  $("startBtn")
+    .addEventListener(
+      "click",
+      startTimer
+    );
+
+
+  $("pauseBtn")
+    .addEventListener(
+      "click",
+      pauseTimer
+    );
+
+
+  $("endBtn")
+    .addEventListener(
+      "click",
+      endRound
+    );
+
+
+  $("undoBtn")
+    .addEventListener(
+      "click",
+      undoLast
+    );
+
+
+  $("newBtn")
+    .addEventListener(
+      "click",
+      newMatch
+    );
+
+
+  $("directBtn")
+    .addEventListener(
+      "click",
+      openDirectWinner
+    );
+
+
+  $("minusFive")
+    .addEventListener(
+      "click",
+      ()=>adjustTimer(-5)
+    );
+
+
+  $("plusFive")
+    .addEventListener(
+      "click",
+      ()=>adjustTimer(5)
+    );
+
+
+  $("startNextBtn")
+    .addEventListener(
+      "click",
+      startNextRound
+    );
+
+
+  $("winnerNextBtn")
+    .addEventListener(
+      "click",
+      winnerContinue
+    );
+
+
+  $("winnerCloseBtn")
+    .addEventListener(
+      "click",
+      closeWinner
+    );
+
+
+  $("directRedBtn")
+    .addEventListener(
+      "click",
+      ()=>{
+
+        closeWinner();
+
+        declareMatchWinner(
+          "red",
+          "Direct winner declared by referee."
+        );
+
+      }
+    );
+
+
+  $("directBlueBtn")
+    .addEventListener(
+      "click",
+      ()=>{
+
+        closeWinner();
+
+        declareMatchWinner(
+          "blue",
+          "Direct winner declared by referee."
+        );
+
+      }
+    );
+
+
+  $("saveSettingsBtn")
+    .addEventListener(
+      "click",
+      saveSettings
+    );
+
+
+  $("cancelSettingsBtn")
+    .addEventListener(
+      "click",
+      closeSettings
+    );
+
+
+  $("closeHistoryBtn")
+    .addEventListener(
+      "click",
+      closeHistory
+    );
+
+
+  $("exportHistoryBtn")
+    .addEventListener(
+      "click",
+      exportHistoryCSV
+    );
+
+
+  $("clearHistoryBtn")
+    .addEventListener(
+      "click",
+      clearMatchHistory
+    );
+
+
+  /*
+  Open TV display
+  */
+
+  $("tvOpenBtn")
+    .addEventListener(
+      "click",
+      ()=>{
+
+        const url =
+          new URL(
+            location.href
+          );
+
+
+        url.searchParams.set(
+          "display",
+          "1"
+        );
+
+
+        window.open(
+          url.href,
+          "TaekwondoTVDisplay"
+        );
+
+      }
+    );
+
+
+  /*
+  Fighter name live update
+  */
+
+  [
+    "redName",
+    "blueName"
+  ].forEach(id=>{
+
+    $(id)
+      .addEventListener(
+        "input",
+        ()=>{
+
+          publishLiveState();
+
+        }
+      );
+
+
+    $(id)
+      .addEventListener(
+        "change",
+        ()=>{
+
+          publishLiveState();
+
+        }
+      );
+
+  });
+
+
+  /*
+  Initial render
+  */
+
+  render();
+
+}
+
 </script>
+
 </body>
 </html>
