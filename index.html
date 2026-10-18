@@ -5,191 +5,103 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Taekwondo Scoreboard</title>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:#10131a;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif
-}
+body{margin:0;background:#10131a;color:#fff;font-family:Arial,Helvetica,sans-serif}
 button,input,select{font:inherit}
-button{
-  cursor:pointer;
-  border:0;
-  border-radius:9px;
-  padding:10px 12px;
-  font-weight:bold;
-  color:white;
-  background:#394150
-}
+button{cursor:pointer;border:0;border-radius:9px;padding:10px 12px;font-weight:bold;color:white;background:#394150}
 button:active{transform:scale(.97)}
 button:disabled{opacity:.45;cursor:not-allowed}
 
 header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 14px;
-  background:#080a0f;
-  gap:10px
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:#080a0f;gap:10px
 }
-header h1{
-  font-size:clamp(16px,2.5vw,26px);
-  margin:0
-}
-.header-actions{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap
-}
-.small-btn{
-  font-size:13px;
-  padding:9px
-}
+header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
+.header-actions{display:flex;gap:6px;flex-wrap:wrap}
+.small-btn{font-size:13px;padding:9px}
 
 .board{
-  display:grid;
-  grid-template-columns:1fr minmax(150px,25%) 1fr;
-  min-height:calc(100vh - 58px);
-  gap:8px;
-  padding:8px
+  display:grid;grid-template-columns:1fr minmax(150px,25%) 1fr;
+  min-height:calc(100vh - 58px);gap:8px;padding:8px
 }
 
 .fighter{
-  border-radius:14px;
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  min-width:0
+  border-radius:14px;padding:12px;display:flex;
+  flex-direction:column;align-items:center;min-width:0
 }
-.red{
-  background:linear-gradient(160deg,#b71c1c,#ef5350)
-}
-.blue{
-  background:linear-gradient(160deg,#0d47a1,#2196f3)
-}
+.red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
+.blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
+
 .fighter-name{
-  width:100%;
-  font-weight:bold;
-  font-size:clamp(18px,3vw,30px);
-  text-align:center;
-  background:#0003;
-  color:white;
-  border:1px solid #ffffff55;
-  border-radius:8px;
-  padding:8px
+  width:100%;font-weight:bold;font-size:clamp(18px,3vw,30px);
+  text-align:center;background:#0003;color:white;
+  border:1px solid #ffffff55;border-radius:8px;padding:8px
 }
+
 .score{
-  font-size:clamp(80px,17vw,180px);
-  font-weight:900;
-  line-height:1.1;
-  text-shadow:0 4px 8px #0005
+  font-size:clamp(80px,17vw,180px);font-weight:900;
+  line-height:1.1;text-shadow:0 4px 8px #0005
 }
-.score.flash{
-  animation:flash .3s ease
-}
+.score.flash{animation:flash .3s ease}
 @keyframes flash{
-  50%{
-    transform:scale(1.12);
-    color:#ffd54f
-  }
+  50%{transform:scale(1.12);color:#ffd54f}
 }
 
 .points{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  width:100%;
-  margin:8px 0
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:6px;width:100%;margin:8px 0
 }
 .points button{
-  background:#111a;
-  font-size:clamp(12px,1.5vw,17px);
-  padding:14px 4px;
-  min-height:55px
+  background:#111a;font-size:clamp(12px,1.5vw,17px);
+  padding:14px 4px;min-height:55px
 }
 .points button span{
-  display:block;
-  font-size:22px;
-  margin-top:4px
+  display:block;font-size:22px;margin-top:4px
 }
 
 .gam-box{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-  margin:10px 0;
-  width:100%
+  display:flex;align-items:center;justify-content:center;
+  gap:12px;margin:10px 0;width:100%
 }
 .gam-box button{
-  font-size:23px;
-  min-width:48px;
-  min-height:48px;
-  background:#111a
+  font-size:23px;min-width:48px;min-height:48px;background:#111a
 }
 .gam-count{
-  font-size:25px;
-  font-weight:900;
-  min-width:30px;
-  text-align:center
+  font-size:25px;font-weight:900;min-width:30px;text-align:center
 }
-.gam-label{
-  font-size:13px;
-  font-weight:bold
-}
+.gam-label{font-size:13px;font-weight:bold}
 .total-gam{
-  font-size:12px;
-  background:#0003;
-  padding:5px 9px;
-  border-radius:6px
+  font-size:12px;background:#0003;padding:5px 9px;border-radius:6px
 }
-.round-wins{
-  font-size:14px;
-  text-align:center;
-  color:#ddd
-}
+.round-wins{font-size:14px;text-align:center;color:#ddd}
 
 .center{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  gap:10px;
-  background:#1b202a;
-  border-radius:14px;
-  padding:12px 8px
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:10px;background:#1b202a;
+  border-radius:14px;padding:12px 8px
 }
+
 .round-label{
-  font-size:17px;
-  font-weight:bold;
-  color:#ffd54f;
-  text-align:center
+  font-size:17px;font-weight:bold;color:#ffd54f;text-align:center
 }
 .timer{
-  font-size:clamp(38px,7vw,75px);
-  font-weight:900;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:1px
+  font-size:clamp(38px,7vw,75px);font-weight:900;
+  font-variant-numeric:tabular-nums;letter-spacing:1px
 }
-.timer-adjust{
-  display:flex;
-  gap:8px
-}
-.timer-adjust button{
-  font-size:14px
-}
+.timer-adjust{display:flex;gap:8px}
+.timer-adjust button{font-size:14px}
+
 .center-actions{
-  width:100%;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:7px
+  width:100%;display:grid;grid-template-columns:1fr;gap:7px
 }
-.center-actions button{
-  min-height:43px
-}
+.center-actions button{min-height:43px}
+
 .start{background:#2e7d32}
 .pause{background:#ef6c00}
 .end{background:#b71c1c}
@@ -198,142 +110,97 @@ header h1{
 .new{background:#37474f}
 
 .break-box{
-  width:100%;
-  text-align:center;
-  border:1px solid #ffffff22;
-  border-radius:10px;
-  padding:9px
+  width:100%;text-align:center;border:1px solid #ffffff22;
+  border-radius:10px;padding:9px
 }
 .break-clock{
-  font-size:28px;
-  font-weight:bold;
-  color:#ffd54f
+  font-size:28px;font-weight:bold;color:#ffd54f
 }
 
 .hidden{display:none!important}
 
 .status{
-  font-size:12px;
-  color:#cfd8dc;
-  text-align:center;
-  line-height:1.4
+  font-size:12px;color:#cfd8dc;text-align:center;line-height:1.4
 }
 
 .firebase-status{
-  width:100%;
-  padding:7px 8px;
-  border-radius:7px;
-  font-size:11px;
-  text-align:center;
-  background:#0005;
-  color:#cfd8dc
+  width:100%;font-size:11px;text-align:center;
+  padding:5px 8px;border-radius:6px;
+  background:#0004;color:#ffd54f
 }
-.firebase-status.connected{
-  color:#b9f6ca
-}
-.firebase-status.error{
-  color:#ffb4ab
-}
+.firebase-status.connected{color:#69f0ae}
+.firebase-status.error{color:#ff8a80}
 
 .overlay{
-  position:fixed;
-  inset:0;
-  background:#000c;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:16px;
-  z-index:10
+  position:fixed;inset:0;background:#000c;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;z-index:10
 }
 .modal{
-  width:min(600px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:#202631;
-  border:1px solid #ffffff33;
-  border-radius:16px;
-  padding:22px;
-  text-align:center
+  width:min(600px,100%);max-height:90vh;overflow:auto;
+  background:#202631;border:1px solid #ffffff33;
+  border-radius:16px;padding:22px;text-align:center
 }
 .modal h2{
-  font-size:clamp(25px,5vw,40px);
-  margin:8px 0 14px
+  font-size:clamp(25px,5vw,40px);margin:8px 0 14px
 }
-.modal p{
-  line-height:1.5
-}
+.modal p{line-height:1.5}
 .modal-actions{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:16px
+  display:flex;justify-content:center;gap:10px;
+  flex-wrap:wrap;margin-top:16px
 }
+
 .settings{text-align:left}
 .settings h2{text-align:center}
 .settings label{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin:12px 0;
-  font-size:14px
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin:12px 0;font-size:14px
 }
-.settings input,
-.settings select{
-  width:130px;
-  max-width:50%;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #777;
-  background:#111821;
-  color:white
+.settings input,.settings select{
+  width:130px;max-width:50%;padding:8px;border-radius:6px;
+  border:1px solid #777;background:#111821;color:white
 }
 .settings input[type=checkbox]{width:22px}
 
 .history-list{
-  display:grid;
-  gap:10px;
-  text-align:left
+  display:grid;gap:10px;text-align:left
 }
 .history-card{
-  background:#111821;
-  border:1px solid #ffffff22;
-  border-radius:10px;
-  padding:12px
+  background:#111821;border:1px solid #ffffff22;
+  border-radius:10px;padding:12px
 }
 .history-card h3{
-  margin:0 0 8px;
-  font-size:16px
+  margin:0 0 8px;font-size:16px
 }
 .history-card p{
-  margin:5px 0;
-  font-size:13px;
-  color:#d7dce5
+  margin:5px 0;font-size:13px;color:#d7dce5
 }
 .history-card .result{
-  font-size:16px;
-  font-weight:bold;
-  color:#ffd54f
+  font-size:16px;font-weight:bold;color:#ffd54f
 }
 .empty-history{
-  padding:24px 10px;
-  text-align:center;
-  color:#cfd8dc
+  padding:24px 10px;text-align:center;color:#cfd8dc
 }
+.export-btn{background:#1565c0}
+.delete-btn{background:#b71c1c}
 
-/* TV DISPLAY */
+/* =========================
+   TV DISPLAY
+========================= */
+
 #tvScreen{display:none}
 
 body.display-mode{
   background:#080a0f;
   overflow:hidden
 }
+
 body.display-mode header,
 body.display-mode .board,
 body.display-mode .overlay{
   display:none!important
 }
+
 body.display-mode #tvScreen{
   display:flex;
   flex-direction:column;
@@ -352,16 +219,19 @@ body.display-mode #tvScreen{
   color:#dce3ed;
   font-size:clamp(14px,2vw,25px)
 }
+
 .tv-match-title{
   color:#ffd54f;
   letter-spacing:2px
 }
+
 .tv-round{
   text-align:center;
   font-weight:900;
   color:#ffd54f;
   font-size:clamp(22px,4vw,48px)
 }
+
 .tv-main{
   flex:1;
   display:grid;
@@ -369,6 +239,7 @@ body.display-mode #tvScreen{
   gap:clamp(8px,1.5vw,24px);
   min-height:0
 }
+
 .tv-fighter{
   display:flex;
   flex-direction:column;
@@ -379,12 +250,10 @@ body.display-mode #tvScreen{
   min-width:0;
   text-align:center
 }
-.tv-red{
-  background:linear-gradient(160deg,#b71c1c,#ef5350)
-}
-.tv-blue{
-  background:linear-gradient(160deg,#0d47a1,#2196f3)
-}
+
+.tv-red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
+.tv-blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
+
 .tv-name{
   width:100%;
   overflow-wrap:anywhere;
@@ -392,16 +261,19 @@ body.display-mode #tvScreen{
   font-weight:900;
   text-shadow:0 3px 8px #0005
 }
+
 .tv-score{
   font-size:clamp(90px,22vw,300px);
   font-weight:900;
   line-height:1.1;
   text-shadow:0 6px 12px #0006
 }
+
 .tv-wins{
   font-size:clamp(16px,2.3vw,30px);
   font-weight:bold
 }
+
 .tv-gam{
   margin-top:10px;
   padding:8px 12px;
@@ -410,6 +282,7 @@ body.display-mode #tvScreen{
   font-size:clamp(14px,2vw,25px);
   font-weight:bold
 }
+
 .tv-clock-panel{
   background:#1b202a;
   border:1px solid #ffffff22;
@@ -421,49 +294,58 @@ body.display-mode #tvScreen{
   padding:10px;
   gap:clamp(10px,2vh,24px)
 }
+
 .tv-clock{
   font-size:clamp(36px,7vw,100px);
   font-weight:900;
   font-variant-numeric:tabular-nums
 }
+
 .tv-break{
   font-size:clamp(15px,2vw,27px);
   color:#ffd54f;
   font-weight:bold;
   text-align:center
 }
+
 .tv-footer{
   text-align:center;
   color:#cfd8dc;
   font-size:clamp(12px,1.5vw,20px)
 }
+
 .tv-winner{
   color:#ffd54f;
   font-size:clamp(20px,3vw,40px);
   font-weight:900;
   text-align:center
 }
-.tv-firebase{
-  font-size:12px;
-  color:#b9f6ca;
-  text-align:center
+
+.tv-live{
+  color:#69f0ae;
+  font-weight:bold
 }
 
 @media(max-width:650px){
+
   header{
     padding:8px;
     align-items:flex-start
   }
+
   header h1{font-size:16px}
+
   .small-btn{
     font-size:11px;
     padding:8px
   }
+
   .board{
     grid-template-columns:1fr 1fr;
     gap:6px;
     padding:6px
   }
+
   .center{
     grid-column:1/-1;
     grid-row:1;
@@ -471,6 +353,7 @@ body.display-mode #tvScreen{
     grid-template-columns:1fr 1fr;
     align-items:center
   }
+
   .center .round-label,
   .center .timer,
   .center .timer-adjust,
@@ -478,34 +361,56 @@ body.display-mode #tvScreen{
   .center .firebase-status{
     grid-column:1/-1
   }
+
   .center-actions{
     grid-template-columns:repeat(2,1fr)
   }
+
   .fighter{padding:8px 5px}
-  .score{font-size:clamp(70px,19vw,120px)}
+
+  .score{
+    font-size:clamp(70px,19vw,120px)
+  }
+
   .points button{
     padding:10px 2px;
     min-height:48px
   }
+
   .gam-box{gap:5px}
+
   .gam-box button{
     min-width:38px;
     min-height:42px
   }
+
   .modal{padding:15px}
+
   .tv-main{
     grid-template-columns:1fr minmax(85px,25%) 1fr;
     gap:5px
   }
+
   .tv-fighter{padding:5px}
-  .tv-score{font-size:clamp(55px,18vw,120px)}
-  .tv-name{font-size:clamp(15px,4vw,25px)}
+
+  .tv-score{
+    font-size:clamp(55px,18vw,120px)
+  }
+
+  .tv-name{
+    font-size:clamp(15px,4vw,25px)
+  }
+
   .tv-gam{
     font-size:12px;
     padding:5px
   }
+
   .tv-wins{font-size:12px}
-  .tv-clock{font-size:clamp(25px,8vw,42px)}
+
+  .tv-clock{
+    font-size:clamp(25px,8vw,42px)
+  }
 }
 </style>
 </head>
@@ -537,33 +442,44 @@ body.display-mode #tvScreen{
     <div class="score" id="redScore">0</div>
 
     <div class="points">
+
       <button data-side="red" data-type="punch">
-        PUNCH<span id="redPunchLabel">1</span>
+        PUNCH
+        <span id="redPunchLabel">1</span>
       </button>
 
       <button data-side="red" data-type="body">
-        BODY<span id="redBodyLabel">2</span>
+        BODY
+        <span id="redBodyLabel">2</span>
       </button>
 
       <button data-side="red" data-type="head">
-        HEAD<span id="redHeadLabel">3</span>
+        HEAD
+        <span id="redHeadLabel">3</span>
       </button>
+
     </div>
 
     <div class="gam-label">GAM-JEOM — THIS ROUND</div>
 
     <div class="gam-box">
+
       <button data-gam-side="red" data-delta="-1">−</button>
+
       <div class="gam-count" id="redGam">0</div>
+
       <button data-gam-side="red" data-delta="1">+</button>
+
     </div>
 
     <div class="total-gam">
-      Match total: <b id="redTotalGam">0</b>
+      Match total:
+      <b id="redTotalGam">0</b>
     </div>
 
     <div class="round-wins">
-      Rounds won: <b id="redWins">0</b>
+      Rounds won:
+      <b id="redWins">0</b>
     </div>
 
   </section>
@@ -586,6 +502,7 @@ body.display-mode #tvScreen{
     </div>
 
     <div class="break-box hidden" id="breakBox">
+
       <div>BREAK TIME</div>
 
       <div class="break-clock" id="breakClock">
@@ -595,6 +512,7 @@ body.display-mode #tvScreen{
       <button id="startNextBtn">
         START NEXT ROUND
       </button>
+
     </div>
 
     <div class="center-actions">
@@ -651,15 +569,18 @@ body.display-mode #tvScreen{
     <div class="points">
 
       <button data-side="blue" data-type="punch">
-        PUNCH<span id="bluePunchLabel">1</span>
+        PUNCH
+        <span id="bluePunchLabel">1</span>
       </button>
 
       <button data-side="blue" data-type="body">
-        BODY<span id="blueBodyLabel">2</span>
+        BODY
+        <span id="blueBodyLabel">2</span>
       </button>
 
       <button data-side="blue" data-type="head">
-        HEAD<span id="blueHeadLabel">3</span>
+        HEAD
+        <span id="blueHeadLabel">3</span>
       </button>
 
     </div>
@@ -669,17 +590,23 @@ body.display-mode #tvScreen{
     </div>
 
     <div class="gam-box">
+
       <button data-gam-side="blue" data-delta="-1">−</button>
+
       <div class="gam-count" id="blueGam">0</div>
+
       <button data-gam-side="blue" data-delta="1">+</button>
+
     </div>
 
     <div class="total-gam">
-      Match total: <b id="blueTotalGam">0</b>
+      Match total:
+      <b id="blueTotalGam">0</b>
     </div>
 
     <div class="round-wins">
-      Rounds won: <b id="blueWins">0</b>
+      Rounds won:
+      <b id="blueWins">0</b>
     </div>
 
   </section>
@@ -687,7 +614,9 @@ body.display-mode #tvScreen{
 </main>
 
 
-<!-- ================= TV DISPLAY ================= -->
+<!-- =========================
+     TV DISPLAY
+========================= -->
 
 <section id="tvScreen">
 
@@ -749,11 +678,11 @@ body.display-mode #tvScreen{
       <div class="tv-winner" id="tvWinner"></div>
 
       <div class="tv-footer" id="tvStatus">
-        READY
+        CONNECTING...
       </div>
 
-      <div class="tv-firebase" id="tvFirebase">
-        ● CONNECTING
+      <div class="tv-live" id="tvFirebaseStatus">
+        ● LIVE
       </div>
 
     </section>
@@ -791,7 +720,7 @@ body.display-mode #tvScreen{
 </section>
 
 
-<!-- ================= WINNER ================= -->
+<!-- WINNER POPUP -->
 
 <div class="overlay hidden" id="winnerOverlay">
 
@@ -828,7 +757,7 @@ body.display-mode #tvScreen{
 </div>
 
 
-<!-- ================= SETTINGS ================= -->
+<!-- SETTINGS -->
 
 <div class="overlay hidden" id="settingsOverlay">
 
@@ -854,6 +783,7 @@ body.display-mode #tvScreen{
         <option value="3" selected>Best of 3</option>
         <option value="5">Best of 5</option>
       </select>
+
     </label>
 
     <label>
@@ -929,7 +859,7 @@ body.display-mode #tvScreen{
 </div>
 
 
-<!-- ================= HISTORY ================= -->
+<!-- HISTORY -->
 
 <div class="overlay hidden" id="historyOverlay">
 
@@ -943,11 +873,11 @@ body.display-mode #tvScreen{
 
     <div class="modal-actions">
 
-      <button id="exportHistoryBtn">
+      <button class="export-btn" id="exportHistoryBtn">
         EXPORT CSV
       </button>
 
-      <button id="clearHistoryBtn">
+      <button class="delete-btn" id="clearHistoryBtn">
         CLEAR HISTORY
       </button>
 
@@ -962,79 +892,12 @@ body.display-mode #tvScreen{
 </div>
 
 
-<!-- =========================================================
-     FIREBASE
-     ========================================================= -->
-
-<script type="module">
-
-/*
-==============================================================
- FIREBASE CONFIGURATION
-==============================================================
-
-Firebase Console:
-
-Project Settings
-      ↓
-Your apps
-      ↓
-Web app
-      ↓
-SDK setup and configuration
-
-Wahan se values yahan paste karo.
-==============================================================
-*/
-
-const firebaseConfig = {
-
-  apiKey: "PASTE_YOUR_FIREBASE_API_KEY",
-
-  authDomain:
-    "taekwondo-referee-system.firebaseapp.com",
-
-  databaseURL:
-    "https://taekwondo-referee-system-default-rtdb.firebaseio.com",
-
-  projectId:
-    "taekwondo-referee-system",
-
-  storageBucket:
-    "taekwondo-referee-system.firebasestorage.app",
-
-  messagingSenderId:
-    "PASTE_YOUR_MESSAGING_SENDER_ID",
-
-  appId:
-    "PASTE_YOUR_FIREBASE_APP_ID"
-
-};
-
-
-/* Firebase imports */
-
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-
-import {
-  getAuth,
-  signInAnonymously,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-import {
-  getDatabase,
-  ref,
-  set,
-  onValue
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
-
+<script>
+"use strict";
 
 /* =========================================================
-   BASIC VARIABLES
-   ========================================================= */
+   BASIC
+========================================================= */
 
 const $ = id => document.getElementById(id);
 
@@ -1048,174 +911,173 @@ const isDisplayMode =
   new URLSearchParams(location.search).get("display") === "1";
 
 
-if(isDisplayMode){
+/* =========================================================
+   FIREBASE CONFIG
+   From your Firebase Project Settings
+========================================================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA07jqaMcHPjELMJMyD91Wxjh1cX8KIqaE",
+  authDomain: "taekwondo-referee-system.firebaseapp.com",
+  databaseURL: "https://taekwondo-referee-system-default-rtdb.firebaseio.com",
+  projectId: "taekwondo-referee-system",
+  storageBucket: "taekwondo-referee-system.firebasestorage.app",
+  messagingSenderId: "466920893605",
+  appId: "1:466920893605:web:9acba9b21be096fcf7714c",
+  measurementId: "G-WFE4GQS5SF"
+};
+
+
+/* =========================================================
+   FIREBASE INIT
+========================================================= */
+
+let firebaseReady = false;
+let firebaseUser = null;
+let liveRef = null;
+
+try {
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const firebaseAuth = firebase.auth();
+  const firebaseDB = firebase.database();
+
+  liveRef = firebaseDB.ref("liveScoreboard");
+
+  firebaseAuth.onAuthStateChanged(user => {
+
+    if (user) {
+
+      firebaseUser = user;
+      firebaseReady = true;
+
+      if (isDisplayMode) {
+
+        setTVFirebaseStatus("● LIVE — FIREBASE CONNECTED");
+
+        liveRef.on("value", snapshot => {
+
+          const data = snapshot.val();
+
+          if (data) {
+            renderTV(data);
+          }
+
+        }, error => {
+
+          console.error(error);
+          setTVFirebaseStatus("⚠ DATABASE ERROR");
+
+        });
+
+      } else {
+
+        setFirebaseStatus(
+          "● Firebase LIVE connected",
+          true
+        );
+
+        publishFirebase();
+
+      }
+
+    }
+
+  });
+
+  firebaseAuth.signInAnonymously()
+    .catch(error => {
+
+      console.error("Firebase Anonymous Auth:", error);
+
+      firebaseReady = false;
+
+      if (!isDisplayMode) {
+
+        setFirebaseStatus(
+          "⚠ Firebase login failed — enable Anonymous Authentication",
+          false,
+          true
+        );
+
+      } else {
+
+        setTVFirebaseStatus(
+          "⚠ FIREBASE LOGIN FAILED"
+        );
+
+      }
+
+    });
+
+} catch(error) {
+
+  console.error("Firebase initialization error:", error);
+
+  if (!isDisplayMode) {
+
+    setFirebaseStatus(
+      "⚠ Firebase configuration error",
+      false,
+      true
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOCAL FALLBACK
+========================================================= */
+
+let liveChannel = null;
+
+if ("BroadcastChannel" in window) {
+
+  try {
+
+    liveChannel =
+      new BroadcastChannel("taekwondo-live-scoreboard");
+
+    liveChannel.onmessage = event => {
+
+      if (isDisplayMode) {
+        renderTV(event.data);
+      }
+
+    };
+
+  } catch(error) {}
+
+}
+
+
+/* =========================================================
+   DISPLAY MODE
+========================================================= */
+
+if (isDisplayMode) {
 
   document.body.classList.add("display-mode");
 
   document.title =
     "Taekwondo Live TV Scoreboard";
-}
-
-
-/* =========================================================
-   FIREBASE INITIALIZATION
-   ========================================================= */
-
-let firebaseApp = null;
-let firebaseAuth = null;
-let firebaseDB = null;
-let liveRef = null;
-
-let firebaseReady = false;
-let firebaseUser = null;
-
-
-/* Firebase config validation */
-
-function firebaseConfigLooksValid(){
-
-  return (
-    firebaseConfig.apiKey &&
-    !firebaseConfig.apiKey.startsWith("PASTE_") &&
-    firebaseConfig.projectId &&
-    firebaseConfig.appId &&
-    !firebaseConfig.appId.startsWith("PASTE_")
-  );
-}
-
-
-async function initializeFirebase(){
-
-  if(!firebaseConfigLooksValid()){
-
-    setFirebaseStatus(
-      "⚠ Firebase config missing"
-    );
-
-    if(isDisplayMode){
-
-      $("tvFirebase").textContent =
-        "⚠ FIREBASE CONFIG MISSING";
-    }
-
-    return;
-  }
-
-
-  try{
-
-    firebaseApp =
-      initializeApp(firebaseConfig);
-
-    firebaseAuth =
-      getAuth(firebaseApp);
-
-    firebaseDB =
-      getDatabase(firebaseApp);
-
-    liveRef =
-      ref(firebaseDB,"liveScoreboard/current");
-
-
-    onAuthStateChanged(
-      firebaseAuth,
-      user => {
-
-        firebaseUser = user;
-
-        if(user){
-
-          firebaseReady = true;
-
-          setFirebaseStatus(
-            "🟢 Firebase connected"
-          );
-
-          if(isDisplayMode){
-
-            $("tvFirebase").textContent =
-              "● LIVE CONNECTED";
-          }
-
-          startFirebaseSync();
-
-        }else{
-
-          firebaseReady = false;
-
-          setFirebaseStatus(
-            "🔄 Firebase signing in..."
-          );
-        }
-
-      }
-    );
-
-
-    await signInAnonymously(firebaseAuth);
-
-
-  }catch(error){
-
-    console.error(
-      "Firebase initialization error:",
-      error
-    );
-
-    firebaseReady = false;
-
-    setFirebaseStatus(
-      "🔴 Firebase error"
-    );
-
-    if(isDisplayMode){
-
-      $("tvFirebase").textContent =
-        "🔴 FIREBASE ERROR";
-    }
-
-  }
-
-}
-
-
-function setFirebaseStatus(message){
-
-  const el=$("firebaseStatus");
-
-  if(!el)return;
-
-  el.textContent=message;
-
-  el.classList.remove(
-    "connected",
-    "error"
-  );
-
-  if(message.includes("connected")){
-
-    el.classList.add("connected");
-
-  }
-
-  if(message.includes("error")){
-
-    el.classList.add("error");
-
-  }
 
 }
 
 
 /* =========================================================
-   MATCH CONFIG
-   ========================================================= */
+   CONFIG
+========================================================= */
 
-let cfg={
+let cfg = {
 
   roundTime:120,
   breakTime:30,
-
   format:3,
 
   punch:1,
@@ -1238,7 +1100,7 @@ let cfg={
 
 /* =========================================================
    FIGHTERS
-   ========================================================= */
+========================================================= */
 
 function freshFighters(){
 
@@ -1263,66 +1125,60 @@ function freshFighters(){
 }
 
 
-let fighters =
-  freshFighters();
+let fighters = freshFighters();
 
+let round = 1;
 
-let round=1;
+let seconds = cfg.roundTime;
 
-let seconds =
-  cfg.roundTime;
+let breakSeconds = cfg.breakTime;
 
-let breakSeconds =
-  cfg.breakTime;
+let timerId = null;
 
+let breakId = null;
 
-let timerId=null;
-let breakId=null;
+let running = false;
 
-let running=false;
-let inBreak=false;
-let matchOver=false;
+let inBreak = false;
 
-let history=[];
+let matchOver = false;
 
-let pendingAction="none";
+let history = [];
 
-let audioContext=null;
+let pendingAction = "none";
+
+let audioContext = null;
 
 let matchStartedAt =
   new Date().toISOString();
 
-let matchSaved=false;
+let matchSaved = false;
 
-let lastWinnerText="";
+let lastWinnerText = "";
 
 
 /* =========================================================
-   BASIC FUNCTIONS
-   ========================================================= */
+   HELPERS
+========================================================= */
 
 function fighterName(side){
 
-  return (
-    $(side+"Name").value.trim() ||
-    (side==="red"?"HONG":"CHONG")
-  );
+  return $(side + "Name").value.trim()
+    || (side === "red" ? "HONG" : "CHONG");
 
 }
 
 
 function opponent(side){
 
-  return side==="red"?"blue":"red";
+  return side === "red" ? "blue" : "red";
 
 }
 
 
 function requiredWins(){
 
-  return Math.ceil(
-    cfg.format/2
-  );
+  return Math.ceil(cfg.format / 2);
 
 }
 
@@ -1330,14 +1186,12 @@ function requiredWins(){
 function fmt(value){
 
   const s =
-    Math.max(0,Math.floor(value));
+    Math.max(0, Math.floor(value));
 
   return (
-    String(Math.floor(s/60))
-      .padStart(2,"0")
-    +":"+
-    String(s%60)
-      .padStart(2,"0")
+    String(Math.floor(s / 60)).padStart(2,"0")
+    + ":" +
+    String(s % 60).padStart(2,"0")
   );
 
 }
@@ -1345,11 +1199,41 @@ function fmt(value){
 
 function setStatus(message){
 
-  if($("status")){
+  if ($("status")) {
+    $("status").textContent = message;
+  }
 
-    $("status").textContent =
+}
+
+
+function setFirebaseStatus(
+  message,
+  connected=false,
+  error=false
+){
+
+  if (!$("firebaseStatus")) return;
+
+  $("firebaseStatus").textContent = message;
+
+  $("firebaseStatus").classList.toggle(
+    "connected",
+    connected
+  );
+
+  $("firebaseStatus").classList.toggle(
+    "error",
+    error
+  );
+
+}
+
+
+function setTVFirebaseStatus(message){
+
+  if ($("tvFirebaseStatus")) {
+    $("tvFirebaseStatus").textContent =
       message;
-
   }
 
 }
@@ -1357,28 +1241,23 @@ function setStatus(message){
 
 /* =========================================================
    UNDO
-   ========================================================= */
+========================================================= */
 
 function snapshot(){
 
   history.push(
     JSON.stringify({
-
       fighters,
       round,
       seconds,
       breakSeconds,
       inBreak,
       matchOver
-
     })
   );
 
-
-  if(history.length>100){
-
+  if (history.length > 100) {
     history.shift();
-
   }
 
 }
@@ -1386,88 +1265,63 @@ function snapshot(){
 
 function stopClocks(){
 
-  if(timerId!==null){
-
+  if (timerId !== null) {
     clearInterval(timerId);
-
   }
 
-  if(breakId!==null){
-
+  if (breakId !== null) {
     clearInterval(breakId);
-
   }
 
-  timerId=null;
-  breakId=null;
-  running=false;
+  timerId = null;
+  breakId = null;
+  running = false;
 
 }
 
 
 /* =========================================================
    LIVE STATE
-   ========================================================= */
+========================================================= */
 
 function makeLiveState(){
 
   return {
 
-    redName:
-      fighterName("red"),
+    redName:fighterName("red"),
+    blueName:fighterName("blue"),
 
-    blueName:
-      fighterName("blue"),
+    redScore:fighters.red.score,
+    blueScore:fighters.blue.score,
 
-    redScore:
-      fighters.red.score,
+    redGam:fighters.red.gam,
+    blueGam:fighters.blue.gam,
 
-    blueScore:
-      fighters.blue.score,
+    redTotalGam:fighters.red.totalGam,
+    blueTotalGam:fighters.blue.totalGam,
 
-    redGam:
-      fighters.red.gam,
+    redWins:fighters.red.wins,
+    blueWins:fighters.blue.wins,
 
-    blueGam:
-      fighters.blue.gam,
+    round:round,
 
-    redTotalGam:
-      fighters.red.totalGam,
+    seconds:seconds,
+    breakSeconds:breakSeconds,
 
-    blueTotalGam:
-      fighters.blue.totalGam,
+    inBreak:inBreak,
+    running:running,
+    matchOver:matchOver,
 
-    redWins:
-      fighters.red.wins,
-
-    blueWins:
-      fighters.blue.wins,
-
-    round,
-
-    seconds,
-
-    breakSeconds,
-
-    inBreak,
-
-    running,
-
-    matchOver,
-
-    format:
-      cfg.format,
+    format:cfg.format,
 
     status:
       $("status")
         ? $("status").textContent
         : "READY",
 
-    winner:
-      lastWinnerText,
+    winner:lastWinnerText,
 
-    updatedAt:
-      Date.now()
+    updatedAt:Date.now()
 
   };
 
@@ -1475,95 +1329,75 @@ function makeLiveState(){
 
 
 /* =========================================================
-   FIREBASE WRITE
-   ========================================================= */
+   FIREBASE PUBLISH
+========================================================= */
 
-let lastPublishedJSON="";
+function publishFirebase(){
+
+  if (isDisplayMode) return;
+
+  const data = makeLiveState();
+
+  /* Local fallback */
+  try {
+
+    localStorage.setItem(
+      LIVE_KEY,
+      JSON.stringify(data)
+    );
+
+  } catch(error) {}
 
 
-async function publishLiveState(){
+  /* Same browser instant sync */
+  if (liveChannel) {
 
-  if(isDisplayMode)return;
-
-  const state =
-    makeLiveState();
-
-
-  const json =
-    JSON.stringify(state);
-
-
-  /*
-  Don't send exactly identical
-  state repeatedly.
-  */
-
-  if(json===lastPublishedJSON){
-
-    return;
+    try {
+      liveChannel.postMessage(data);
+    } catch(error) {}
 
   }
 
 
-  lastPublishedJSON=json;
+  /* Firebase cross-device sync */
+  if (!firebaseReady || !liveRef) {
+    return;
+  }
 
+  liveRef.set(data)
+    .then(() => {
 
-  /*
-  Local backup
-  */
-
-  try{
-
-    localStorage.setItem(
-      LIVE_KEY,
-      json
-    );
-
-  }catch(error){}
-
-
-  /*
-  Firebase
-  */
-
-  if(
-    firebaseReady &&
-    liveRef
-  ){
-
-    try{
-
-      await set(
-        liveRef,
-        state
+      setFirebaseStatus(
+        "● Firebase LIVE connected",
+        true
       );
 
-    }catch(error){
+    })
+    .catch(error => {
 
       console.error(
-        "Firebase live write failed:",
+        "Firebase publish error:",
         error
       );
 
       setFirebaseStatus(
-        "🔴 Firebase error"
+        "⚠ Firebase database error",
+        false,
+        true
       );
 
-    }
-
-  }
+    });
 
 }
 
 
 /* =========================================================
-   TV DISPLAY
-   ========================================================= */
+   TV RENDER
+========================================================= */
 
 function renderTV(data){
 
-  if(!data)return;
-
+  if (!data) return;
 
   $("tvRedName").textContent =
     data.redName || "HONG";
@@ -1571,13 +1405,11 @@ function renderTV(data){
   $("tvBlueName").textContent =
     data.blueName || "CHONG";
 
-
   $("tvRedScore").textContent =
     data.redScore ?? 0;
 
   $("tvBlueScore").textContent =
     data.blueScore ?? 0;
-
 
   $("tvRedWins").textContent =
     data.redWins ?? 0;
@@ -1585,43 +1417,31 @@ function renderTV(data){
   $("tvBlueWins").textContent =
     data.blueWins ?? 0;
 
-
   $("tvRedGam").textContent =
     data.redGam ?? 0;
 
   $("tvBlueGam").textContent =
     data.blueGam ?? 0;
 
-
   $("tvRound").textContent =
-    "ROUND "+(data.round||1);
-
+    "ROUND " + (data.round || 1);
 
   $("tvTimer").textContent =
     fmt(data.seconds ?? 0);
 
-
   $("tvFormat").textContent =
-    "BEST OF "+(data.format||3);
-
+    "BEST OF " + (data.format || 3);
 
   $("tvBreak").textContent =
-    "BREAK "+fmt(
-      data.breakSeconds ?? 0
-    );
+    "BREAK " + fmt(data.breakSeconds ?? 0);
 
-
-  $("tvBreak")
-    .classList
-    .toggle(
-      "hidden",
-      !data.inBreak
-    );
-
+  $("tvBreak").classList.toggle(
+    "hidden",
+    !data.inBreak
+  );
 
   $("tvWinner").textContent =
     data.winner || "";
-
 
   $("tvStatus").textContent =
     data.status || "READY";
@@ -1630,19 +1450,17 @@ function renderTV(data){
 
 
 /* =========================================================
-   LOCAL BACKUP READ
-   ========================================================= */
+   LOCAL LIVE STATE
+========================================================= */
 
 function readSavedLiveState(){
 
-  try{
+  try {
 
     const raw =
-      localStorage.getItem(
-        LIVE_KEY
-      );
+      localStorage.getItem(LIVE_KEY);
 
-    if(raw){
+    if (raw) {
 
       renderTV(
         JSON.parse(raw)
@@ -1650,10 +1468,10 @@ function readSavedLiveState(){
 
     }
 
-  }catch(error){
+  } catch(error) {
 
     console.warn(
-      "Could not read saved live state",
+      "Could not read saved state",
       error
     );
 
@@ -1663,148 +1481,52 @@ function readSavedLiveState(){
 
 
 /* =========================================================
-   FIREBASE TV LISTENER
-   ========================================================= */
+   DISPLAY MODE STARTUP
+========================================================= */
 
-let firebaseListenerStarted=false;
-
-
-function startFirebaseSync(){
-
-  if(
-    !firebaseReady ||
-    !liveRef ||
-    firebaseListenerStarted
-  ){
-
-    return;
-
-  }
-
-
-  firebaseListenerStarted=true;
-
-
-  onValue(
-    liveRef,
-    snapshot => {
-
-      const data =
-        snapshot.val();
-
-
-      if(data){
-
-        renderTV(data);
-
-
-        /*
-        Save local backup
-        */
-
-        try{
-
-          localStorage.setItem(
-            LIVE_KEY,
-            JSON.stringify(data)
-          );
-
-        }catch(error){}
-
-      }
-
-    },
-
-    error => {
-
-      console.error(
-        "Firebase listener error:",
-        error
-      );
-
-
-      if(isDisplayMode){
-
-        $("tvFirebase").textContent =
-          "🔴 CONNECTION ERROR";
-
-      }else{
-
-        setFirebaseStatus(
-          "🔴 Firebase error"
-        );
-
-      }
-
-    }
-
-  );
-
-}
-
-
-/* =========================================================
-   INITIALIZE FIREBASE
-   ========================================================= */
-
-initializeFirebase();
-
-
-/* =========================================================
-   DISPLAY MODE
-   ========================================================= */
-
-if(isDisplayMode){
+if (isDisplayMode) {
 
   readSavedLiveState();
 
-
-  /*
-  Also listen to localStorage
-  in case Firebase is temporarily
-  unavailable.
-  */
+  setTVFirebaseStatus(
+    "● CONNECTING TO FIREBASE..."
+  );
 
   window.addEventListener(
     "storage",
     event => {
 
-      if(
-        event.key===LIVE_KEY &&
+      if (
+        event.key === LIVE_KEY &&
         event.newValue
-      ){
+      ) {
 
-        try{
+        try {
 
           renderTV(
-            JSON.parse(
-              event.newValue
-            )
+            JSON.parse(event.newValue)
           );
 
-        }catch(error){}
+        } catch(error) {}
 
       }
 
     }
   );
 
-
 }
 
 
 /* =========================================================
-   REFEREE RENDER
-   ========================================================= */
+   MAIN RENDER
+========================================================= */
 
 function render(){
 
-  if(isDisplayMode)return;
+  if (isDisplayMode) return;
 
 
-  for(
-    const side of ["red","blue"]
-  ){
+  for (const side of ["red","blue"]) {
 
     $(side+"Score").textContent =
       fighters[side].score;
@@ -1831,48 +1553,39 @@ function render(){
 
 
   $("roundLabel").textContent =
-    "ROUND "+round;
-
+    "ROUND " + round;
 
   $("timer").textContent =
     fmt(seconds);
 
-
   $("breakClock").textContent =
     fmt(breakSeconds);
 
+  $("breakBox").classList.toggle(
+    "hidden",
+    !inBreak
+  );
 
-  $("breakBox")
-    .classList
-    .toggle(
-      "hidden",
-      !inBreak
-    );
-
-
-  /*
-  Score size
-  */
 
   document
     .querySelectorAll(".score")
-    .forEach(el=>{
+    .forEach(el => {
 
-      if(
-        cfg.scoreSize==="small"
-      ){
+      if (cfg.scoreSize === "small") {
 
         el.style.fontSize =
           "clamp(60px,12vw,120px)";
 
-      }else if(
-        cfg.scoreSize==="large"
-      ){
+      }
+
+      else if (cfg.scoreSize === "large") {
 
         el.style.fontSize =
           "clamp(90px,20vw,200px)";
 
-      }else{
+      }
+
+      else {
 
         el.style.fontSize =
           "clamp(80px,17vw,180px)";
@@ -1890,105 +1603,72 @@ function render(){
     .querySelectorAll(
       ".points button,.gam-box button"
     )
-    .forEach(btn=>{
+    .forEach(btn => {
 
-      btn.disabled=locked;
+      btn.disabled = locked;
 
     });
 
 
   $("startBtn").disabled =
-    matchOver ||
-    inBreak ||
-    running;
-
+    matchOver || inBreak || running;
 
   $("pauseBtn").disabled =
     !running;
 
-
   $("endBtn").disabled =
-    matchOver ||
-    inBreak;
-
+    matchOver || inBreak;
 
   $("startNextBtn").disabled =
-    matchOver ||
-    !inBreak;
+    matchOver || !inBreak;
 
 
-  /*
-  IMPORTANT:
-  status is updated first,
-  then Firebase receives the
-  latest complete state.
-  */
-
-  publishLiveState();
-
-}
-
-
-/* =========================================================
-   FLASH
-   ========================================================= */
-
-function flash(side){
-
-  const el =
-    $(side+"Score");
-
-  el.classList.remove(
-    "flash"
-  );
-
-  void el.offsetWidth;
-
-  el.classList.add(
-    "flash"
-  );
+  publishFirebase();
 
 }
 
 
 /* =========================================================
    SOUND
-   ========================================================= */
+========================================================= */
+
+function flash(side){
+
+  const el = $(side+"Score");
+
+  el.classList.remove("flash");
+
+  void el.offsetWidth;
+
+  el.classList.add("flash");
+
+}
+
 
 function sound(type){
 
-  if(!cfg.sound)return;
+  if (!cfg.sound) return;
 
-
-  try{
+  try {
 
     const AC =
       window.AudioContext ||
       window.webkitAudioContext;
 
+    if (!AC) return;
 
-    if(!AC)return;
-
-
-    if(!audioContext){
-
-      audioContext =
-        new AC();
-
+    if (!audioContext) {
+      audioContext = new AC();
     }
 
-
-    if(
-      audioContext.state===
-      "suspended"
-    ){
-
+    if (
+      audioContext.state === "suspended"
+    ) {
       audioContext.resume();
-
     }
 
 
-    const notes={
+    const notes = {
 
       score:[700,.12],
       gam:[360,.18],
@@ -2002,27 +1682,22 @@ function sound(type){
     const now =
       audioContext.currentTime;
 
-
     const [
       frequency,
       duration
     ] =
-      notes[type] ||
-      notes.score;
+      notes[type] || notes.score;
 
 
     const oscillator =
-      audioContext
-        .createOscillator();
-
+      audioContext.createOscillator();
 
     const gain =
-      audioContext
-        .createGain();
+      audioContext.createGain();
 
 
     oscillator.type =
-      type==="horn"
+      type === "horn"
         ? "sawtooth"
         : "sine";
 
@@ -2044,18 +1719,19 @@ function sound(type){
     gain.gain
       .exponentialRampToValueAtTime(
         .18,
-        now+.015
+        now + .015
       );
 
 
     gain.gain
       .exponentialRampToValueAtTime(
         .0001,
-        now+duration
+        now + duration
       );
 
 
     oscillator.connect(gain);
+
     gain.connect(
       audioContext.destination
     );
@@ -2064,122 +1740,92 @@ function sound(type){
     oscillator.start(now);
 
     oscillator.stop(
-      now+duration+.02
+      now + duration + .02
     );
 
-  }catch(error){}
+  } catch(error) {}
 
 }
 
 
 /* =========================================================
-   POINTS
-   ========================================================= */
+   SCORING
+========================================================= */
 
 function addPoints(side,type){
 
-  if(
-    matchOver ||
-    inBreak
-  )return;
-
+  if (matchOver || inBreak) return;
 
   snapshot();
 
-
   fighters[side].score +=
     cfg[type];
-
 
   flash(side);
 
   sound("score");
 
-  setStatus(
-    fighterName(side)+
-    " scored "+cfg[type]+" point(s)."
-  );
-
-
   render();
-
 
   checkScoreRoundEnd();
 
 }
 
 
-/* =========================================================
-   GAM-JEOM
-   ========================================================= */
-
 function changeGam(side,delta){
 
-  if(
-    matchOver ||
-    inBreak
-  )return;
-
+  if (matchOver || inBreak) return;
 
   const f =
     fighters[side];
 
   const opp =
-    fighters[
-      opponent(side)
-    ];
+    fighters[opponent(side)];
 
 
-  if(
-    delta<0 &&
+  if (
+    delta < 0 &&
     (
-      f.gam<=0 ||
-      f.totalGam<=0 ||
-      opp.score<=0
+      f.gam <= 0 ||
+      f.totalGam <= 0 ||
+      opp.score <= 0
     )
-  ){
-
+  ) {
     return;
-
   }
 
 
   snapshot();
 
 
-  if(delta>0){
+  if (delta > 0) {
 
     f.gam++;
-
     f.totalGam++;
 
-    opp.score+=1;
+    opp.score += 1;
 
     sound("gam");
 
-
     setStatus(
-      fighterName(side)+
-      " received Gam-jeom. "+
-      "Opponent gets 1 point."
+      fighterName(side) +
+      " received Gam-jeom. Opponent gets 1 point."
     );
 
+  }
 
-  }else{
+  else {
 
     f.gam--;
-
     f.totalGam--;
 
     opp.score =
       Math.max(
         0,
-        opp.score-1
+        opp.score - 1
       );
 
-
     sound("undo");
-
 
     setStatus(
       "Gam-jeom corrected."
@@ -2191,24 +1837,18 @@ function changeGam(side,delta){
   render();
 
 
-  if(delta>0){
+  if (delta > 0) {
 
-    /*
-    Round Gam-jeom rule
-    */
-
-    if(
+    if (
       cfg.roundGam &&
-      (
-        cfg.format===3 ||
-        cfg.format===5
-      ) &&
-      f.gam>=5
-    ){
+      (cfg.format === 3 ||
+       cfg.format === 5) &&
+      f.gam >= 5
+    ) {
 
       awardRound(
         opponent(side),
-        fighterName(side)+
+        fighterName(side) +
         " received 5 Gam-jeom in this round."
       );
 
@@ -2217,20 +1857,15 @@ function changeGam(side,delta){
     }
 
 
-    /*
-    Match Gam-jeom limit
-    */
-
-    if(
-      f.totalGam>=
-      cfg.gamLimit
-    ){
+    if (
+      f.totalGam >= cfg.gamLimit
+    ) {
 
       declareMatchWinner(
         opponent(side),
-        fighterName(side)+
-        " reached "+
-        cfg.gamLimit+
+        fighterName(side) +
+        " reached " +
+        cfg.gamLimit +
         " total Gam-jeom."
       );
 
@@ -2246,17 +1881,9 @@ function changeGam(side,delta){
 }
 
 
-/* =========================================================
-   SCORE END CONDITIONS
-   ========================================================= */
-
 function checkScoreRoundEnd(){
 
-  if(
-    matchOver ||
-    inBreak
-  )return;
-
+  if (matchOver || inBreak) return;
 
   const r =
     fighters.red.score;
@@ -2265,22 +1892,16 @@ function checkScoreRoundEnd(){
     fighters.blue.score;
 
 
-  /*
-  Target score
-  */
+  if (
+    cfg.target > 0 &&
+    (r >= cfg.target ||
+     b >= cfg.target)
+  ) {
 
-  if(
-    cfg.target>0 &&
-    (
-      r>=cfg.target ||
-      b>=cfg.target
-    )
-  ){
-
-    if(r!==b){
+    if (r !== b) {
 
       awardRound(
-        r>b?"red":"blue",
+        r > b ? "red" : "blue",
         "Target score reached."
       );
 
@@ -2291,17 +1912,13 @@ function checkScoreRoundEnd(){
   }
 
 
-  /*
-  Point gap
-  */
-
-  if(
-    cfg.gap>0 &&
-    Math.abs(r-b)>=cfg.gap
-  ){
+  if (
+    cfg.gap > 0 &&
+    Math.abs(r-b) >= cfg.gap
+  ) {
 
     awardRound(
-      r>b?"red":"blue",
+      r > b ? "red" : "blue",
       "Point gap reached."
     );
 
@@ -2312,18 +1929,20 @@ function checkScoreRoundEnd(){
 
 /* =========================================================
    TIMER
-   ========================================================= */
+========================================================= */
 
 function startTimer(){
 
-  if(
+  if (
     matchOver ||
     inBreak ||
     running
-  )return;
+  ) {
+    return;
+  }
 
 
-  if(seconds<=0){
+  if (seconds <= 0) {
 
     endRound();
 
@@ -2332,38 +1951,30 @@ function startTimer(){
   }
 
 
-  try{
+  try {
 
     const AC =
       window.AudioContext ||
       window.webkitAudioContext;
 
-
-    if(
+    if (
       AC &&
       !audioContext
-    ){
-
-      audioContext =
-        new AC();
-
+    ) {
+      audioContext = new AC();
     }
 
-
-    if(
+    if (
       audioContext &&
-      audioContext.state===
-      "suspended"
-    ){
-
+      audioContext.state === "suspended"
+    ) {
       audioContext.resume();
-
     }
 
-  }catch(error){}
+  } catch(error) {}
 
 
-  running=true;
+  running = true;
 
   setStatus(
     "Round in progress"
@@ -2373,14 +1984,13 @@ function startTimer(){
 
 
   timerId =
-    setInterval(()=>{
+    setInterval(() => {
 
       seconds--;
 
+      if (seconds <= 0) {
 
-      if(seconds<=0){
-
-        seconds=0;
+        seconds = 0;
 
         render();
 
@@ -2389,7 +1999,6 @@ function startTimer(){
         return;
 
       }
-
 
       render();
 
@@ -2400,23 +2009,15 @@ function startTimer(){
 
 function pauseTimer(){
 
-  if(!running)return;
+  if (!running) return;
 
+  clearInterval(timerId);
 
-  clearInterval(
-    timerId
-  );
+  timerId = null;
 
+  running = false;
 
-  timerId=null;
-
-  running=false;
-
-
-  setStatus(
-    "Paused"
-  );
-
+  setStatus("Paused");
 
   render();
 
@@ -2425,35 +2026,32 @@ function pauseTimer(){
 
 function adjustTimer(delta){
 
-  if(
+  if (
     matchOver ||
     inBreak
-  )return;
-
+  ) {
+    return;
+  }
 
   seconds =
     Math.max(
       0,
-      seconds+delta
+      seconds + delta
     );
-
 
   render();
 
 }
 
 
-/* =========================================================
-   END ROUND
-   ========================================================= */
-
 function endRound(){
 
-  if(
+  if (
     matchOver ||
     inBreak
-  )return;
-
+  ) {
+    return;
+  }
 
   stopClocks();
 
@@ -2465,19 +2063,22 @@ function endRound(){
     fighters.blue.score;
 
 
-  if(r===b){
+  if (r === b) {
 
     showWinner(
       "ROUND DRAW",
-      "Round "+round+
+      "Round " +
+      round +
       " ended in a draw.",
       "next"
     );
 
-  }else{
+  }
+
+  else {
 
     awardRound(
-      r>b?"red":"blue",
+      r > b ? "red" : "blue",
       "Round ended."
     );
 
@@ -2487,36 +2088,26 @@ function endRound(){
 
 
 /* =========================================================
-   AWARD ROUND
-   ========================================================= */
+   ROUND WINNER
+========================================================= */
 
 function awardRound(side,reason){
 
-  if(
+  if (
     matchOver ||
     inBreak
-  )return;
-
+  ) {
+    return;
+  }
 
   stopClocks();
 
   snapshot();
 
 
-  if(side){
+  if (side) {
 
     fighters[side].wins++;
-
-  }
-
-
-  if(side){
-
-    setStatus(
-      fighterName(side)+
-      " wins Round "+
-      round+"."
-    );
 
   }
 
@@ -2526,19 +2117,15 @@ function awardRound(side,reason){
   sound("round");
 
 
-  /*
-  Match winner
-  */
-
-  if(
+  if (
     side &&
-    fighters[side].wins>=
+    fighters[side].wins >=
     requiredWins()
-  ){
+  ) {
 
     declareMatchWinner(
       side,
-      fighterName(side)+
+      fighterName(side) +
       " has won the required number of rounds."
     );
 
@@ -2547,7 +2134,7 @@ function awardRound(side,reason){
   }
 
 
-  if(!side){
+  if (!side) {
 
     showWinner(
       "ROUND DRAW",
@@ -2562,11 +2149,11 @@ function awardRound(side,reason){
 
   showWinner(
     "ROUND WINNER",
-    fighterName(side)+
-      " wins Round "+
-      round+
-      ".<br>"+
-      reason,
+    fighterName(side) +
+    " wins Round " +
+    round +
+    ".<br>" +
+    reason,
     "next"
   );
 
@@ -2575,30 +2162,27 @@ function awardRound(side,reason){
 
 /* =========================================================
    MATCH HISTORY
-   ========================================================= */
+========================================================= */
 
 function readMatchHistory(){
 
-  try{
+  try {
 
     const saved =
       localStorage.getItem(
         HISTORY_KEY
       );
 
-
     const data =
       saved
         ? JSON.parse(saved)
         : [];
 
-
     return Array.isArray(data)
       ? data
       : [];
 
-
-  }catch(error){
+  } catch(error) {
 
     return [];
 
@@ -2612,17 +2196,17 @@ function saveMatchResult(
   reason
 ){
 
-  if(matchSaved)return;
+  if (matchSaved) return;
 
-  matchSaved=true;
+  matchSaved = true;
 
 
-  const record={
+  const record = {
 
     id:
-      "match_"+
-      Date.now()+
-      "_"+
+      "match_" +
+      Date.now() +
+      "_" +
       Math.random()
         .toString(36)
         .slice(2,8),
@@ -2658,16 +2242,18 @@ function saveMatchResult(
       fighters.blue.totalGam,
 
     format:
-      "Best of "+cfg.format,
+      "Best of " + cfg.format,
 
-    winnerSide,
+    winnerSide:
+      winnerSide,
 
     winnerName:
-      winnerSide==="red"
+      winnerSide === "red"
         ? fighterName("red")
         : fighterName("blue"),
 
-    reason,
+    reason:
+      reason,
 
     roundsPlayed:
       round
@@ -2675,16 +2261,12 @@ function saveMatchResult(
   };
 
 
-  try{
+  try {
 
     const records =
       readMatchHistory();
 
-
-    records.unshift(
-      record
-    );
-
+    records.unshift(record);
 
     localStorage.setItem(
       HISTORY_KEY,
@@ -2693,13 +2275,11 @@ function saveMatchResult(
       )
     );
 
-
     setStatus(
       "Match result saved to history."
     );
 
-
-  }catch(error){
+  } catch(error) {
 
     setStatus(
       "Match finished, but browser could not save history."
@@ -2712,7 +2292,7 @@ function saveMatchResult(
 
 /* =========================================================
    MATCH WINNER
-   ========================================================= */
+========================================================= */
 
 function declareMatchWinner(
   side,
@@ -2721,25 +2301,20 @@ function declareMatchWinner(
 
   stopClocks();
 
-  matchOver=true;
+  matchOver = true;
 
-  inBreak=false;
+  inBreak = false;
 
 
   lastWinnerText =
-    "🏆 "+
-    fighterName(side)+
+    "🏆 " +
+    fighterName(side) +
     " WINS THE MATCH!";
 
 
   saveMatchResult(
     side,
     reason
-  );
-
-
-  setStatus(
-    lastWinnerText
   );
 
 
@@ -2750,9 +2325,9 @@ function declareMatchWinner(
 
   showWinner(
     "MATCH WINNER",
-    lastWinnerText+
-      "<br>"+
-      reason,
+    lastWinnerText +
+    "<br>" +
+    reason,
     "close"
   );
 
@@ -2761,7 +2336,7 @@ function declareMatchWinner(
 
 /* =========================================================
    WINNER POPUP
-   ========================================================= */
+========================================================= */
 
 function showWinner(
   title,
@@ -2769,29 +2344,26 @@ function showWinner(
   action
 ){
 
-  pendingAction=action;
+  pendingAction = action;
 
+  $("winnerTitle").textContent =
+    title;
 
-  $("winnerTitle")
-    .textContent=title;
-
-
-  $("winnerText")
-    .innerHTML=message;
+  $("winnerText").innerHTML =
+    message;
 
 
   $("winnerNextBtn")
     .classList
     .toggle(
       "hidden",
-      action!=="next"
+      action !== "next"
     );
 
 
   $("directRedBtn")
     .classList
     .add("hidden");
-
 
   $("directBlueBtn")
     .classList
@@ -2808,9 +2380,7 @@ function showWinner(
     .remove("hidden");
 
 
-  if(
-    action==="next"
-  ){
+  if (action === "next") {
 
     lastWinnerText =
       title;
@@ -2852,11 +2422,12 @@ function closeWinner(){
 
 function winnerContinue(){
 
-  if(
-    pendingAction!=="next" ||
+  if (
+    pendingAction !== "next" ||
     matchOver
-  )return;
-
+  ) {
+    return;
+  }
 
   closeWinner();
 
@@ -2867,48 +2438,43 @@ function winnerContinue(){
 
 /* =========================================================
    BREAK
-   ========================================================= */
+========================================================= */
 
 function beginBreak(){
 
-  if(matchOver)return;
-
+  if (matchOver) return;
 
   stopClocks();
 
-
-  inBreak=true;
+  inBreak = true;
 
   breakSeconds =
     cfg.breakTime;
 
-  seconds=0;
-
+  seconds = 0;
 
   setStatus(
     "Break in progress"
   );
 
-
   render();
 
 
-  if(
-    cfg.breakTime<=0
-  ){
+  if (cfg.breakTime <= 0) {
 
-    if(cfg.autoNext){
+    if (cfg.autoNext) {
 
       startNextRound();
 
-    }else{
+    }
+
+    else {
 
       setStatus(
         "Break finished — press START NEXT ROUND."
       );
 
     }
-
 
     render();
 
@@ -2918,18 +2484,16 @@ function beginBreak(){
 
 
   breakId =
-    setInterval(()=>{
+    setInterval(() => {
 
-      if(
+      if (
         !inBreak ||
         matchOver
-      ){
+      ) {
 
-        clearInterval(
-          breakId
-        );
+        clearInterval(breakId);
 
-        breakId=null;
+        breakId = null;
 
         return;
 
@@ -2941,35 +2505,30 @@ function beginBreak(){
       render();
 
 
-      if(
-        breakSeconds<=0
-      ){
+      if (breakSeconds <= 0) {
 
-        clearInterval(
-          breakId
-        );
+        clearInterval(breakId);
 
-        breakId=null;
+        breakId = null;
 
-        breakSeconds=0;
+        breakSeconds = 0;
 
         render();
 
 
-        if(
-          cfg.autoNext
-        ){
+        if (cfg.autoNext) {
 
           startNextRound();
 
-        }else{
+        }
+
+        else {
 
           setStatus(
             "Break finished — press START NEXT ROUND."
           );
 
         }
-
 
         render();
 
@@ -2982,57 +2541,50 @@ function beginBreak(){
 
 /* =========================================================
    NEXT ROUND
-   ========================================================= */
+========================================================= */
 
 function startNextRound(){
 
-  if(
+  if (
     matchOver ||
     !inBreak
-  )return;
+  ) {
+    return;
+  }
 
 
-  if(
-    breakId!==null
-  ){
+  if (breakId !== null) {
 
-    clearInterval(
-      breakId
-    );
+    clearInterval(breakId);
+
+  }
+
+  if (timerId !== null) {
+
+    clearInterval(timerId);
 
   }
 
 
-  if(
-    timerId!==null
-  ){
+  breakId = null;
 
-    clearInterval(
-      timerId
-    );
+  timerId = null;
 
-  }
+  running = false;
 
-
-  breakId=null;
-
-  timerId=null;
-
-  running=false;
-
-  inBreak=false;
+  inBreak = false;
 
 
   round++;
 
 
-  for(
+  for (
     const side of ["red","blue"]
-  ){
+  ) {
 
-    fighters[side].score=0;
+    fighters[side].score = 0;
 
-    fighters[side].gam=0;
+    fighters[side].gam = 0;
 
   }
 
@@ -3043,13 +2595,15 @@ function startNextRound(){
   breakSeconds =
     cfg.breakTime;
 
+  lastWinnerText = "";
 
-  lastWinnerText="";
+
+  render();
 
 
   setStatus(
-    "Round "+
-    round+
+    "Round " +
+    round +
     " ready — press START."
   );
 
@@ -3057,7 +2611,7 @@ function startNextRound(){
   render();
 
 
-  if(cfg.autoNext){
+  if (cfg.autoNext) {
 
     startTimer();
 
@@ -3068,25 +2622,22 @@ function startNextRound(){
 
 /* =========================================================
    DIRECT WINNER
-   ========================================================= */
+========================================================= */
 
 function openDirectWinner(){
 
-  if(matchOver)return;
-
+  if (matchOver) return;
 
   stopClocks();
 
-  pendingAction="direct";
+  pendingAction = "direct";
 
 
-  $("winnerTitle")
-    .textContent=
+  $("winnerTitle").textContent =
     "DECLARE MATCH WINNER";
 
 
-  $("winnerText")
-    .textContent=
+  $("winnerText").textContent =
     "Choose the winner of this match.";
 
 
@@ -3122,29 +2673,25 @@ function openDirectWinner(){
 
 /* =========================================================
    NEW MATCH
-   ========================================================= */
+========================================================= */
 
 function newMatch(){
 
-  if(
+  if (
     !confirm(
       "Start a new match? Current scores will be cleared."
     )
-  ){
-
+  ) {
     return;
-
   }
 
 
   stopClocks();
 
-
   fighters =
     freshFighters();
 
-
-  round=1;
+  round = 1;
 
   seconds =
     cfg.roundTime;
@@ -3152,27 +2699,23 @@ function newMatch(){
   breakSeconds =
     cfg.breakTime;
 
+  inBreak = false;
 
-  inBreak=false;
+  matchOver = false;
 
-  matchOver=false;
+  history = [];
 
-  history=[];
-
-  pendingAction="none";
-
+  pendingAction = "none";
 
   matchStartedAt =
     new Date().toISOString();
 
+  matchSaved = false;
 
-  matchSaved=false;
-
-  lastWinnerText="";
+  lastWinnerText = "";
 
 
   closeWinner();
-
 
   $("settingsOverlay")
     .classList
@@ -3183,7 +2726,6 @@ function newMatch(){
     "New match ready."
   );
 
-
   render();
 
 }
@@ -3191,19 +2733,19 @@ function newMatch(){
 
 /* =========================================================
    HISTORY UI
-   ========================================================= */
+========================================================= */
 
 function formatDate(iso){
 
-  try{
+  try {
 
     return new Date(
       iso
     ).toLocaleString();
 
-  }catch(error){
+  } catch(error) {
 
-    return iso||"Unknown date";
+    return iso || "Unknown date";
 
   }
 
@@ -3218,13 +2760,11 @@ function renderHistory(){
 
   $("historySummary")
     .textContent =
-      records.length+
-      " saved match"+
-      (
-        records.length===1
-          ?""
-          :"es"
-      );
+      records.length +
+      " saved match" +
+      (records.length === 1
+        ? ""
+        : "es");
 
 
   const list =
@@ -3234,26 +2774,20 @@ function renderHistory(){
   list.replaceChildren();
 
 
-  if(!records.length){
+  if (!records.length) {
 
     const empty =
       document.createElement(
         "div"
       );
 
-
     empty.className =
       "empty-history";
-
 
     empty.textContent =
       "No saved matches yet. Completed matches will appear here.";
 
-
-    list.appendChild(
-      empty
-    );
-
+    list.appendChild(empty);
 
     return;
 
@@ -3261,13 +2795,12 @@ function renderHistory(){
 
 
   records.forEach(
-    (record,index)=>{
+    (record,index) => {
 
       const card =
         document.createElement(
           "article"
         );
-
 
       card.className =
         "history-card";
@@ -3278,11 +2811,10 @@ function renderHistory(){
           "h3"
         );
 
-
       title.textContent =
-        "#"+
-        (index+1)+
-        " — "+
+        "#" +
+        (index+1) +
+        " — " +
         formatDate(
           record.finishedAt
         );
@@ -3293,14 +2825,12 @@ function renderHistory(){
           "p"
         );
 
-
       result.className =
         "result";
 
-
       result.textContent =
-        (record.winnerName||
-        "Unknown")+
+        (record.winnerName ||
+          "Unknown") +
         " won";
 
 
@@ -3309,17 +2839,16 @@ function renderHistory(){
           "p"
         );
 
-
       names.textContent =
-        (record.redName||
-        "HONG")+
-        " (Red) "+
-        record.redScore+
-        " : "+
-        record.blueScore+
-        " (Blue) "+
-        (record.blueName||
-        "CHONG");
+        (record.redName ||
+          "HONG") +
+        " (Red) " +
+        record.redScore +
+        " : " +
+        record.blueScore +
+        " (Blue) " +
+        (record.blueName ||
+          "CHONG");
 
 
       const rounds =
@@ -3327,13 +2856,12 @@ function renderHistory(){
           "p"
         );
 
-
       rounds.textContent =
-        "Round wins: "+
-        record.redRounds+
-        " - "+
-        record.blueRounds+
-        " | "+
+        "Round wins: " +
+        record.redRounds +
+        " - " +
+        record.blueRounds +
+        " | " +
         record.format;
 
 
@@ -3342,11 +2870,10 @@ function renderHistory(){
           "p"
         );
 
-
       gam.textContent =
-        "Total Gam-jeom: "+
-        record.redTotalGam+
-        " - "+
+        "Total Gam-jeom: " +
+        record.redTotalGam +
+        " - " +
         record.blueTotalGam;
 
 
@@ -3355,11 +2882,10 @@ function renderHistory(){
           "p"
         );
 
-
       reason.textContent =
-        "Result: "+
+        "Result: " +
         (
-          record.reason||
+          record.reason ||
           "Match completed"
         );
 
@@ -3374,9 +2900,7 @@ function renderHistory(){
       );
 
 
-      list.appendChild(
-        card
-      );
+      list.appendChild(card);
 
     }
   );
@@ -3405,8 +2929,8 @@ function closeHistory(){
 
 
 /* =========================================================
-   CSV EXPORT
-   ========================================================= */
+   EXPORT CSV
+========================================================= */
 
 function exportHistoryCSV(){
 
@@ -3414,7 +2938,7 @@ function exportHistoryCSV(){
     readMatchHistory();
 
 
-  if(!records.length){
+  if (!records.length) {
 
     alert(
       "There are no match records to export."
@@ -3425,30 +2949,19 @@ function exportHistoryCSV(){
   }
 
 
-  const columns=[
+  const columns = [
 
     ["Date","finishedAt"],
-
     ["Red Name","redName"],
-
     ["Blue Name","blueName"],
-
     ["Red Score","redScore"],
-
     ["Blue Score","blueScore"],
-
     ["Red Round Wins","redRounds"],
-
     ["Blue Round Wins","blueRounds"],
-
     ["Red Total Gam-jeom","redTotalGam"],
-
     ["Blue Total Gam-jeom","blueTotalGam"],
-
     ["Format","format"],
-
     ["Winner","winnerName"],
-
     ["Reason","reason"]
 
   ];
@@ -3456,34 +2969,31 @@ function exportHistoryCSV(){
 
   const escapeCSV =
     value =>
-      '"'+
-      String(value??"")
-        .replace(/"/g,'""')+
+      '"' +
+      String(value ?? "")
+        .replace(/"/g,'""') +
       '"';
 
 
-  const rows=[
+  const rows = [
 
     columns
-      .map(
-        col =>
-          escapeCSV(col[0])
+      .map(col =>
+        escapeCSV(col[0])
       )
       .join(","),
-
 
     ...records.map(
       record =>
         columns
-          .map(
-            col =>
-              escapeCSV(
-                col[1]==="finishedAt"
-                  ?formatDate(
+          .map(col =>
+            escapeCSV(
+              col[1] === "finishedAt"
+                ? formatDate(
                     record[col[1]]
                   )
-                  :record[col[1]]
-              )
+                : record[col[1]]
+            )
           )
           .join(",")
     )
@@ -3494,7 +3004,7 @@ function exportHistoryCSV(){
   const blob =
     new Blob(
       [
-        "\uFEFF"+
+        "\uFEFF" +
         rows.join("\r\n")
       ],
       {
@@ -3505,43 +3015,33 @@ function exportHistoryCSV(){
 
 
   const url =
-    URL.createObjectURL(
-      blob
-    );
+    URL.createObjectURL(blob);
 
 
   const link =
-    document.createElement(
-      "a"
-    );
+    document.createElement("a");
 
 
-  link.href=url;
+  link.href = url;
 
   link.download =
     "taekwondo-match-history.csv";
 
 
-  document.body.appendChild(
-    link
-  );
-
+  document.body.appendChild(link);
 
   link.click();
 
   link.remove();
 
-
-  URL.revokeObjectURL(
-    url
-  );
+  URL.revokeObjectURL(url);
 
 }
 
 
 /* =========================================================
    CLEAR HISTORY
-   ========================================================= */
+========================================================= */
 
 function clearMatchHistory(){
 
@@ -3549,7 +3049,7 @@ function clearMatchHistory(){
     readMatchHistory();
 
 
-  if(!records.length){
+  if (!records.length) {
 
     alert(
       "History is already empty."
@@ -3560,33 +3060,28 @@ function clearMatchHistory(){
   }
 
 
-  if(
+  if (
     !confirm(
       "Delete all saved match history? This cannot be undone."
     )
-  ){
-
+  ) {
     return;
-
   }
 
 
-  try{
+  try {
 
     localStorage.removeItem(
       HISTORY_KEY
     );
 
-
     renderHistory();
-
 
     setStatus(
       "Match history cleared."
     );
 
-
-  }catch(error){
+  } catch(error) {
 
     alert(
       "Unable to clear history in this browser."
@@ -3599,7 +3094,7 @@ function clearMatchHistory(){
 
 /* =========================================================
    SETTINGS
-   ========================================================= */
+========================================================= */
 
 function openSettings(){
 
@@ -3666,17 +3161,14 @@ function saveSettings(){
       id,
       min,
       def
-    )=>{
+    ) => {
 
       const value =
-        Number(
-          $(id).value
-        );
-
+        Number($(id).value);
 
       return Number.isFinite(value)
-        ?Math.max(min,value)
-        :def;
+        ? Math.max(min,value)
+        : def;
 
     };
 
@@ -3752,29 +3244,25 @@ function saveSettings(){
 
 
   cfg.roundGam =
-    $("setRoundGam")
-      .checked;
+    $("setRoundGam").checked;
 
 
   cfg.autoNext =
-    $("setAutoNext")
-      .checked;
+    $("setAutoNext").checked;
 
 
   cfg.sound =
-    $("setSound")
-      .checked;
+    $("setSound").checked;
 
 
   cfg.scoreSize =
-    $("setScoreSize")
-      .value;
+    $("setScoreSize").value;
 
 
-  if(
+  if (
     !running &&
     !inBreak
-  ){
+  ) {
 
     seconds =
       cfg.roundTime;
@@ -3784,11 +3272,9 @@ function saveSettings(){
 
   closeSettings();
 
-
   setStatus(
     "Settings saved."
   );
-
 
   render();
 
@@ -3797,11 +3283,11 @@ function saveSettings(){
 
 /* =========================================================
    UNDO
-   ========================================================= */
+========================================================= */
 
 function undoLast(){
 
-  if(!history.length){
+  if (!history.length) {
 
     setStatus(
       "Nothing to undo."
@@ -3824,43 +3310,33 @@ function undoLast(){
   fighters =
     old.fighters;
 
-
   round =
     old.round;
-
 
   seconds =
     old.seconds;
 
-
   breakSeconds =
     old.breakSeconds;
-
 
   inBreak =
     old.inBreak;
 
-
   matchOver =
     old.matchOver;
 
-
-  lastWinnerText="";
+  lastWinnerText = "";
 
 
   closeWinner();
 
-
   render();
 
-
   sound("undo");
-
 
   setStatus(
     "Last action undone."
   );
-
 
   render();
 
@@ -3869,23 +3345,19 @@ function undoLast(){
 
 /* =========================================================
    REFEREE BUTTONS
-   ========================================================= */
+========================================================= */
 
-if(!isDisplayMode){
-
-  /*
-  Point buttons
-  */
+if (!isDisplayMode) {
 
   document
     .querySelectorAll(
       "[data-side][data-type]"
     )
-    .forEach(btn=>{
+    .forEach(btn => {
 
       btn.addEventListener(
         "click",
-        ()=>{
+        () => {
 
           addPoints(
             btn.dataset.side,
@@ -3898,19 +3370,15 @@ if(!isDisplayMode){
     });
 
 
-  /*
-  Gam-jeom buttons
-  */
-
   document
     .querySelectorAll(
       "[data-gam-side]"
     )
-    .forEach(btn=>{
+    .forEach(btn => {
 
       btn.addEventListener(
         "click",
-        ()=>{
+        () => {
 
           changeGam(
             btn.dataset.gamSide,
@@ -3984,14 +3452,14 @@ if(!isDisplayMode){
   $("minusFive")
     .addEventListener(
       "click",
-      ()=>adjustTimer(-5)
+      () => adjustTimer(-5)
     );
 
 
   $("plusFive")
     .addEventListener(
       "click",
-      ()=>adjustTimer(5)
+      () => adjustTimer(5)
     );
 
 
@@ -4019,7 +3487,7 @@ if(!isDisplayMode){
   $("directRedBtn")
     .addEventListener(
       "click",
-      ()=>{
+      () => {
 
         closeWinner();
 
@@ -4035,7 +3503,7 @@ if(!isDisplayMode){
   $("directBlueBtn")
     .addEventListener(
       "click",
-      ()=>{
+      () => {
 
         closeWinner();
 
@@ -4083,20 +3551,17 @@ if(!isDisplayMode){
     );
 
 
-  /*
-  Open TV display
-  */
+  /* TV BUTTON */
 
   $("tvOpenBtn")
     .addEventListener(
       "click",
-      ()=>{
+      () => {
 
         const url =
           new URL(
             location.href
           );
-
 
         url.searchParams.set(
           "display",
@@ -4113,47 +3578,27 @@ if(!isDisplayMode){
     );
 
 
-  /*
-  Fighter name live update
-  */
+  /* Name live update */
 
-  [
-    "redName",
-    "blueName"
-  ].forEach(id=>{
+  ["redName","blueName"]
+    .forEach(id => {
 
-    $(id)
-      .addEventListener(
+      $(id).addEventListener(
         "input",
-        ()=>{
-
-          publishLiveState();
-
-        }
+        publishFirebase
       );
 
-
-    $(id)
-      .addEventListener(
+      $(id).addEventListener(
         "change",
-        ()=>{
-
-          publishLiveState();
-
-        }
+        publishFirebase
       );
 
-  });
+    });
 
-
-  /*
-  Initial render
-  */
 
   render();
 
 }
-
 </script>
 
 </body>
