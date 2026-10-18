@@ -2,914 +2,1322 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Taekwondo Scoreboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+
+<title>Taekwondo Referee Scoring</title>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#10131a;color:#fff;font-family:Arial,Helvetica,sans-serif}
-button,input,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:9px;padding:10px 12px;font-weight:bold;color:white;background:#394150}
-button:active{transform:scale(.97)}
-button:disabled{opacity:.45;cursor:not-allowed}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
-header{
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#090d18;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  overscroll-behavior:none;
+}
+
+body{
+  touch-action:manipulation;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+  color:#fff;
+  font-weight:800;
+}
+
+button:disabled{
+  opacity:.42;
+  cursor:not-allowed;
+}
+
+/* =========================
+   MAIN BOARD
+========================= */
+
+#boardApp{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% 0,#17213e 0,#090d18 48%,#060810 100%);
+}
+
+.topbar{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  padding:10px 14px;
-  background:#080a0f;
   gap:10px;
-  flex-wrap:wrap
+  padding:12px 14px;
+  background:rgba(8,12,24,.96);
+  border-bottom:1px solid #26304d;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
-header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 
-.header-right{
+.topbar h1{
+  font-size:20px;
+  margin:0;
+  white-space:nowrap;
+}
+
+.top-info{
   display:flex;
+  gap:7px;
   align-items:center;
-  gap:6px;
-  flex-wrap:wrap
+  flex:1;
+  min-width:0;
 }
 
-.small-btn{font-size:13px;padding:9px}
-
-.room-badge{
+.badge{
+  padding:7px 9px;
+  border-radius:8px;
+  background:#202a45;
   font-size:11px;
-  font-weight:bold;
-  background:#263238;
-  color:#ffd54f;
-  padding:8px 9px;
-  border-radius:7px
+  font-weight:900;
+  white-space:nowrap;
 }
 
-.cloud-badge{
+.room{
+  background:#3b2d10;
+  color:#ffd84d;
+}
+
+.cloud.ok{
+  background:#0d3a2d;
+  color:#6ff5c1;
+}
+
+.cloud.bad{
+  background:#401b20;
+  color:#ff9ba5;
+}
+
+.top-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.top-actions button{
+  padding:9px 11px;
+  border-radius:8px;
+  background:#202b48;
   font-size:11px;
-  font-weight:bold;
-  background:#263238;
-  color:#90caf9;
-  padding:8px 9px;
-  border-radius:7px
 }
 
-.cloud-badge.ok{color:#69f0ae}
-.cloud-badge.error{color:#ff8a80}
+.top-actions .primary{
+  background:#2366d1;
+}
+
+.top-actions .qr{
+  background:#72541b;
+  color:#ffe27a;
+}
+
+/* =========================
+   BOARD
+========================= */
 
 .board{
   display:grid;
-  grid-template-columns:1fr minmax(150px,25%) 1fr;
-  min-height:calc(100vh - 58px);
-  gap:8px;
-  padding:8px
+  grid-template-columns:1fr 310px 1fr;
+  gap:12px;
+  padding:14px;
+  min-height:calc(100vh - 66px);
 }
 
 .fighter{
-  border-radius:14px;
+  border-radius:16px;
   padding:12px;
   display:flex;
   flex-direction:column;
-  align-items:center;
-  min-width:0
+  min-height:650px;
+  box-shadow:0 15px 40px rgba(0,0,0,.25);
 }
 
-.red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
-.blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
+.fighter.red{
+  background:linear-gradient(180deg,#ff5c62,#e63c48);
+}
 
-.fighter-name{
-  width:100%;
-  font-weight:bold;
-  font-size:clamp(18px,3vw,30px);
+.fighter.blue{
+  background:linear-gradient(180deg,#13c8f1,#1676e9);
+}
+
+.name{
+  background:rgba(0,0,0,.18);
+  border-radius:10px;
+  padding:12px;
   text-align:center;
-  background:#0003;
-  color:white;
-  border:1px solid #ffffff55;
-  border-radius:8px;
-  padding:8px
+  font-size:24px;
+  font-weight:900;
+  outline:none;
+}
+
+.name[contenteditable="true"]:focus{
+  box-shadow:0 0 0 2px rgba(255,255,255,.5);
 }
 
 .score{
-  font-size:clamp(80px,17vw,180px);
+  font-size:132px;
+  line-height:.95;
+  text-align:center;
   font-weight:900;
-  line-height:1.1;
-  text-shadow:0 4px 8px #0005
+  margin:25px 0;
+  text-shadow:0 5px 0 rgba(0,0,0,.12);
 }
 
-.score.flash{animation:flash .3s ease}
-
-@keyframes flash{
-  50%{transform:scale(1.12);color:#ffd54f}
-}
-
-.points{
+.point-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  width:100%;
-  margin:8px 0
+  gap:7px;
 }
 
-.points button{
-  background:#111a;
-  font-size:clamp(12px,1.5vw,17px);
-  padding:14px 4px;
-  min-height:55px
+.point-row button{
+  padding:14px 6px;
+  border-radius:10px;
+  background:rgba(255,255,255,.18);
+  font-size:12px;
 }
 
-.points button span{
+.point-row b{
   display:block;
   font-size:22px;
-  margin-top:4px
+  margin-top:4px;
 }
 
-.gam-box{
+.gam{
+  margin-top:12px;
+  text-align:center;
+}
+
+.gam-title{
+  font-size:11px;
+  font-weight:900;
+}
+
+.gam-controls{
   display:flex;
-  align-items:center;
   justify-content:center;
-  gap:12px;
-  margin:10px 0;
-  width:100%
+  gap:8px;
+  margin:6px;
 }
 
-.gam-box button{
-  font-size:23px;
-  min-width:48px;
-  min-height:48px;
-  background:#111a
+.gam-controls button{
+  width:42px;
+  height:38px;
+  border-radius:9px;
+  background:rgba(0,0,0,.2);
+  font-size:20px;
 }
 
 .gam-count{
-  font-size:25px;
+  font-size:18px;
   font-weight:900;
-  min-width:30px;
-  text-align:center
 }
 
-.gam-label{
-  font-size:13px;
-  font-weight:bold
+.meta-line{
+  font-size:11px;
+  opacity:.9;
 }
 
-.total-gam{
-  font-size:12px;
-  background:#0003;
-  padding:5px 9px;
-  border-radius:6px
-}
-
-.round-wins{
-  font-size:14px;
-  text-align:center;
-  color:#ddd
-}
+/* =========================
+   CENTER
+========================= */
 
 .center{
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  gap:10px;
-  background:#1b202a;
-  border-radius:14px;
-  padding:12px 8px
+  align-items:stretch;
+  gap:8px;
+  padding:5px;
 }
 
-.round-label{
-  font-size:17px;
-  font-weight:bold;
-  color:#ffd54f;
-  text-align:center
+.round-title{
+  text-align:center;
+  color:#ffe15a;
+  font-size:18px;
+  font-weight:900;
 }
 
 .timer{
-  font-size:clamp(38px,7vw,75px);
+  text-align:center;
+  font-size:64px;
   font-weight:900;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:1px
+  line-height:1;
 }
 
-.timer-adjust{
+.timer-btns{
   display:flex;
-  gap:8px
+  justify-content:center;
+  gap:7px;
 }
 
-.timer-adjust button{font-size:14px}
-
-.center-actions{
-  width:100%;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:7px
+.timer-btns button{
+  background:#42577f;
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:12px;
 }
-
-.center-actions button{min-height:43px}
-
-.start{background:#2e7d32}
-.pause{background:#ef6c00}
-.end{background:#b71c1c}
-.direct{background:#6a1b9a}
-.undo{background:#455a64}
-.new{background:#37474f}
 
 .break-box{
-  width:100%;
-  text-align:center;
-  border:1px solid #ffffff22;
+  border:1px solid #3c496a;
   border-radius:10px;
-  padding:9px
-}
-
-.break-clock{
-  font-size:28px;
-  font-weight:bold;
-  color:#ffd54f
-}
-
-.status{
-  font-size:12px;
-  color:#cfd8dc;
   text-align:center;
-  line-height:1.4
+  padding:8px;
+  background:#10182b;
+}
+
+.break-label{
+  font-size:12px;
+  font-weight:900;
+}
+
+.break-time{
+  font-size:25px;
+  font-weight:900;
+  color:#ffe66a;
+}
+
+.center button.action{
+  padding:12px;
+  border-radius:9px;
+  background:#34476f;
+}
+
+.center button.start{
+  background:#31a87e;
+}
+
+.center button.pause{
+  background:#e8915c;
+}
+
+.center button.end{
+  background:#d65b83;
+}
+
+.center button.undo{
+  background:#7cb3d9;
+  color:#0b1b2d;
+}
+
+.center button.direct{
+  background:#e4edf5;
+  color:#24324a;
+}
+
+.center button.new{
+  background:#3556a4;
 }
 
 .remote-status{
-  width:100%;
-  min-height:25px;
-  font-size:12px;
-  color:#ffd54f;
+  min-height:38px;
+  padding:9px;
+  border-radius:9px;
   text-align:center;
-  font-weight:bold
+  background:#10182b;
+  color:#ffe35d;
+  font-size:11px;
+  font-weight:900;
 }
 
-.hidden{display:none!important}
+.status{
+  padding:9px;
+  border-radius:9px;
+  text-align:center;
+  background:#10182b;
+  color:#c7d5ff;
+  font-size:12px;
+  font-weight:800;
+  min-height:36px;
+}
+
+.round-wins{
+  text-align:center;
+  font-size:12px;
+  font-weight:900;
+}
+
+.winner-text{
+  font-size:18px;
+  text-align:center;
+  font-weight:900;
+  color:#7df2bd;
+  min-height:24px;
+}
+
+/* =========================
+   MODALS
+========================= */
 
 .overlay{
   position:fixed;
   inset:0;
-  background:#000c;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(5px);
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:16px;
-  z-index:100
+  z-index:100;
+  padding:18px;
 }
 
 .modal{
-  width:min(520px,100%);
-  max-height:90vh;
+  width:min(520px,96vw);
+  max-height:92vh;
   overflow:auto;
-  background:#202631;
-  border:1px solid #ffffff33;
+  background:#111a2e;
+  border:1px solid #3a486d;
   border-radius:16px;
-  padding:22px;
-  text-align:center
+  padding:20px;
+  box-shadow:0 30px 90px #000;
 }
 
 .modal h2{
-  font-size:clamp(25px,5vw,40px);
-  margin:8px 0 14px
+  margin:0 0 12px;
+  text-align:center;
 }
 
-.modal p{line-height:1.5}
+.modal p{
+  font-size:12px;
+  color:#bdc8e5;
+}
+
+.modal-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.field label{
+  font-size:11px;
+  font-weight:900;
+  color:#aebbe0;
+}
+
+.field input,
+.field select{
+  background:#0a1120;
+  color:#fff;
+  border:1px solid #3b4867;
+  border-radius:8px;
+  padding:10px;
+}
+
+.check{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:10px 0;
+  font-size:12px;
+}
 
 .modal-actions{
   display:flex;
+  gap:8px;
   justify-content:center;
-  gap:10px;
+  margin-top:14px;
   flex-wrap:wrap;
-  margin-top:16px
 }
 
-.settings{text-align:left}
-.settings h2{text-align:center}
+.modal-actions button{
+  padding:10px 14px;
+  border-radius:9px;
+  background:#2e477b;
+}
 
-.settings label{
+.modal-actions .ok{
+  background:#23875f;
+}
+
+.modal-actions .danger{
+  background:#8d2d3d;
+}
+
+/* =========================
+   QR
+========================= */
+
+.qr-tabs{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin:12px 0;
-  font-size:14px
-}
-
-.settings input,
-.settings select{
-  width:130px;
-  max-width:50%;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #777;
-  background:#111821;
-  color:white
-}
-
-.settings input[type=checkbox]{width:22px}
-
-.qr-box img{
-  width:240px;
-  height:240px;
-  max-width:70vw;
-  background:white;
-  padding:8px;
-  border-radius:10px
-}
-
-.qr-role-buttons{
-  display:flex;
-  flex-wrap:wrap;
   gap:7px;
   justify-content:center;
-  margin:10px 0
+  flex-wrap:wrap;
+}
+
+.qr-tabs button{
+  padding:9px 11px;
+  border-radius:8px;
+  background:#263a65;
+}
+
+.qr-tabs button.active{
+  background:#c08c22;
+}
+
+.qr-img{
+  display:block;
+  width:250px;
+  height:250px;
+  background:#fff;
+  padding:8px;
+  margin:14px auto;
+  border-radius:12px;
 }
 
 .qr-link{
-  font-size:11px;
-  color:#b0bec5;
+  font-size:10px;
   word-break:break-all;
-  background:#111821;
+  background:#080e1b;
+  border-radius:8px;
   padding:9px;
-  border-radius:7px;
-  margin-top:10px
+  color:#9fb0d8;
 }
 
-/* TV */
+/* =========================
+   HISTORY
+========================= */
 
-#tvScreen{
-  display:none;
-  min-height:100vh;
-  background:#05070a;
-  padding:20px
+.history-item{
+  padding:10px;
+  border:1px solid #2c3958;
+  border-radius:9px;
+  margin:7px 0;
+  background:#0c1324;
 }
 
-body.display-mode #tvScreen{
+.history-item strong{
+  display:block;
+}
+
+.history-item small{
+  color:#9aa8c7;
+}
+
+.history-actions{
   display:flex;
-  flex-direction:column
+  gap:6px;
+  margin-top:7px;
 }
 
-body.display-mode #boardApp{
-  display:none
+.history-actions button{
+  padding:7px 9px;
+  border-radius:7px;
+  background:#315080;
+  font-size:10px;
 }
 
-.tv-header{
+.history-actions .delete{
+  background:#762a39;
+}
+
+.history-actions .export{
+  background:#347d62;
+}
+
+/* =========================
+   TV
+========================= */
+
+#tvScreen,
+#controllerScreen{
+  display:none;
+}
+
+.tv-wrap{
+  min-height:100vh;
+  background:#05070d;
+  padding:20px;
+}
+
+.tv-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:15px;
-  margin-bottom:15px
+  gap:12px;
 }
 
 .tv-title{
-  font-size:clamp(22px,4vw,45px);
-  font-weight:900
+  font-size:30px;
+  font-weight:900;
 }
 
 .tv-room{
-  color:#ffd54f;
-  font-weight:bold
+  font-size:13px;
+  color:#ffe35c;
 }
 
 .tv-main{
-  flex:1;
   display:grid;
-  grid-template-columns:1fr minmax(180px,25%) 1fr;
-  gap:15px
+  grid-template-columns:1fr 240px 1fr;
+  gap:18px;
+  align-items:stretch;
+  margin-top:18px;
 }
 
 .tv-fighter{
-  border-radius:20px;
+  border-radius:18px;
+  padding:15px;
+  min-height:68vh;
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:20px
+  justify-content:flex-start;
 }
 
-.tv-fighter.red{background:linear-gradient(160deg,#8b1111,#e53935)}
-.tv-fighter.blue{background:linear-gradient(160deg,#063575,#1976d2)}
+.tv-fighter.red{
+  background:#d92d39;
+}
+
+.tv-fighter.blue{
+  background:#126ad6;
+}
 
 .tv-name{
-  font-size:clamp(24px,4vw,60px);
-  font-weight:900
+  text-align:center;
+  font-size:34px;
+  font-weight:900;
 }
 
 .tv-score{
-  font-size:clamp(100px,20vw,300px);
+  text-align:center;
+  font-size:190px;
   line-height:1;
-  font-weight:900
+  font-weight:900;
+  margin-top:40px;
 }
 
-.tv-meta{
-  font-size:clamp(15px,2vw,28px);
-  font-weight:bold
+.tv-gam{
+  text-align:center;
+  font-size:20px;
+  margin-top:auto;
 }
 
 .tv-center{
-  border-radius:20px;
-  background:#151a22;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:center;
-  padding:20px;
-  text-align:center
+  align-items:center;
+  gap:15px;
 }
 
 .tv-round{
-  font-size:clamp(20px,3vw,40px);
-  color:#ffd54f;
-  font-weight:900
+  font-size:28px;
+  font-weight:900;
+  color:#ffe25a;
 }
 
 .tv-timer{
-  font-size:clamp(50px,8vw,110px);
-  font-weight:900
+  font-size:78px;
+  font-weight:900;
+}
+
+.tv-wins{
+  font-size:18px;
+  font-weight:900;
+}
+
+.tv-break{
+  padding:12px 18px;
+  border-radius:12px;
+  background:#151d32;
+  text-align:center;
 }
 
 .tv-status{
-  margin-top:20px;
-  font-size:clamp(13px,2vw,24px);
-  color:#cfd8dc
+  text-align:center;
+  font-size:18px;
+  color:#c6d3ef;
 }
 
 .tv-winner{
-  margin-top:15px;
-  color:#ffd54f;
-  font-size:clamp(16px,2.5vw,32px);
-  font-weight:900
+  font-size:26px;
+  color:#7cf1b7;
+  text-align:center;
+  font-weight:900;
 }
 
-/* REFEREE MOBILE CONTROLLER */
+/* =========================
+   PHONE REFEREE CONTROLLER
+   RED | CENTER | BLUE
+   3 HORIZONTAL ROWS
+========================= */
 
-#controllerScreen{
-  display:none
-}
-
-body.controller-mode{
-  background:#080a0f
-}
-
-body.controller-mode #boardApp,
-body.controller-mode #tvScreen{
-  display:none
-}
-
-body.controller-mode #controllerScreen{
+.controller{
+  min-height:100vh;
+  background:#070a12;
   display:flex;
   flex-direction:column;
-  min-height:100vh;
-  height:100vh;
-  overflow:hidden
+  overflow:hidden;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-user-select:none;
 }
 
-.controller-header{
-  flex:0 0 auto;
-  background:#080a0f;
-  padding:10px;
+.controller-head{
+  padding:10px 12px;
+  background:#0d1322;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:8px;
-  border-bottom:1px solid #ffffff22
+  border-bottom:1px solid #29324a;
 }
 
-.controller-title{
-  font-size:16px;
-  font-weight:900
+.controller-head .role{
+  font-size:17px;
+  font-weight:900;
 }
 
-.controller-info{
-  font-size:10px;
-  color:#b0bec5;
-  text-align:right
+.controller-head .room{
+  font-size:11px;
 }
 
 .controller-scorebar{
-  flex:0 0 auto;
   display:grid;
   grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:5px;
-  background:#111821;
-  padding:8px
-}
-
-.controller-current{
-  font-size:30px;
-  font-weight:900;
-  text-align:center
-}
-
-.controller-current.red-text{color:#ff5252}
-.controller-current.blue-text{color:#42a5f5}
-
-.controller-round{
+  gap:8px;
+  padding:9px 12px;
+  background:#0b101c;
   text-align:center;
-  color:#ffd54f;
+  align-items:center;
+}
+
+.controller-scorebar .cs{
+  font-size:14px;
+  font-weight:900;
+}
+
+.controller-scorebar .cs b{
+  font-size:30px;
+  display:block;
+}
+
+.controller-scorebar .round{
   font-size:11px;
-  font-weight:bold
+  color:#ffdf52;
+  font-weight:900;
 }
 
 .controller-sides{
   flex:1;
-  min-height:0;
   display:grid;
-  grid-template-rows:1fr 1fr
+  grid-template-rows:repeat(3,1fr);
+  min-height:0;
 }
 
-.ref-side{
+.ref-row{
+  display:grid;
+  grid-template-columns:1fr 74px 1fr;
   min-height:0;
+}
+
+.ref-row + .ref-row{
+  border-top:2px solid #ffe45b;
+}
+
+.ref-cell{
+  position:relative;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:12px;
-  position:relative
-}
-
-.ref-side.red-side{
-  background:linear-gradient(160deg,#8e1515,#d32f2f)
-}
-
-.ref-side.blue-side{
-  background:linear-gradient(160deg,#073d82,#1976d2)
-}
-
-.ref-side.red-side{
-  border-bottom:5px solid #ffd54f
-}
-
-.ref-side-title{
-  font-size:clamp(25px,8vw,45px);
-  font-weight:900;
-  margin-bottom:3px
-}
-
-.ref-side-sub{
+  gap:3px;
+  border-radius:0;
+  touch-action:manipulation;
   font-size:12px;
-  opacity:.85;
-  margin-bottom:8px
+  border:0;
 }
 
-.ref-buttons{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  width:min(95%,500px)
+.ref-cell.red{
+  background:linear-gradient(180deg,#e93d47,#b91e2e);
 }
 
-.ref-score-btn{
-  min-height:72px;
-  background:#0009;
-  border:2px solid #ffffff44;
-  font-size:13px;
-  padding:7px 3px
+.ref-cell.blue{
+  background:linear-gradient(180deg,#167ee9,#0751b7);
 }
 
-.ref-score-btn .ref-big{
-  display:block;
-  font-size:30px;
-  line-height:1;
-  margin-top:4px
+.ref-cell .rv{
+  font-size:42px;
+  font-weight:1000;
 }
 
-.controller-footer{
-  flex:0 0 auto;
-  background:#080a0f;
-  color:#b0bec5;
-  text-align:center;
-  padding:7px;
-  font-size:10px
+.ref-cell:active{
+  filter:brightness(1.25);
+  transform:none;
 }
 
-/* Yellow referee flash */
-
-#refFlash{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:500;
+.row-label{
+  display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(255,193,7,.22);
-  pointer-events:none
+  background:#10182a;
+  color:#ffe45b;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1px;
+  border-left:1px solid #ffe45b;
+  border-right:1px solid #ffe45b;
 }
 
-#refFlash.show{
+.controller-foot{
+  padding:8px;
+  text-align:center;
+  background:#0b101c;
+  color:#aab6d2;
+  font-size:10px;
+}
+
+.controller-ready{
+  color:#71efbd;
+}
+
+.controller-wait{
+  color:#ffe15a;
+}
+
+/* =========================
+   YELLOW REFEREE FLASH
+========================= */
+
+.ref-flash{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+  background:rgba(255,214,50,.22);
+  pointer-events:none;
+}
+
+.ref-flash.show{
   display:flex;
-  animation:yellowFlash .18s ease
+  animation:flashin .12s ease-out;
 }
 
-@keyframes yellowFlash{
-  0%{opacity:0}
-  40%{opacity:1}
-  100%{opacity:1}
-}
-
-.ref-flash-card{
-  width:min(90%,430px);
-  background:#ffd600;
-  color:#111;
-  border:4px solid #fff;
-  border-radius:20px;
-  padding:25px 15px;
+.flash-card{
+  min-width:270px;
+  padding:22px 26px;
+  border-radius:18px;
   text-align:center;
-  box-shadow:0 0 50px #ffd600
+  background:#ffd43b;
+  color:#16130a;
+  box-shadow:
+    0 0 0 5px rgba(255,232,112,.25),
+    0 20px 80px rgba(0,0,0,.45);
 }
 
-.ref-flash-title{
-  font-size:clamp(28px,8vw,50px);
-  font-weight:900
+.flash-card .big{
+  font-size:42px;
+  font-weight:1000;
 }
 
-.ref-flash-text{
-  font-size:clamp(16px,4vw,24px);
-  font-weight:bold;
-  margin-top:8px
+.flash-card .small{
+  font-size:13px;
+  font-weight:900;
+  margin-top:5px;
 }
 
-#joinOverlay .modal input{
-  width:100%;
-  padding:13px;
+@keyframes flashin{
+  from{opacity:.1}
+  to{opacity:1}
+}
+
+.join-note{
+  padding:10px;
   border-radius:8px;
-  border:1px solid #777;
-  background:#111821;
-  color:white;
-  text-align:center;
-  text-transform:uppercase;
-  font-size:20px;
-  font-weight:bold
+  background:#0b1221;
+  color:#aebbd6;
+  font-size:11px;
+  margin-top:10px;
 }
 
-@media(max-width:650px){
-  header{padding:8px}
+/* =========================
+   MODE VISIBILITY
+========================= */
+
+body.controller-mode #boardApp,
+body.controller-mode #tvScreen,
+body.display-mode #boardApp,
+body.display-mode #controllerScreen{
+  display:none!important;
+}
+
+body.controller-mode #controllerScreen{
+  display:block;
+}
+
+body.display-mode #tvScreen{
+  display:block;
+}
+
+body.controller-mode .overlay:not(#joinOverlay),
+body.display-mode .overlay:not(#joinOverlay){
+  display:none!important;
+}
+
+body:not(.controller-mode):not(.display-mode) #joinOverlay{
+  display:none!important;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1050px){
+
   .board{
-    grid-template-columns:1fr 1fr;
-    gap:6px;
-    padding:6px
+    grid-template-columns:1fr 250px 1fr;
+  }
+
+  .score{
+    font-size:105px;
+  }
+
+  .tv-main{
+    grid-template-columns:1fr 180px 1fr;
+  }
+
+  .tv-score{
+    font-size:140px;
+  }
+}
+
+@media(max-width:760px){
+
+  .topbar{
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .top-info{
+    order:3;
+    width:100%;
+  }
+
+  .board{
+    grid-template-columns:1fr;
+    gap:9px;
   }
 
   .center{
-    grid-column:1/-1;
-    grid-row:1;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    align-items:center
+    order:-1;
   }
 
-  .center .round-label,
-  .center .timer,
-  .center .timer-adjust,
-  .center .status,
-  .center .remote-status{
-    grid-column:1/-1
+  .fighter{
+    min-height:auto;
   }
-
-  .center-actions{
-    grid-template-columns:repeat(2,1fr)
-  }
-
-  .fighter{padding:8px 5px}
 
   .score{
-    font-size:clamp(70px,19vw,120px)
-  }
-
-  .points button{
-    padding:10px 2px;
-    min-height:48px
-  }
-
-  .gam-box{gap:5px}
-
-  .gam-box button{
-    min-width:38px;
-    min-height:42px
-  }
-
-  .header-right{
-    width:100%;
-    justify-content:flex-end
+    font-size:95px;
+    margin:15px 0;
   }
 
   .tv-main{
     grid-template-columns:1fr;
-    grid-template-rows:1fr auto 1fr
   }
 
-  .tv-center{order:0}
-  .tv-fighter.red{order:-1}
-  .tv-fighter.blue{order:1}
+  .tv-fighter{
+    min-height:35vh;
+  }
+
+  .tv-center{
+    padding:15px;
+  }
+
+  .tv-score{
+    font-size:110px;
+  }
+
+  .modal-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:420px){
+
+  .ref-cell .rv{
+    font-size:34px;
+  }
+
+  .row-label{
+    width:74px;
+  }
+
+  .controller-scorebar .cs b{
+    font-size:25px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= BOARD ================= -->
+<!-- =========================================================
+     MAIN LAPTOP BOARD
+========================================================= -->
 
 <div id="boardApp">
 
-<header>
+<header class="topbar">
+
   <h1>🥋 TAEKWONDO SCOREBOARD</h1>
 
-  <div class="header-right">
-    <span class="room-badge" id="roomBadge">ROOM ------</span>
-    <span class="cloud-badge" id="cloudBadge">CLOUD...</span>
-    <button class="small-btn" id="refereeBtn">📱 REFEREE</button>
-    <button class="small-btn" id="tvBtn">📺 TV</button>
-    <button class="small-btn" id="settingsBtn">⚙ SETTINGS</button>
+  <div class="top-info">
+    <span id="roomBadge" class="badge room">
+      ROOM —
+    </span>
+
+    <span id="cloudBadge" class="badge cloud bad">
+      CLOUD CONNECTING
+    </span>
   </div>
+
+  <div class="top-actions">
+    <button id="qrBtn" class="qr">
+      📱 REFEREE
+    </button>
+
+    <button id="tvBtn">
+      📺 TV
+    </button>
+
+    <button id="settingsBtn">
+      ⚙ SETTINGS
+    </button>
+
+    <button id="historyBtn">
+      📋 HISTORY
+    </button>
+  </div>
+
 </header>
+
 
 <main class="board">
 
-  <section class="fighter red">
+<!-- ================= RED ================= -->
 
-    <input
-      class="fighter-name"
-      id="redName"
-      value="HONG"
-      aria-label="Red fighter name"
-    >
+<section class="fighter red">
 
-    <div class="score" id="redScore">0</div>
+  <div id="redName"
+       class="name"
+       contenteditable="true"
+       spellcheck="false">
+    RED
+  </div>
 
-    <div class="points">
-      <button data-side="red" data-type="punch">
-        PUNCH
-        <span id="redPunchLabel">1</span>
-      </button>
+  <div id="redScore" class="score">
+    0
+  </div>
 
-      <button data-side="red" data-type="body">
-        BODY
-        <span id="redBodyLabel">2</span>
-      </button>
+  <div class="point-row">
 
-      <button data-side="red" data-type="head">
-        HEAD
-        <span id="redHeadLabel">3</span>
-      </button>
-    </div>
+    <button data-side="red" data-type="punch">
+      PUNCH
+      <b id="redPunchVal">1</b>
+    </button>
 
-    <div class="gam-label">GAM-JEOM — THIS ROUND</div>
+    <button data-side="red" data-type="body">
+      BODY
+      <b id="redBodyVal">2</b>
+    </button>
 
-    <div class="gam-box">
-      <button data-gam-side="red" data-delta="-1">−</button>
-      <div class="gam-count" id="redGam">0</div>
-      <button data-gam-side="red" data-delta="1">+</button>
-    </div>
+    <button data-side="red" data-type="head">
+      HEAD
+      <b id="redHeadVal">3</b>
+    </button>
 
-    <div class="total-gam">
-      Match total: <b id="redTotalGam">0</b>
-    </div>
+  </div>
 
-    <div class="round-wins">
-      Rounds won: <b id="redWins">0</b>
-    </div>
+  <div class="gam">
 
-  </section>
-
-
-  <section class="center">
-
-    <div class="round-label" id="roundLabel">ROUND 1</div>
-
-    <div class="timer" id="timer">02:00</div>
-
-    <div class="timer-adjust">
-      <button id="minusFive">−5 SEC</button>
-      <button id="plusFive">+5 SEC</button>
-    </div>
-
-    <div class="break-box hidden" id="breakBox">
-      <div>BREAK TIME</div>
-
-      <div class="break-clock" id="breakClock">00:30</div>
-
-      <button id="startNextBtn">
-        START NEXT ROUND
-      </button>
-    </div>
-
-    <div class="center-actions">
-
-      <button class="start" id="startBtn">
-        ▶ START
-      </button>
-
-      <button class="pause" id="pauseBtn">
-        Ⅱ PAUSE
-      </button>
-
-      <button class="end" id="endBtn">
-        ■ END ROUND
-      </button>
-
-      <button class="undo" id="undoBtn">
-        ↶ UNDO LAST
-      </button>
-
-      <button class="direct" id="directBtn">
-        🏆 DIRECT WINNER
-      </button>
-
-      <button class="new" id="newBtn">
-        ↻ NEW MATCH
-      </button>
-
-    </div>
-
-    <div class="remote-status" id="remoteStatus"></div>
-
-    <div class="status" id="status">
-      Ready to start
-    </div>
-
-  </section>
-
-
-  <section class="fighter blue">
-
-    <input
-      class="fighter-name"
-      id="blueName"
-      value="CHONG"
-      aria-label="Blue fighter name"
-    >
-
-    <div class="score" id="blueScore">0</div>
-
-    <div class="points">
-
-      <button data-side="blue" data-type="punch">
-        PUNCH
-        <span id="bluePunchLabel">1</span>
-      </button>
-
-      <button data-side="blue" data-type="body">
-        BODY
-        <span id="blueBodyLabel">2</span>
-      </button>
-
-      <button data-side="blue" data-type="head">
-        HEAD
-        <span id="blueHeadLabel">3</span>
-      </button>
-
-    </div>
-
-    <div class="gam-label">
+    <div class="gam-title">
       GAM-JEOM — THIS ROUND
     </div>
 
-    <div class="gam-box">
-      <button data-gam-side="blue" data-delta="-1">−</button>
+    <div class="gam-controls">
 
-      <div class="gam-count" id="blueGam">0</div>
+      <button
+        data-gam-side="red"
+        data-delta="-1">
+        −
+      </button>
 
-      <button data-gam-side="blue" data-delta="1">+</button>
+      <span id="redGam" class="gam-count">
+        0
+      </span>
+
+      <button
+        data-gam-side="red"
+        data-delta="1">
+        +
+      </button>
+
     </div>
 
-    <div class="total-gam">
-      Match total: <b id="blueTotalGam">0</b>
+    <div class="meta-line">
+      Match total:
+      <b id="redTotalGam">0</b>
     </div>
 
-    <div class="round-wins">
-      Rounds won: <b id="blueWins">0</b>
+    <div class="meta-line">
+      Rounds won:
+      <b id="redWins">0</b>
     </div>
 
-  </section>
+  </div>
+
+</section>
+
+
+<!-- ================= CENTER ================= -->
+
+<section class="center">
+
+  <div id="roundTitle" class="round-title">
+    ROUND 1
+  </div>
+
+  <div id="timer" class="timer">
+    02:00
+  </div>
+
+  <div class="timer-btns">
+
+    <button id="minus5">
+      −5 SEC
+    </button>
+
+    <button id="plus5">
+      +5 SEC
+    </button>
+
+  </div>
+
+
+  <div
+    id="breakBox"
+    class="break-box"
+    style="display:none">
+
+    <div class="break-label">
+      BREAK TIME
+    </div>
+
+    <div id="breakTime" class="break-time">
+      00:30
+    </div>
+
+    <button
+      id="nextRoundBtn"
+      class="action">
+      START NEXT ROUND
+    </button>
+
+  </div>
+
+
+  <button
+    id="startBtn"
+    class="action start">
+    ▶ START
+  </button>
+
+  <button
+    id="pauseBtn"
+    class="action pause">
+    Ⅱ PAUSE
+  </button>
+
+  <button
+    id="endBtn"
+    class="action end">
+    ■ END ROUND
+  </button>
+
+  <button
+    id="undoBtn"
+    class="action undo">
+    ↶ UNDO LAST
+  </button>
+
+  <button
+    id="directBtn"
+    class="action direct">
+    🏆 DIRECT WINNER
+  </button>
+
+  <button
+    id="newBtn"
+    class="action new">
+    ↻ NEW MATCH
+  </button>
+
+
+  <div
+    id="remoteStatus"
+    class="remote-status">
+    REFEREE VOTES: —
+  </div>
+
+
+  <div
+    id="status"
+    class="status">
+    Ready
+  </div>
+
+
+  <div
+    id="roundWins"
+    class="round-wins">
+    RED 0 — BLUE 0
+  </div>
+
+
+  <div
+    id="winnerText"
+    class="winner-text">
+  </div>
+
+</section>
+
+
+<!-- ================= BLUE ================= -->
+
+<section class="fighter blue">
+
+  <div id="blueName"
+       class="name"
+       contenteditable="true"
+       spellcheck="false">
+    BLUE
+  </div>
+
+  <div id="blueScore" class="score">
+    0
+  </div>
+
+  <div class="point-row">
+
+    <button data-side="blue" data-type="punch">
+      PUNCH
+      <b id="bluePunchVal">1</b>
+    </button>
+
+    <button data-side="blue" data-type="body">
+      BODY
+      <b id="blueBodyVal">2</b>
+    </button>
+
+    <button data-side="blue" data-type="head">
+      HEAD
+      <b id="blueHeadVal">3</b>
+    </button>
+
+  </div>
+
+  <div class="gam">
+
+    <div class="gam-title">
+      GAM-JEOM — THIS ROUND
+    </div>
+
+    <div class="gam-controls">
+
+      <button
+        data-gam-side="blue"
+        data-delta="-1">
+        −
+      </button>
+
+      <span id="blueGam" class="gam-count">
+        0
+      </span>
+
+      <button
+        data-gam-side="blue"
+        data-delta="1">
+        +
+      </button>
+
+    </div>
+
+    <div class="meta-line">
+      Match total:
+      <b id="blueTotalGam">0</b>
+    </div>
+
+    <div class="meta-line">
+      Rounds won:
+      <b id="blueWins">0</b>
+    </div>
+
+  </div>
+
+</section>
 
 </main>
-
 </div>
 
 
-<!-- ================= TV ================= -->
+<!-- =========================================================
+     TV DISPLAY
+========================================================= -->
 
 <section id="tvScreen">
 
-  <div class="tv-header">
-    <div class="tv-title">🥋 TAEKWONDO</div>
-    <div class="tv-room" id="tvRoom">ROOM ------</div>
+<div class="tv-wrap">
+
+  <div class="tv-head">
+
+    <div class="tv-title">
+      🥋 TAEKWONDO
+    </div>
+
+    <div id="tvRoom" class="tv-room">
+      ROOM —
+    </div>
+
   </div>
+
 
   <div class="tv-main">
 
     <div class="tv-fighter red">
 
-      <div class="tv-name" id="tvRedName">
-        HONG
+      <div id="tvRedName" class="tv-name">
+        RED
       </div>
 
-      <div class="tv-score" id="tvRedScore">
+      <div id="tvRedScore" class="tv-score">
         0
       </div>
 
-      <div class="tv-meta">
-        GAM-JEOM:
-        <span id="tvRedGam">0</span>
-        |
-        ROUNDS:
-        <span id="tvRedWins">0</span>
+      <div class="tv-gam">
+        GAM-JEOM
+        <b id="tvRedGam">0</b>
+        ·
+        WINS
+        <b id="tvRedWins">0</b>
       </div>
 
     </div>
@@ -917,79 +1325,122 @@ body.controller-mode #controllerScreen{
 
     <div class="tv-center">
 
-      <div class="tv-round" id="tvRound">
+      <div id="tvRound" class="tv-round">
         ROUND 1
       </div>
 
-      <div class="tv-timer" id="tvTimer">
+      <div id="tvTimer" class="tv-timer">
         02:00
       </div>
 
-      <div class="tv-status" id="tvStatus">
-        Ready to start
+      <div
+        id="tvBreak"
+        class="tv-break"
+        style="display:none">
+
+        BREAK
+        <b id="tvBreakTime">
+          00:30
+        </b>
+
       </div>
 
-      <div class="tv-winner" id="tvWinner"></div>
+      <div
+        id="tvWins"
+        class="tv-wins">
+        RED 0 — BLUE 0
+      </div>
+
+      <div
+        id="tvWinner"
+        class="tv-winner">
+      </div>
+
+      <div
+        id="tvStatus"
+        class="tv-status">
+        Ready
+      </div>
 
     </div>
 
 
     <div class="tv-fighter blue">
 
-      <div class="tv-name" id="tvBlueName">
-        CHONG
+      <div id="tvBlueName" class="tv-name">
+        BLUE
       </div>
 
-      <div class="tv-score" id="tvBlueScore">
+      <div id="tvBlueScore" class="tv-score">
         0
       </div>
 
-      <div class="tv-meta">
-        GAM-JEOM:
-        <span id="tvBlueGam">0</span>
-        |
-        ROUNDS:
-        <span id="tvBlueWins">0</span>
+      <div class="tv-gam">
+        GAM-JEOM
+        <b id="tvBlueGam">0</b>
+        ·
+        WINS
+        <b id="tvBlueWins">0</b>
       </div>
 
     </div>
 
   </div>
+
+</div>
 
 </section>
 
 
-<!-- ================= REFEREE MOBILE ================= -->
+<!-- =========================================================
+     PHONE REFEREE CONTROLLER
+     3 ROWS:
+     HEAD
+     BODY
+     PUNCH
+
+     RED | CENTER | BLUE
+========================================================= -->
 
 <section id="controllerScreen">
 
-  <div class="controller-header">
+<div class="controller">
 
-    <div class="controller-title">
-      🥋 REFEREE <span id="controllerRefNo">1</span>
+  <header class="controller-head">
+
+    <div class="role">
+      REFEREE
+      <span id="controllerRef">1</span>
     </div>
 
-    <div class="controller-info">
-      <div id="controllerRoom">ROOM ------</div>
-      <div id="controllerCloud">CONNECTING...</div>
+    <div id="controllerRoom" class="room">
+      ROOM —
     </div>
 
-  </div>
+    <div
+      id="controllerConn"
+      class="controller-ready">
+      CONNECTING
+    </div>
+
+  </header>
 
 
   <div class="controller-scorebar">
 
-    <div class="controller-current red-text">
-      <span id="controllerRedScore">0</span>
+    <div class="cs">
+      RED
+      <b id="cRedScore">0</b>
     </div>
 
-    <div class="controller-round">
-      <div id="controllerRound">ROUND 1</div>
-      <div id="controllerTimer">02:00</div>
+    <div class="round">
+      ROUND
+      <span id="cRound">1</span>
     </div>
 
-    <div class="controller-current blue-text">
-      <span id="controllerBlueScore">0</span>
+    <div class="cs">
+      BLUE
+      <b id="cBlueScore">0</b>
     </div>
 
   </div>
@@ -997,115 +1448,184 @@ body.controller-mode #controllerScreen{
 
   <div class="controller-sides">
 
-    <section class="ref-side red-side">
 
-      <div class="ref-side-title">
-        RED
-      </div>
+    <!-- HEAD -->
 
-      <div class="ref-side-sub" id="controllerRedName">
-        HONG
-      </div>
+    <div class="ref-row head-row">
 
-      <div class="ref-buttons">
+      <button
+        class="ref-cell red"
+        data-ref-side="red"
+        data-type="head">
 
-        <button
-          class="ref-score-btn"
-          data-ref-side="red"
-          data-ref-points-type="punch"
-        >
-          PUNCH
-          <span class="ref-big" id="controllerRedPunch">+1</span>
-        </button>
-
-        <button
-          class="ref-score-btn"
-          data-ref-side="red"
-          data-ref-points-type="body"
-        >
-          BODY
-          <span class="ref-big" id="controllerRedBody">+2</span>
-        </button>
-
-        <button
-          class="ref-score-btn"
-          data-ref-side="red"
-          data-ref-points-type="head"
-        >
+        <span>
           HEAD
-          <span class="ref-big" id="controllerRedHead">+3</span>
-        </button>
+        </span>
 
+        <span
+          class="rv"
+          id="cRedHead">
+          +3
+        </span>
+
+      </button>
+
+
+      <div class="row-label">
+        HEAD
       </div>
 
-    </section>
 
+      <button
+        class="ref-cell blue"
+        data-ref-side="blue"
+        data-type="head">
 
-    <section class="ref-side blue-side">
-
-      <div class="ref-side-title">
-        BLUE
-      </div>
-
-      <div class="ref-side-sub" id="controllerBlueName">
-        CHONG
-      </div>
-
-      <div class="ref-buttons">
-
-        <button
-          class="ref-score-btn"
-          data-ref-side="blue"
-          data-ref-points-type="punch"
-        >
-          PUNCH
-          <span class="ref-big" id="controllerBluePunch">+1</span>
-        </button>
-
-        <button
-          class="ref-score-btn"
-          data-ref-side="blue"
-          data-ref-points-type="body"
-        >
-          BODY
-          <span class="ref-big" id="controllerBlueBody">+2</span>
-        </button>
-
-        <button
-          class="ref-score-btn"
-          data-ref-side="blue"
-          data-ref-points-type="head"
-        >
+        <span>
           HEAD
-          <span class="ref-big" id="controllerBlueHead">+3</span>
-        </button>
+        </span>
 
+        <span
+          class="rv"
+          id="cBlueHead">
+          +3
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+
+    <div class="ref-row body-row">
+
+      <button
+        class="ref-cell red"
+        data-ref-side="red"
+        data-type="body">
+
+        <span>
+          BODY
+        </span>
+
+        <span
+          class="rv"
+          id="cRedBody">
+          +2
+        </span>
+
+      </button>
+
+
+      <div class="row-label">
+        BODY
       </div>
 
-    </section>
+
+      <button
+        class="ref-cell blue"
+        data-ref-side="blue"
+        data-type="body">
+
+        <span>
+          BODY
+        </span>
+
+        <span
+          class="rv"
+          id="cBlueBody">
+          +2
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- PUNCH -->
+
+    <div class="ref-row punch-row">
+
+      <button
+        class="ref-cell red"
+        data-ref-side="red"
+        data-type="punch">
+
+        <span>
+          PUNCH
+        </span>
+
+        <span
+          class="rv"
+          id="cRedPunch">
+          +1
+        </span>
+
+      </button>
+
+
+      <div class="row-label">
+        PUNCH
+      </div>
+
+
+      <button
+        class="ref-cell blue"
+        data-ref-side="blue"
+        data-type="punch">
+
+        <span>
+          PUNCH
+        </span>
+
+        <span
+          class="rv"
+          id="cBluePunch">
+          +1
+        </span>
+
+      </button>
+
+    </div>
+
 
   </div>
 
 
-  <div class="controller-footer">
-    SCORE ONLY • GAM-JEOM CONTROLLED FROM LAPTOP
+  <div
+    id="controllerFoot"
+    class="controller-foot">
+
+    Score only • GAM-JEOM is controlled from laptop
+
   </div>
+
+</div>
 
 </section>
 
 
-<!-- ================= YELLOW FLASH ================= -->
+<!-- =========================================================
+     YELLOW REFEREE FLASH
+========================================================= -->
 
-<div id="refFlash">
+<div
+  id="refFlash"
+  class="ref-flash">
 
-  <div class="ref-flash-card">
+  <div class="flash-card">
 
-    <div class="ref-flash-title" id="refFlashTitle">
+    <div
+      id="flashBig"
+      class="big">
       RED +1
     </div>
 
-    <div class="ref-flash-text" id="refFlashText">
-      CONFIRM NOW
+    <div
+      id="flashSmall"
+      class="small">
+      WAIT FOR OTHER REFEREE
     </div>
 
   </div>
@@ -1113,9 +1633,341 @@ body.controller-mode #controllerScreen{
 </div>
 
 
-<!-- ================= WINNER ================= -->
+<!-- =========================================================
+     SETTINGS
+========================================================= -->
 
-<div class="overlay hidden" id="winnerOverlay">
+<div
+  id="settingsOverlay"
+  class="overlay"
+  style="display:none">
+
+  <div class="modal">
+
+    <h2>
+      ⚙ SETTINGS
+    </h2>
+
+    <div class="modal-grid">
+
+      <div class="field">
+        <label>
+          Round time (sec)
+        </label>
+        <input
+          id="sRoundTime"
+          type="number"
+          min="10">
+      </div>
+
+      <div class="field">
+        <label>
+          Break time (sec)
+        </label>
+        <input
+          id="sBreakTime"
+          type="number"
+          min="0">
+      </div>
+
+
+      <div class="field">
+        <label>
+          Match format
+        </label>
+
+        <select id="sFormat">
+          <option value="1">
+            Best of 1
+          </option>
+
+          <option value="3">
+            Best of 3
+          </option>
+
+          <option value="5">
+            Best of 5
+          </option>
+        </select>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Number of referees
+        </label>
+
+        <select id="sReferees">
+
+          <option value="1">
+            1 Referee
+          </option>
+
+          <option value="2">
+            2 Referees
+          </option>
+
+          <option value="3">
+            3 Referees
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="field">
+        <label>
+          Punch points
+        </label>
+
+        <input
+          id="sPunch"
+          type="number"
+          min="0">
+      </div>
+
+
+      <div class="field">
+        <label>
+          Body points
+        </label>
+
+        <input
+          id="sBody"
+          type="number"
+          min="0">
+      </div>
+
+
+      <div class="field">
+        <label>
+          Head points
+        </label>
+
+        <input
+          id="sHead"
+          type="number"
+          min="0">
+      </div>
+
+
+      <div class="field">
+        <label>
+          Point gap
+        </label>
+
+        <input
+          id="sGap"
+          type="number"
+          min="0">
+      </div>
+
+
+      <div class="field">
+        <label>
+          Target score
+          (0 = off)
+        </label>
+
+        <input
+          id="sTarget"
+          type="number"
+          min="0">
+      </div>
+
+
+      <div class="field">
+        <label>
+          Match Gam-jeom limit
+        </label>
+
+        <input
+          id="sGamLimit"
+          type="number"
+          min="0">
+      </div>
+
+    </div>
+
+
+    <label class="check">
+
+      <input
+        id="sRoundGam"
+        type="checkbox">
+
+      5 Gam-jeom in a round =
+      opponent wins round
+
+    </label>
+
+
+    <label class="check">
+
+      <input
+        id="sAutoNext"
+        type="checkbox">
+
+      Automatically start next round
+      after break
+
+    </label>
+
+
+    <label class="check">
+
+      <input
+        id="sSound"
+        type="checkbox">
+
+      Sounds
+
+    </label>
+
+
+    <div class="modal-actions">
+
+      <button
+        id="saveSettings"
+        class="ok">
+
+        SAVE
+
+      </button>
+
+      <button
+        id="closeSettings">
+
+        CLOSE
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     QR
+========================================================= -->
+
+<div
+  id="qrOverlay"
+  class="overlay"
+  style="display:none">
+
+  <div class="modal">
+
+    <h2>
+      📱 REFEREE CONNECTION
+    </h2>
+
+    <p style="text-align:center">
+      Phone camera se QR scan karein.
+    </p>
+
+
+    <div
+      id="qrTabs"
+      class="qr-tabs">
+
+      <button data-qr-role="1">
+        REFEREE 1
+      </button>
+
+      <button data-qr-role="2">
+        REFEREE 2
+      </button>
+
+      <button data-qr-role="3">
+        REFEREE 3
+      </button>
+
+      <button data-qr-role="tv">
+        TV DISPLAY
+      </button>
+
+    </div>
+
+
+    <img
+      id="qrImage"
+      class="qr-img"
+      alt="QR code">
+
+
+    <div
+      id="qrLink"
+      class="qr-link">
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button id="copyQr">
+        COPY LINK
+      </button>
+
+      <button id="closeQr">
+        CLOSE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     HISTORY
+========================================================= -->
+
+<div
+  id="historyOverlay"
+  class="overlay"
+  style="display:none">
+
+  <div class="modal">
+
+    <h2>
+      📋 MATCH HISTORY
+    </h2>
+
+    <div id="historyList"></div>
+
+    <div class="modal-actions">
+
+      <button
+        id="clearHistory"
+        class="danger">
+        CLEAR HISTORY
+      </button>
+
+      <button id="closeHistory">
+        CLOSE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     WINNER
+========================================================= -->
+
+<div
+  id="winnerOverlay"
+  class="overlay"
+  style="display:none">
 
   <div class="modal">
 
@@ -1123,255 +1975,24 @@ body.controller-mode #controllerScreen{
       ROUND WINNER
     </h2>
 
-    <p id="winnerText"></p>
-
-    <div class="modal-actions">
-
-      <button class="start" id="winnerNextBtn">
-        NEXT ROUND
-      </button>
-
-      <button
-        id="directRedBtn"
-        class="hidden"
-      >
-        RED WINS
-      </button>
-
-      <button
-        id="directBlueBtn"
-        class="hidden"
-      >
-        BLUE WINS
-      </button>
-
-      <button id="winnerCloseBtn">
-        CLOSE
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ================= SETTINGS ================= -->
-
-<div class="overlay hidden" id="settingsOverlay">
-
-  <div class="modal settings">
-
-    <h2>MATCH SETTINGS</h2>
-
-    <label>
-      Round time (seconds)
-      <input
-        id="setRoundTime"
-        type="number"
-        min="10"
-        value="120"
-      >
-    </label>
-
-    <label>
-      Break time (seconds)
-      <input
-        id="setBreakTime"
-        type="number"
-        min="0"
-        value="30"
-      >
-    </label>
-
-    <label>
-      Match format
-
-      <select id="setFormat">
-        <option value="1">Best of 1</option>
-        <option value="3" selected>Best of 3</option>
-        <option value="5">Best of 5</option>
-      </select>
-
-    </label>
-
-    <label>
-      Number of referees
-
-      <select id="setReferees">
-        <option value="1">1 Referee</option>
-        <option value="2" selected>2 Referees</option>
-        <option value="3">3 Referees</option>
-      </select>
-
-    </label>
-
-    <label>
-      Punch points
-      <input
-        id="setPunch"
-        type="number"
-        min="0"
-        value="1"
-      >
-    </label>
-
-    <label>
-      Body points
-      <input
-        id="setBody"
-        type="number"
-        min="0"
-        value="2"
-      >
-    </label>
-
-    <label>
-      Head points
-      <input
-        id="setHead"
-        type="number"
-        min="0"
-        value="3"
-      >
-    </label>
-
-    <label>
-      Point gap (0 = off)
-      <input
-        id="setGap"
-        type="number"
-        min="0"
-        value="12"
-      >
-    </label>
-
-    <label>
-      Target score (0 = off)
-      <input
-        id="setTarget"
-        type="number"
-        min="0"
-        value="0"
-      >
-    </label>
-
-    <label>
-      Gam-jeom limit for match loss
-      <input
-        id="setGamLimit"
-        type="number"
-        min="1"
-        value="10"
-      >
-    </label>
-
-    <label>
-      Round win by 5 Gam-jeom
-      <input
-        id="setRoundGam"
-        type="checkbox"
-        checked
-      >
-    </label>
-
-    <label>
-      Auto-start next round after break
-      <input
-        id="setAutoNext"
-        type="checkbox"
-      >
-    </label>
-
-    <label>
-      Sound effects
-      <input
-        id="setSound"
-        type="checkbox"
-        checked
-      >
-    </label>
-
-    <label>
-      Score size
-
-      <select id="setScoreSize">
-        <option value="small">Small</option>
-        <option value="medium" selected>Medium</option>
-        <option value="large">Large</option>
-      </select>
-
-    </label>
-
-    <div class="modal-actions">
-
-      <button
-        class="start"
-        id="saveSettingsBtn"
-      >
-        SAVE SETTINGS
-      </button>
-
-      <button id="cancelSettingsBtn">
-        CANCEL
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ================= QR ================= -->
-
-<div class="overlay hidden" id="qrOverlay">
-
-  <div class="modal qr-box">
-
-    <h2>REFEREE CONNECTION</h2>
-
-    <p>
-      Phone camera se QR scan karo.
+    <p
+      id="winnerMessage"
+      style="
+        text-align:center;
+        font-size:18px;
+        font-weight:900">
     </p>
 
-    <div class="qr-role-buttons">
-
-      <button id="qrRef1Btn">
-        REFEREE 1
-      </button>
-
-      <button id="qrRef2Btn">
-        REFEREE 2
-      </button>
-
-      <button id="qrRef3Btn">
-        REFEREE 3
-      </button>
-
-      <button id="qrTvBtn">
-        TV DISPLAY
-      </button>
-
-    </div>
-
-    <img
-      id="qrImage"
-      alt="QR Code"
-    >
-
-    <div
-      class="qr-link"
-      id="qrLink"
-    ></div>
 
     <div class="modal-actions">
 
-      <button id="copyQrBtn">
-        COPY LINK
+      <button
+        id="winnerNext"
+        class="ok">
+        CONTINUE
       </button>
 
-      <button id="closeQrBtn">
+      <button id="winnerClose">
         CLOSE
       </button>
 
@@ -1382,9 +2003,14 @@ body.controller-mode #controllerScreen{
 </div>
 
 
-<!-- ================= JOIN ================= -->
+<!-- =========================================================
+     JOIN
+========================================================= -->
 
-<div class="overlay hidden" id="joinOverlay">
+<div
+  id="joinOverlay"
+  class="overlay"
+  style="display:none">
 
   <div class="modal">
 
@@ -1393,20 +2019,40 @@ body.controller-mode #controllerScreen{
     </h2>
 
     <p>
-      Laptop par dikh raha <b>ROOM CODE</b> yahan enter karo.
+      Room code laptop ke
+      REFEREE/TV QR window me milega.
     </p>
 
-    <input
-      id="joinRoomInput"
-      maxlength="12"
-      placeholder="ABC123"
-      autocomplete="off"
-    >
+
+    <div class="field">
+
+      <label>
+        Room code
+      </label>
+
+      <input
+        id="joinRoom"
+        maxlength="12"
+        placeholder="e.g. X57Z34"
+        autocapitalize="characters">
+
+    </div>
+
+
+    <div
+      id="joinNote"
+      class="join-note">
+    </div>
+
 
     <div class="modal-actions">
 
-      <button class="start" id="joinRoomBtn">
+      <button
+        id="joinRoomBtn"
+        class="ok">
+
         JOIN
+
       </button>
 
     </div>
@@ -1416,27 +2062,97 @@ body.controller-mode #controllerScreen{
 </div>
 
 
-<!-- Firebase classic/compat SDK.
-     Classic scripts intentionally used so all existing functions
-     remain globally accessible and old button handlers cannot lose scope. -->
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-
-
-<script>
-"use strict";
+<script type="module">
 
 /* =========================================================
-   BASIC HELPERS
+   FIREBASE
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 
-const params = new URLSearchParams(location.search);
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInAnonymously
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
-const isControllerMode = params.get("controller") === "1";
-const isDisplayMode = params.get("display") === "1";
+import {
+  getDatabase,
+  ref,
+  get,
+  set,
+  update,
+  onValue,
+  push,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
+
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyAO7jqaMcHPjElJMyD91Wxjh1cX8KIqEa",
+
+  authDomain:
+    "taekwondo-refeeree-system.firebaseapp.com",
+
+  databaseURL:
+    "https://taekwondo-refeeree-system-default-rtdb.firebaseio.com",
+
+  projectId:
+    "taekwondo-refeeree-system",
+
+  storageBucket:
+    "taekwondo-refeeree-system.firebasestorage.app",
+
+  messagingSenderId:
+    "466920893605",
+
+  appId:
+    "1:466920893605:web:9acba9b21be096fcf7714c",
+
+  measurementId:
+    "G-WFE4FGQS5F"
+};
+
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getDatabase(app);
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const $ =
+  id => document.getElementById(id);
+
+const params =
+  new URLSearchParams(location.search);
+
+const isControllerMode =
+  params.get("controller") === "1";
+
+const isDisplayMode =
+  params.get("display") === "1";
+
+const refId =
+  Math.max(
+    1,
+    Math.min(
+      3,
+      Number(params.get("ref") || 1)
+    )
+  );
+
 
 if(isControllerMode){
   document.body.classList.add("controller-mode");
@@ -1448,101 +2164,166 @@ if(isDisplayMode){
 
 
 /* =========================================================
-   FIREBASE CONFIG
+   STORAGE
 ========================================================= */
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAO7jqaMcHPjElMJMyD91Wxjh1cX8KIqaE",
-  authDomain: "taekwondo-refeeree-system.firebaseapp.com",
-  databaseURL: "https://taekwondo-refeeree-system-default-rtdb.firebaseio.com",
-  projectId: "taekwondo-refeeree-system",
-  storageBucket: "taekwondo-refeeree-system.firebasestorage.app",
-  messagingSenderId: "466920893605",
-  appId: "1:466920893605:web:9acba9b21be096fcf7714c",
-  measurementId: "G-WFE4FGQS5F"
-};
+const BOARD_ROOM_KEY =
+  "tkd_board_room_v3";
 
-let firebaseReady = false;
-let firebaseUser = null;
-let db = null;
+const CONTROLLER_ROOM_KEY =
+  "tkd_controller_room_v3";
+
+const DISPLAY_ROOM_KEY =
+  "tkd_display_room_v3";
+
+const LIVE_KEY =
+  "taekwondoScoreboardLiveState_v3";
+
+const HISTORY_KEY =
+  "taekwondoScoreboardMatchHistory_v3";
 
 
 /* =========================================================
    ROOM
 ========================================================= */
 
-const BOARD_ROOM_KEY = "taekwondo_board_room_v2";
-const CONTROLLER_ROOM_KEY = "taekwondo_controller_room_v2";
+function cleanRoom(value){
 
-function makeRoomId(){
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return String(value || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g,"")
+    .slice(0,12);
+
+}
+
+
+function makeRoom(){
+
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
   let result = "";
 
-  for(let i=0;i<6;i++){
-    result += chars[Math.floor(Math.random()*chars.length)];
+  for(
+    let i = 0;
+    i < 6;
+    i++
+  ){
+
+    result +=
+      chars[
+        Math.floor(
+          Math.random() *
+          chars.length
+        )
+      ];
+
   }
 
   return result;
 }
 
-function cleanRoom(value){
-  return String(value || "")
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g,"")
-    .slice(0,12);
+
+function makeSession(){
+
+  return (
+    Date.now().toString(36) +
+    Math.random()
+      .toString(36)
+      .slice(2,7)
+  ).toUpperCase();
+
 }
 
-let roomId = "";
 
-if(isControllerMode){
-  roomId = cleanRoom(
-    params.get("room") ||
-    localStorage.getItem(CONTROLLER_ROOM_KEY) ||
-    ""
-  );
-}else if(isDisplayMode){
-  roomId = cleanRoom(
-    params.get("room") ||
-    ""
-  );
-}else{
-  roomId = cleanRoom(
-    params.get("room") ||
-    localStorage.getItem(BOARD_ROOM_KEY) ||
-    ""
+let roomId =
+  cleanRoom(
+    params.get("room")
   );
 
-  if(!roomId){
-    roomId = makeRoomId();
+
+if(!roomId){
+
+  if(isControllerMode){
+
+    roomId =
+      cleanRoom(
+        localStorage.getItem(
+          CONTROLLER_ROOM_KEY
+        )
+      );
+
+  }
+  else if(isDisplayMode){
+
+    roomId =
+      cleanRoom(
+        localStorage.getItem(
+          DISPLAY_ROOM_KEY
+        )
+      );
+
+  }
+  else{
+
+    roomId =
+      cleanRoom(
+        localStorage.getItem(
+          BOARD_ROOM_KEY
+        )
+      ) ||
+      makeRoom();
+
   }
 
-  localStorage.setItem(BOARD_ROOM_KEY,roomId);
+}
+
+
+if(
+  !isControllerMode &&
+  !isDisplayMode
+){
+
+  localStorage.setItem(
+    BOARD_ROOM_KEY,
+    roomId
+  );
+
 }
 
 
 /* =========================================================
-   CONFIG
+   SETTINGS
 ========================================================= */
 
 let cfg = {
+
   roundTime:120,
+
   breakTime:30,
+
   format:3,
 
   punch:1,
+
   body:2,
+
   head:3,
 
   gap:12,
+
   target:0,
 
   gamLimit:10,
+
   roundGam:true,
+
   autoNext:false,
+
   sound:true,
-  scoreSize:"medium",
 
   refereeCount:2
+
 };
 
 
@@ -1550,145 +2331,201 @@ let cfg = {
    MATCH STATE
 ========================================================= */
 
-function freshFighters(){
-  return {
-    red:{
-      score:0,
-      gam:0,
-      totalGam:0,
-      wins:0
-    },
+let fighters = {
 
-    blue:{
-      score:0,
-      gam:0,
-      totalGam:0,
-      wins:0
-    }
-  };
-}
+  red:{
+    score:0,
+    gam:0,
+    totalGam:0,
+    wins:0
+  },
 
-let fighters = freshFighters();
+  blue:{
+    score:0,
+    gam:0,
+    totalGam:0,
+    wins:0
+  }
+
+};
+
 
 let round = 1;
-let seconds = cfg.roundTime;
-let breakSeconds = cfg.breakTime;
 
-let timerId = null;
-let breakId = null;
+let seconds =
+  cfg.roundTime;
+
+let breakSeconds = 0;
 
 let running = false;
+
 let inBreak = false;
+
 let matchOver = false;
 
-let history = [];
+let matchSaved = false;
 
-let pendingAction = "none";
+let lastWinnerText = "";
 
-let audioContext = null;
+let statusText = "Ready";
 
-let sessionId = makeSessionId();
+let pendingAction = null;
 
-let boardVoteUnsubscribe = null;
-let controllerVoteUnsubscribe = null;
+let sessionId =
+  makeSession();
 
-let boardSeenVotes = new Set();
-let controllerSeenVotes = new Set();
+let historyStack = [];
 
-let boardVotesInitialized = false;
-let controllerVotesInitialized = false;
+let timerId = null;
 
-let pendingVotes = new Map();
+let breakId = null;
 
-let remoteStatusTimer = null;
 
-let controllerState = null;
-let controllerCurrentSession = "";
+/* =========================================================
+   FIREBASE STATE
+========================================================= */
+
+let currentUser = null;
+
+let firebaseReady = false;
 
 let boardClaimed = false;
 
+let booted = false;
+
 
 /* =========================================================
-   SESSION
+   VOTE STATE
 ========================================================= */
 
-function makeSessionId(){
-  return (
-    Date.now().toString(36) +
-    Math.random().toString(36).slice(2,8)
-  ).toUpperCase();
+let boardVotesUnsub = null;
+
+let controllerVotesUnsub = null;
+
+let controllerSession = "";
+
+let controllerState = null;
+
+let controllerSeen =
+  new Set();
+
+let controllerVotesInit = false;
+
+let boardSeen =
+  new Set();
+
+let boardVotesInit = false;
+
+let pendingVotes =
+  new Map();
+
+let remoteStatusTimer = null;
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function setCloud(
+  text,
+  ok = true
+){
+
+  $("cloudBadge").textContent =
+    text;
+
+  $("cloudBadge").className =
+    "badge cloud " +
+    (ok ? "ok" : "bad");
+
 }
 
 
-/* =========================================================
-   NAMES
-========================================================= */
+function setStatus(text){
+
+  statusText =
+    text;
+
+  $("status").textContent =
+    text;
+
+}
+
+
+function pad(number){
+
+  return String(
+    Math.max(
+      0,
+      Math.floor(number)
+    )
+  ).padStart(2,"0");
+
+}
+
+
+function timeText(seconds){
+
+  return (
+    pad(seconds / 60) +
+    ":" +
+    pad(seconds % 60)
+  );
+
+}
+
+
+function names(){
+
+  return {
+
+    red:
+      $("redName")
+        .innerText
+        .trim() || "RED",
+
+    blue:
+      $("blueName")
+        .innerText
+        .trim() || "BLUE"
+
+  };
+
+}
+
 
 function fighterName(side){
-  return $(side+"Name").value.trim() ||
-    (side==="red" ? "HONG" : "CHONG");
-}
 
-function opponent(side){
-  return side==="red" ? "blue" : "red";
-}
+  return names()[side];
 
-function requiredWins(){
-  return Math.ceil(cfg.format/2);
-}
-
-function fmt(value){
-  const s=Math.max(0,Math.floor(value));
-
-  return String(Math.floor(s/60)).padStart(2,"0")+":"+
-    String(s%60).padStart(2,"0");
 }
 
 
-/* =========================================================
-   STATUS
-========================================================= */
+function needWins(){
 
-function setStatus(message){
-  $("status").textContent=message;
+  return Math.ceil(
+    cfg.format / 2
+  );
+
 }
 
-function setCloudStatus(message,type=""){
-  const el=$("cloudBadge");
 
-  if(!el)return;
+function confirmationWindow(){
 
-  el.textContent=message;
+  if(cfg.refereeCount === 2){
 
-  el.classList.remove("ok","error");
+    return 1500;
 
-  if(type){
-    el.classList.add(type);
   }
-}
 
+  if(cfg.refereeCount === 3){
 
-/* =========================================================
-   FIREBASE PATHS
-========================================================= */
+    return 1750;
 
-function roomRef(){
-  return db.ref("matches/"+roomId);
-}
+  }
 
-function metaRef(){
-  return roomRef().child("meta");
-}
+  return 0;
 
-function stateRef(){
-  return roomRef().child("state");
-}
-
-function votesRef(session){
-  return roomRef()
-    .child("sessions")
-    .child(session)
-    .child("votes");
 }
 
 
@@ -1696,429 +2533,463 @@ function votesRef(session){
    LIVE STATE
 ========================================================= */
 
-function makeLiveState(){
+function liveState(){
 
   return {
-    roomId:roomId,
 
-    sessionId:sessionId,
+    roomId,
 
-    redName:fighterName("red"),
-    blueName:fighterName("blue"),
+    sessionId,
 
-    redScore:fighters.red.score,
-    blueScore:fighters.blue.score,
+    redName:
+      fighterName("red"),
 
-    redGam:fighters.red.gam,
-    blueGam:fighters.blue.gam,
+    blueName:
+      fighterName("blue"),
 
-    redTotalGam:fighters.red.totalGam,
-    blueTotalGam:fighters.blue.totalGam,
+    redScore:
+      fighters.red.score,
 
-    redWins:fighters.red.wins,
-    blueWins:fighters.blue.wins,
+    blueScore:
+      fighters.blue.score,
 
-    round:round,
+    redGam:
+      fighters.red.gam,
 
-    seconds:seconds,
-    breakSeconds:breakSeconds,
+    blueGam:
+      fighters.blue.gam,
 
-    running:running,
-    inBreak:inBreak,
-    matchOver:matchOver,
+    redTotalGam:
+      fighters.red.totalGam,
 
-    status:$("status") ? $("status").textContent : "",
+    blueTotalGam:
+      fighters.blue.totalGam,
 
-    winner:$("winnerTitle") ?
-      (
-        $("winnerOverlay").classList.contains("hidden")
-          ? ""
-          : $("winnerTitle").textContent
-      )
-      : "",
+    redWins:
+      fighters.red.wins,
+
+    blueWins:
+      fighters.blue.wins,
+
+    round,
+
+    seconds,
+
+    breakSeconds,
+
+    running,
+
+    inBreak,
+
+    matchOver,
+
+    lastWinnerText,
+
+    status:
+      statusText,
 
     settings:{
-      roundTime:cfg.roundTime,
-      breakTime:cfg.breakTime,
-      format:cfg.format,
-
-      punch:cfg.punch,
-      body:cfg.body,
-      head:cfg.head,
-
-      gap:cfg.gap,
-      target:cfg.target,
-
-      gamLimit:cfg.gamLimit,
-      roundGam:cfg.roundGam,
-      autoNext:cfg.autoNext,
-      sound:cfg.sound,
-      scoreSize:cfg.scoreSize,
-
-      refereeCount:cfg.refereeCount
+      ...cfg
     },
 
-    updatedAt:firebase.database.ServerValue.TIMESTAMP
+    updatedAt:
+      Date.now()
+
   };
+
 }
 
 
-/* =========================================================
-   FIREBASE PUBLISH
-========================================================= */
-
-let publishTimer = null;
-
-function publishState(){
-
-  if(!firebaseReady || !db || !roomId || !boardClaimed){
-    return;
-  }
-
-  const state = makeLiveState();
+function saveLocal(){
 
   try{
+
     localStorage.setItem(
-      "taekwondoScoreboardLiveState_v3",
-      JSON.stringify(state)
+      LIVE_KEY,
+      JSON.stringify(
+        liveState()
+      )
     );
-  }catch(error){}
 
-  clearTimeout(publishTimer);
+  }
+  catch(error){
 
-  publishTimer=setTimeout(()=>{
+    console.error(error);
 
-    stateRef()
-      .set(state)
-      .catch(error=>{
-        console.error("Firebase state write failed:",error);
-        setCloudStatus("CLOUD ERROR","error");
-      });
+  }
 
-  },40);
+}
+
+
+async function publish(){
+
+  saveLocal();
+
+  if(
+    firebaseReady &&
+    boardClaimed &&
+    roomId
+  ){
+
+    try{
+
+      await set(
+        ref(
+          db,
+          `matches/${roomId}/state`
+        ),
+        liveState()
+      );
+
+    }
+    catch(error){
+
+      setCloud(
+        "CLOUD ERROR",
+        false
+      );
+
+      console.error(error);
+
+    }
+
+  }
+
 }
 
 
 /* =========================================================
-   SNAPSHOT / UNDO
+   UNDO
 ========================================================= */
 
 function snapshot(){
 
-  history.push(JSON.stringify({
+  historyStack.push(
+    JSON.stringify({
 
-    fighters:fighters,
+      fighters,
 
-    round:round,
+      round,
 
-    seconds:seconds,
+      seconds,
 
-    breakSeconds:breakSeconds,
+      breakSeconds,
 
-    inBreak:inBreak,
+      running,
 
-    matchOver:matchOver
+      inBreak,
 
-  }));
+      matchOver,
 
-  if(history.length>100){
-    history.shift();
-  }
-}
+      lastWinnerText,
 
+      statusText,
 
-/* =========================================================
-   CLOCKS
-========================================================= */
+      sessionId
 
-function stopClocks(){
-
-  if(timerId!==null){
-    clearInterval(timerId);
-  }
-
-  if(breakId!==null){
-    clearInterval(breakId);
-  }
-
-  timerId=null;
-  breakId=null;
-  running=false;
-}
-
-
-/* =========================================================
-   RENDER BOARD
-========================================================= */
-
-function render(){
-
-  for(const side of ["red","blue"]){
-
-    $(side+"Score").textContent=
-      fighters[side].score;
-
-    $(side+"Gam").textContent=
-      fighters[side].gam;
-
-    $(side+"TotalGam").textContent=
-      fighters[side].totalGam;
-
-    $(side+"Wins").textContent=
-      fighters[side].wins;
-
-    $(side+"PunchLabel").textContent=
-      cfg.punch;
-
-    $(side+"BodyLabel").textContent=
-      cfg.body;
-
-    $(side+"HeadLabel").textContent=
-      cfg.head;
-  }
-
-  $("roundLabel").textContent=
-    "ROUND "+round;
-
-  $("timer").textContent=
-    fmt(seconds);
-
-  $("breakClock").textContent=
-    fmt(breakSeconds);
-
-  $("breakBox").classList.toggle(
-    "hidden",
-    !inBreak
+    })
   );
 
 
-  document.querySelectorAll(".score").forEach(el=>{
+  if(
+    historyStack.length > 30
+  ){
 
-    if(cfg.scoreSize==="small"){
+    historyStack.shift();
 
-      el.style.fontSize=
-        "clamp(60px,12vw,120px)";
+  }
 
-    }else if(cfg.scoreSize==="large"){
-
-      el.style.fontSize=
-        "clamp(90px,20vw,200px)";
-
-    }else{
-
-      el.style.fontSize=
-        "clamp(80px,17vw,180px)";
-    }
-
-  });
+}
 
 
-  const locked =
-    matchOver ||
-    inBreak;
+function restoreSnapshot(
+  saved
+){
 
-  document
-    .querySelectorAll(".points button,.gam-box button")
-    .forEach(btn=>{
-      btn.disabled=locked;
-    });
+  try{
 
+    const state =
+      JSON.parse(saved);
 
-  $("startBtn").disabled=
-    matchOver ||
-    inBreak ||
-    running;
+    fighters =
+      state.fighters;
 
-  $("pauseBtn").disabled=
-    !running;
+    round =
+      state.round;
 
-  $("endBtn").disabled=
-    matchOver ||
-    inBreak;
+    seconds =
+      state.seconds;
 
-  $("startNextBtn").disabled=
-    matchOver ||
-    !inBreak;
+    breakSeconds =
+      state.breakSeconds;
 
+    running =
+      state.running;
 
-  publishState();
+    inBreak =
+      state.inBreak;
+
+    matchOver =
+      state.matchOver;
+
+    lastWinnerText =
+      state.lastWinnerText;
+
+    statusText =
+      state.statusText;
+
+    sessionId =
+      state.sessionId;
+
+    render();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+  }
+
 }
 
 
 /* =========================================================
-   FLASH / SOUND
+   SOUND
 ========================================================= */
 
-function flash(side){
-
-  const el=$(side+"Score");
-
-  el.classList.remove("flash");
-
-  void el.offsetWidth;
-
-  el.classList.add("flash");
-}
-
-
-function sound(type){
+function playBeep(
+  frequency = 700,
+  duration = .08
+){
 
   if(!cfg.sound)return;
 
   try{
 
-    const AC=
+    const AudioContext =
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if(!AC)return;
+    if(!AudioContext)return;
 
-    if(!audioContext){
-      audioContext=new AC();
-    }
+    const audio =
+      new AudioContext();
 
-    if(audioContext.state==="suspended"){
-      audioContext.resume();
-    }
+    const oscillator =
+      audio.createOscillator();
 
-    const notes={
+    const gain =
+      audio.createGain();
 
-      score:[700,0.12],
+    oscillator.frequency.value =
+      frequency;
 
-      gam:[360,0.18],
+    oscillator.type =
+      "sine";
 
-      round:[520,0.25],
-
-      horn:[850,0.5],
-
-      undo:[440,0.1]
-
-    };
-
-    const now=
-      audioContext.currentTime;
-
-    const [
-      frequency,
-      duration
-    ]=
-      notes[type] ||
-      notes.score;
-
-    const oscillator=
-      audioContext.createOscillator();
-
-    const gain=
-      audioContext.createGain();
-
-    oscillator.type=
-      type==="horn"
-        ? "sawtooth"
-        : "sine";
-
-    oscillator.frequency
-      .setValueAtTime(
-        frequency,
-        now
-      );
-
-    gain.gain
-      .setValueAtTime(
-        0.0001,
-        now
-      );
-
-    gain.gain
-      .exponentialRampToValueAtTime(
-        0.18,
-        now+0.015
-      );
-
-    gain.gain
-      .exponentialRampToValueAtTime(
-        0.0001,
-        now+duration
-      );
+    gain.gain.value =
+      .04;
 
     oscillator.connect(gain);
 
     gain.connect(
-      audioContext.destination
+      audio.destination
     );
 
-    oscillator.start(now);
+    oscillator.start();
 
-    oscillator.stop(
-      now+duration+0.02
-    );
-
-  }catch(error){
-
-    console.warn(
-      "Sound unavailable",
-      error
+    setTimeout(
+      ()=>{
+        oscillator.stop();
+        audio.close();
+      },
+      duration * 1000
     );
 
   }
+  catch(error){}
+
 }
 
 
 /* =========================================================
-   MANUAL SCORE
+   RENDER MAIN BOARD
 ========================================================= */
 
-function addPoints(side,type){
+function render(){
 
-  if(matchOver || inBreak)return;
+  $("roomBadge").textContent =
+    `ROOM ${roomId}`;
 
-  const points=
-    Number(cfg[type]) || 0;
+  $("redScore").textContent =
+    fighters.red.score;
 
-  if(points<=0)return;
+  $("blueScore").textContent =
+    fighters.blue.score;
 
-  addPointsValue(
-    side,
-    points,
-    "Manual score"
-  );
+  $("redGam").textContent =
+    fighters.red.gam;
+
+  $("blueGam").textContent =
+    fighters.blue.gam;
+
+  $("redTotalGam").textContent =
+    fighters.red.totalGam;
+
+  $("blueTotalGam").textContent =
+    fighters.blue.totalGam;
+
+  $("redWins").textContent =
+    fighters.red.wins;
+
+  $("blueWins").textContent =
+    fighters.blue.wins;
+
+
+  $("redPunchVal").textContent =
+    cfg.punch;
+
+  $("redBodyVal").textContent =
+    cfg.body;
+
+  $("redHeadVal").textContent =
+    cfg.head;
+
+  $("bluePunchVal").textContent =
+    cfg.punch;
+
+  $("blueBodyVal").textContent =
+    cfg.body;
+
+  $("blueHeadVal").textContent =
+    cfg.head;
+
+
+  $("roundTitle").textContent =
+    `ROUND ${round}`;
+
+  $("timer").textContent =
+    timeText(seconds);
+
+  $("roundWins").textContent =
+    `${fighterName("red")} ${fighters.red.wins} — ${fighterName("blue")} ${fighters.blue.wins}`;
+
+  $("winnerText").textContent =
+    lastWinnerText;
+
+
+  $("breakBox").style.display =
+    inBreak
+      ? "block"
+      : "none";
+
+
+  $("breakTime").textContent =
+    timeText(
+      breakSeconds
+    );
+
+
+  $("nextRoundBtn").disabled =
+    !inBreak;
+
+
+  $("startBtn").disabled =
+    running ||
+    inBreak ||
+    matchOver;
+
+
+  $("pauseBtn").disabled =
+    !running;
+
+
+  $("endBtn").disabled =
+    inBreak ||
+    matchOver ||
+    (!running &&
+      seconds <= 0);
+
+
+  saveLocal();
+
+
+  if(
+    firebaseReady &&
+    boardClaimed
+  ){
+
+    publish();
+
+  }
+
 }
 
+
+/* =========================================================
+   POINTS
+========================================================= */
 
 function addPointsValue(
   side,
   points,
-  source="Score"
+  source = "Manual"
 ){
 
-  if(matchOver || inBreak)return;
+  if(
+    matchOver ||
+    inBreak
+  ){
 
-  points=Number(points);
-
-  if(!Number.isFinite(points) || points<=0){
     return;
+
   }
+
+
+  points =
+    Number(points) || 0;
+
+
+  if(points <= 0)return;
+
 
   snapshot();
 
-  fighters[side].score += points;
 
-  flash(side);
+  fighters[side].score +=
+    points;
 
-  sound("score");
 
   setStatus(
-    source+
-    ": "+
-    fighterName(side)+
-    " +"+
-    points
+    `${source}: ${fighterName(side)} +${points}`
   );
 
-  clearRemoteStatus();
+
+  playBeep(
+    900,
+    .07
+  );
+
 
   render();
 
-  checkScoreRoundEnd();
+
+  checkRoundEnd();
+
+}
+
+
+function addPoints(
+  side,
+  type
+){
+
+  addPointsValue(
+    side,
+    cfg[type],
+    "Manual score"
+  );
+
 }
 
 
@@ -2126,414 +2997,296 @@ function addPointsValue(
    GAM-JEOM
 ========================================================= */
 
-function changeGam(side,delta){
-
-  if(matchOver||inBreak)return;
-
-  const f=fighters[side];
-
-  const opp=
-    fighters[opponent(side)];
-
-
-  if(delta<0){
-
-    if(
-      f.gam<=0 ||
-      f.totalGam<=0 ||
-      opp.score<=0
-    ){
-      return;
-    }
-
-  }
-
-
-  snapshot();
-
-
-  if(delta>0){
-
-    f.gam++;
-
-    f.totalGam++;
-
-    opp.score+=1;
-
-    sound("gam");
-
-    setStatus(
-      fighterName(side)+
-      " received Gam-jeom. Opponent gets 1 point."
-    );
-
-  }else{
-
-    f.gam--;
-
-    f.totalGam--;
-
-    opp.score=
-      Math.max(
-        0,
-        opp.score-1
-      );
-
-    sound("undo");
-
-    setStatus(
-      "Gam-jeom corrected."
-    );
-  }
-
-
-  render();
-
-
-  if(delta>0){
-
-    if(
-      cfg.roundGam &&
-      (cfg.format===3 ||
-       cfg.format===5) &&
-      f.gam>=5
-    ){
-
-      awardRound(
-        opponent(side),
-        fighterName(side)+
-        " received 5 Gam-jeom in this round."
-      );
-
-      return;
-    }
-
-
-    if(
-      f.totalGam>=cfg.gamLimit
-    ){
-
-      declareMatchWinner(
-        opponent(side),
-        fighterName(side)+
-        " reached "+
-        cfg.gamLimit+
-        " total Gam-jeom."
-      );
-
-      return;
-    }
-
-  }
-
-
-  checkScoreRoundEnd();
-}
-
-
-/* =========================================================
-   ROUND CHECK
-========================================================= */
-
-function checkScoreRoundEnd(){
-
-  if(matchOver||inBreak)return;
-
-  const redScore=
-    fighters.red.score;
-
-  const blueScore=
-    fighters.blue.score;
-
-
-  if(
-    cfg.target>0 &&
-    (
-      redScore>=cfg.target ||
-      blueScore>=cfg.target
-    )
-  ){
-
-    if(redScore!==blueScore){
-
-      awardRound(
-        redScore>blueScore
-          ? "red"
-          : "blue",
-        "Target score reached."
-      );
-
-    }
-
-    return;
-  }
-
-
-  if(
-    cfg.gap>0 &&
-    Math.abs(
-      redScore-blueScore
-    )>=cfg.gap
-  ){
-
-    awardRound(
-      redScore>blueScore
-        ? "red"
-        : "blue",
-      "Point gap reached."
-    );
-
-  }
-}
-
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-function startTimer(){
+function changeGam(
+  side,
+  delta
+){
 
   if(
     matchOver ||
-    inBreak ||
-    running
+    inBreak
   ){
-    return;
-  }
-
-
-  if(seconds<=0){
-
-    endRound();
 
     return;
+
+  }
+
+
+  const fighter =
+    fighters[side];
+
+
+  if(
+    delta < 0 &&
+    fighter.gam <= 0
+  ){
+
+    return;
+
   }
 
 
-  try{
+  if(
+    delta > 0 &&
+    cfg.gamLimit > 0 &&
+    fighter.totalGam >= cfg.gamLimit
+  ){
 
-    const AC=
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if(
-      AC &&
-      !audioContext
-    ){
-
-      audioContext=
-        new AC();
-    }
-
-    if(
-      audioContext &&
-      audioContext.state==="suspended"
-    ){
-
-      audioContext.resume();
-    }
-
-  }catch(error){}
-
-
-  running=true;
-
-  setStatus(
-    "Round in progress"
-  );
-
-  render();
-
-
-  timerId=setInterval(()=>{
-
-    seconds--;
-
-
-    if(seconds<=0){
-
-      seconds=0;
-
-      render();
-
-      endRound();
-
-      return;
-    }
-
-
-    render();
-
-  },1000);
-}
-
-
-function pauseTimer(){
-
-  if(!running)return;
-
-  clearInterval(timerId);
-
-  timerId=null;
-
-  running=false;
-
-  setStatus("Paused");
-
-  render();
-}
-
-
-function adjustTimer(delta){
-
-  if(matchOver||inBreak)return;
-
-  seconds=
-    Math.max(
-      0,
-      seconds+delta
+    setStatus(
+      `${fighterName(side)} reached the match Gam-jeom limit`
     );
 
-  render();
-}
-
-
-/* =========================================================
-   END ROUND
-========================================================= */
-
-function endRound(){
-
-  if(matchOver||inBreak)return;
-
-  stopClocks();
-
-  const redScore=
-    fighters.red.score;
-
-  const blueScore=
-    fighters.blue.score;
-
-
-  if(redScore===blueScore){
-
-    showWinner(
-      "ROUND DRAW",
-      "Round "+
-      round+
-      " ended in a draw.",
-      "next"
-    );
-
-  }else{
-
-    awardRound(
-      redScore>blueScore
-        ? "red"
-        : "blue",
-      "Round ended."
-    );
+    return;
 
   }
-}
 
-
-/* =========================================================
-   ROUND WIN
-========================================================= */
-
-function awardRound(
-  side,
-  reason
-){
-
-  if(matchOver||inBreak)return;
-
-  stopClocks();
 
   snapshot();
 
 
-  if(side){
+  fighter.gam =
+    Math.max(
+      0,
+      fighter.gam + delta
+    );
 
-    fighters[side].wins++;
+
+  const opponent =
+    side === "red"
+      ? fighters.blue
+      : fighters.red;
+
+
+  if(delta > 0){
+
+    fighter.totalGam++;
+
+    opponent.score++;
+
+    setStatus(
+      `${fighterName(side)} Gam-jeom → opponent +1`
+    );
+
+    playBeep(
+      350,
+      .12
+    );
+
+  }
+  else{
+
+    fighter.totalGam =
+      Math.max(
+        0,
+        fighter.totalGam - 1
+      );
+
+    opponent.score =
+      Math.max(
+        0,
+        opponent.score - 1
+      );
+
+    setStatus(
+      `${fighterName(side)} Gam-jeom undone`
+    );
 
   }
 
 
   render();
 
-  sound("round");
+  checkRoundEnd();
 
-
-  if(
-    side &&
-    fighters[side].wins>=
-    requiredWins()
-  ){
-
-    declareMatchWinner(
-      side,
-      fighterName(side)+
-      " has won the required number of rounds."
-    );
-
-    return;
-  }
-
-
-  if(!side){
-
-    showWinner(
-      "ROUND DRAW",
-      reason,
-      "next"
-    );
-
-    return;
-  }
-
-
-  showWinner(
-    "ROUND WINNER",
-    fighterName(side)+
-      " wins Round "+
-      round+
-      ".<br>"+
-      reason,
-    "next"
-  );
 }
 
 
 /* =========================================================
-   MATCH WIN
+   ROUND END
+========================================================= */
+
+function checkRoundEnd(){
+
+  if(
+    matchOver ||
+    inBreak
+  ){
+
+    return;
+
+  }
+
+
+  const redScore =
+    fighters.red.score;
+
+  const blueScore =
+    fighters.blue.score;
+
+
+  let winner = null;
+
+
+  if(
+    cfg.target > 0 &&
+    (
+      redScore >= cfg.target ||
+      blueScore >= cfg.target
+    )
+  ){
+
+    if(
+      redScore >= cfg.target &&
+      redScore > blueScore
+    ){
+
+      winner = "red";
+
+    }
+    else if(
+      blueScore >= cfg.target &&
+      blueScore > redScore
+    ){
+
+      winner = "blue";
+
+    }
+
+  }
+
+
+  if(
+    !winner &&
+    cfg.gap > 0 &&
+    Math.abs(
+      redScore - blueScore
+    ) >= cfg.gap
+  ){
+
+    winner =
+      redScore > blueScore
+        ? "red"
+        : "blue";
+
+  }
+
+
+  if(
+    !winner &&
+    cfg.roundGam &&
+    cfg.format > 1 &&
+    (
+      fighters.red.gam >= 5 ||
+      fighters.blue.gam >= 5
+    )
+  ){
+
+    winner =
+      fighters.red.gam >= 5
+        ? "blue"
+        : "red";
+
+  }
+
+
+  if(winner){
+
+    awardRound(winner);
+
+  }
+
+}
+
+
+/* =========================================================
+   ROUND WINNER
+========================================================= */
+
+function awardRound(side){
+
+  if(
+    matchOver ||
+    inBreak
+  ){
+
+    return;
+
+  }
+
+
+  stopTimer();
+
+
+  snapshot();
+
+
+  fighters[side].wins++;
+
+
+  lastWinnerText =
+    `${fighterName(side)} WINS ROUND ${round}`;
+
+
+  setStatus(
+    lastWinnerText
+  );
+
+
+  playBeep(
+    1100,
+    .18
+  );
+
+
+  if(
+    fighters[side].wins >=
+    needWins()
+  ){
+
+    declareMatchWinner(side);
+
+    return;
+
+  }
+
+
+  beginBreak();
+
+}
+
+
+/* =========================================================
+   MATCH WINNER
 ========================================================= */
 
 function declareMatchWinner(
-  side,
-  reason
+  side
 ){
 
-  stopClocks();
+  stopTimer();
 
-  matchOver=true;
 
-  inBreak=false;
+  matchOver = true;
 
-  render();
 
-  sound("horn");
+  lastWinnerText =
+    `${fighterName(side)} WINS MATCH`;
+
+
+  setStatus(
+    lastWinnerText
+  );
+
+
+  saveMatchResult(side);
 
 
   showWinner(
     "MATCH WINNER",
-    "🏆 "+
-    fighterName(side)+
-    " WINS THE MATCH!<br>"+
-    reason,
-    "close"
+    `${fighterName(side)} wins the match`,
+    "match"
   );
+
 }
 
 
@@ -2547,66 +3300,50 @@ function showWinner(
   action
 ){
 
-  pendingAction=action;
+  pendingAction =
+    action;
 
-  $("winnerTitle").textContent=
+  $("winnerTitle").textContent =
     title;
 
-  $("winnerText").innerHTML=
+  $("winnerMessage").textContent =
     message;
 
-  $("winnerNextBtn")
-    .classList.toggle(
-      "hidden",
-      action!=="next"
-    );
 
-  $("directRedBtn")
-    .classList.add("hidden");
+  if(action === "round"){
 
-  $("directBlueBtn")
-    .classList.add("hidden");
+    $("winnerNext").textContent =
+      "START NEXT ROUND";
 
-  $("winnerCloseBtn")
-    .classList.remove("hidden");
+    $("winnerClose").textContent =
+      "CLOSE";
 
-  $("winnerOverlay")
-    .classList.remove("hidden");
+  }
+  else if(action === "direct"){
 
-  publishState();
-}
+    $("winnerNext").textContent =
+      `${fighterName("red")} WINS`;
 
+    $("winnerClose").textContent =
+      `${fighterName("blue")} WINS`;
 
-function closeWinner(){
+  }
+  else{
 
-  $("winnerOverlay")
-    .classList.add("hidden");
+    $("winnerNext").textContent =
+      "CLOSE";
 
-  $("winnerNextBtn")
-    .classList.remove("hidden");
+    $("winnerClose").textContent =
+      "CLOSE";
 
-  $("directRedBtn")
-    .classList.add("hidden");
-
-  $("directBlueBtn")
-    .classList.add("hidden");
-
-  publishState();
-}
-
-
-function winnerContinue(){
-
-  if(
-    pendingAction!=="next" ||
-    matchOver
-  ){
-    return;
   }
 
-  closeWinner();
 
-  beginBreak();
+  $("winnerOverlay").style.display =
+    "flex";
+
+  render();
+
 }
 
 
@@ -2616,88 +3353,83 @@ function winnerContinue(){
 
 function beginBreak(){
 
-  if(matchOver)return;
+  inBreak = true;
 
-  stopClocks();
-
-  inBreak=true;
-
-  breakSeconds=
+  breakSeconds =
     cfg.breakTime;
-
-  seconds=0;
-
-  setStatus(
-    "Break in progress"
-  );
 
   render();
 
 
-  if(cfg.breakTime<=0){
+  if(
+    breakSeconds <= 0
+  ){
 
-    if(cfg.autoNext){
-
-      startNextRound();
-
-    }else{
-
-      setStatus(
-        "Break finished — press START NEXT ROUND."
-      );
-
-      render();
-    }
+    startNextRound();
 
     return;
+
   }
 
 
-  breakId=setInterval(()=>{
+  if(cfg.autoNext){
 
-    if(
-      !inBreak ||
-      matchOver
-    ){
+    startBreakClock();
 
-      clearInterval(breakId);
+  }
 
-      breakId=null;
-
-      return;
-    }
+}
 
 
-    breakSeconds--;
+function startBreakClock(){
 
-    render();
-
-
-    if(breakSeconds<=0){
-
-      clearInterval(breakId);
-
-      breakId=null;
-
-      breakSeconds=0;
+  clearInterval(
+    breakId
+  );
 
 
-      if(cfg.autoNext){
+  breakId =
+    setInterval(
+      ()=>{
 
-        startNextRound();
+        if(!inBreak){
 
-      }else{
+          return;
 
-        setStatus(
-          "Break finished — press START NEXT ROUND."
-        );
+        }
 
-        render();
-      }
 
-    }
+        if(
+          breakSeconds > 0
+        ){
 
-  },1000);
+          breakSeconds--;
+
+          render();
+
+        }
+
+
+        if(
+          breakSeconds <= 0
+        ){
+
+          clearInterval(
+            breakId
+          );
+
+          if(cfg.autoNext){
+
+            startNextRound();
+
+          }
+
+        }
+
+      },
+      1000
+    );
+
 }
 
 
@@ -2707,72 +3439,295 @@ function beginBreak(){
 
 function startNextRound(){
 
-  if(
-    matchOver ||
-    !inBreak
-  ){
-    return;
-  }
+  if(matchOver)return;
 
 
-  if(breakId!==null){
-
-    clearInterval(breakId);
-
-    breakId=null;
-  }
+  inBreak = false;
 
 
-  if(timerId!==null){
+  clearInterval(
+    breakId
+  );
 
-    clearInterval(timerId);
-
-    timerId=null;
-  }
-
-
-  running=false;
-
-  inBreak=false;
 
   round++;
 
 
-  for(
-    const side of ["red","blue"]
+  fighters.red.score = 0;
+  fighters.blue.score = 0;
+
+  fighters.red.gam = 0;
+  fighters.blue.gam = 0;
+
+
+  seconds =
+    cfg.roundTime;
+
+
+  lastWinnerText =
+    "";
+
+
+  setStatus(
+    `Round ${round} ready`
+  );
+
+
+  pendingAction =
+    null;
+
+
+  $("winnerOverlay").style.display =
+    "none";
+
+
+  render();
+
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+  if(
+    running ||
+    inBreak ||
+    matchOver
   ){
 
-    fighters[side].score=0;
-
-    fighters[side].gam=0;
-
-    /*
-      Match total Gam-jeom
-      and rounds won carry over.
-    */
+    return;
 
   }
 
 
-  seconds=
-    cfg.roundTime;
+  running = true;
 
-  breakSeconds=
-    cfg.breakTime;
 
   setStatus(
-    "Round "+
-    round+
-    " ready — press START."
+    "Round running"
   );
+
 
   render();
 
 
-  if(cfg.autoNext){
+  timerId =
+    setInterval(
+      ()=>{
 
-    startTimer();
+        if(
+          seconds > 0
+        ){
+
+          seconds--;
+
+          render();
+
+        }
+
+
+        if(
+          seconds <= 0
+        ){
+
+          clearInterval(
+            timerId
+          );
+
+          running = false;
+
+          setStatus(
+            "Time up"
+          );
+
+          render();
+
+          awardByTime();
+
+        }
+
+      },
+      1000
+    );
+
+}
+
+
+function awardByTime(){
+
+  if(
+    matchOver ||
+    inBreak
+  ){
+
+    return;
+
   }
+
+
+  const red =
+    fighters.red.score;
+
+  const blue =
+    fighters.blue.score;
+
+
+  if(red > blue){
+
+    awardRound("red");
+
+  }
+  else if(blue > red){
+
+    awardRound("blue");
+
+  }
+  else{
+
+    setStatus(
+      "Round draw — no winner"
+    );
+
+    beginBreak();
+
+  }
+
+}
+
+
+function stopTimer(){
+
+  running = false;
+
+  clearInterval(
+    timerId
+  );
+
+  timerId = null;
+
+}
+
+
+function pauseTimer(){
+
+  if(!running)return;
+
+
+  stopTimer();
+
+
+  setStatus(
+    "Paused"
+  );
+
+
+  render();
+
+}
+
+
+function endRound(){
+
+  if(
+    matchOver ||
+    inBreak
+  ){
+
+    return;
+
+  }
+
+
+  stopTimer();
+
+
+  if(
+    fighters.red.score >
+    fighters.blue.score
+  ){
+
+    awardRound("red");
+
+  }
+  else if(
+    fighters.blue.score >
+    fighters.red.score
+  ){
+
+    awardRound("blue");
+
+  }
+  else{
+
+    setStatus(
+      "Round draw — no winner"
+    );
+
+    beginBreak();
+
+  }
+
+}
+
+
+function adjustTime(delta){
+
+  if(
+    matchOver ||
+    inBreak
+  ){
+
+    return;
+
+  }
+
+
+  seconds =
+    Math.max(
+      0,
+      seconds + delta
+    );
+
+
+  render();
+
+}
+
+
+/* =========================================================
+   UNDO
+========================================================= */
+
+function undo(){
+
+  if(
+    !historyStack.length
+  ){
+
+    setStatus(
+      "Nothing to undo"
+    );
+
+    return;
+
+  }
+
+
+  restoreSnapshot(
+    historyStack.pop()
+  );
+
+
+  setStatus(
+    "Last action undone"
+  );
+
+
+  render();
+
 }
 
 
@@ -2780,35 +3735,34 @@ function startNextRound(){
    DIRECT WINNER
 ========================================================= */
 
-function openDirectWinner(){
+function directWinner(){
 
   if(matchOver)return;
 
-  stopClocks();
 
-  pendingAction="direct";
+  pendingAction =
+    "direct";
 
 
-  $("winnerTitle").textContent=
-    "DECLARE MATCH WINNER";
+  $("winnerTitle").textContent =
+    "DIRECT WINNER";
 
-  $("winnerText").textContent=
-    "Choose the winner of this match.";
 
-  $("winnerNextBtn")
-    .classList.add("hidden");
+  $("winnerMessage").textContent =
+    "Choose the winner";
 
-  $("directRedBtn")
-    .classList.remove("hidden");
 
-  $("directBlueBtn")
-    .classList.remove("hidden");
+  $("winnerNext").textContent =
+    `${fighterName("red")} WINS`;
 
-  $("winnerCloseBtn")
-    .classList.remove("hidden");
 
-  $("winnerOverlay")
-    .classList.remove("hidden");
+  $("winnerClose").textContent =
+    `${fighterName("blue")} WINS`;
+
+
+  $("winnerOverlay").style.display =
+    "flex";
+
 }
 
 
@@ -2820,57 +3774,276 @@ function newMatch(){
 
   if(
     !confirm(
-      "Start a new match? Current scores will be cleared."
+      "Start a new match?"
     )
   ){
+
     return;
+
   }
 
 
-  stopClocks();
+  stopTimer();
 
-  fighters=
-    freshFighters();
+  clearInterval(
+    breakId
+  );
 
-  round=1;
 
-  seconds=
+  historyStack = [];
+
+
+  fighters = {
+
+    red:{
+      score:0,
+      gam:0,
+      totalGam:0,
+      wins:0
+    },
+
+    blue:{
+      score:0,
+      gam:0,
+      totalGam:0,
+      wins:0
+    }
+
+  };
+
+
+  round = 1;
+
+  seconds =
     cfg.roundTime;
 
-  breakSeconds=
-    cfg.breakTime;
+  breakSeconds = 0;
 
-  inBreak=false;
+  inBreak = false;
 
-  matchOver=false;
+  matchOver = false;
 
-  history=[];
+  matchSaved = false;
 
-  pendingAction="none";
+  lastWinnerText = "";
 
-  sessionId=
-    makeSessionId();
+  statusText =
+    "New match ready";
+
+
+  sessionId =
+    makeSession();
+
 
   pendingVotes.clear();
 
-  boardSeenVotes.clear();
 
-  boardVotesInitialized=false;
-
-
-  closeWinner();
-
-  $("settingsOverlay")
-    .classList.add("hidden");
-
-
-  setStatus(
-    "New match ready."
+  subscribeBoardVotes(
+    sessionId
   );
+
 
   render();
 
-  subscribeBoardVotes();
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function saveMatchResult(side){
+
+  if(matchSaved)return;
+
+
+  matchSaved = true;
+
+
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        HISTORY_KEY
+      ) || "[]"
+    );
+
+
+  history.unshift({
+
+    date:
+      new Date().toISOString(),
+
+    redName:
+      fighterName("red"),
+
+    blueName:
+      fighterName("blue"),
+
+    redScore:
+      fighters.red.score,
+
+    blueScore:
+      fighters.blue.score,
+
+    redWins:
+      fighters.red.wins,
+
+    blueWins:
+      fighters.blue.wins,
+
+    winner:
+      fighterName(side),
+
+    format:
+      cfg.format
+
+  });
+
+
+  localStorage.setItem(
+    HISTORY_KEY,
+    JSON.stringify(
+      history.slice(0,100)
+    )
+  );
+
+}
+
+
+function renderHistory(){
+
+  const list =
+    $("historyList");
+
+
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        HISTORY_KEY
+      ) || "[]"
+    );
+
+
+  if(!history.length){
+
+    list.innerHTML =
+      '<p style="text-align:center;color:#aebbd6">No matches saved.</p>';
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    history.map(
+      (item,index)=>
+
+        `<div class="history-item">
+
+          <strong>
+            ${index+1}.
+            ${item.redName}
+            ${item.redScore}
+            —
+            ${item.blueScore}
+            ${item.blueName}
+          </strong>
+
+          <small>
+            ${new Date(item.date).toLocaleString()}
+            ·
+            ${item.winner}
+            ·
+            Best of ${item.format}
+          </small>
+
+          <div class="history-actions">
+
+            <button
+              class="export"
+              data-export="${index}">
+              EXPORT CSV
+            </button>
+
+            <button
+              class="delete"
+              data-delete="${index}">
+              DELETE
+            </button>
+
+          </div>
+
+        </div>`
+
+    ).join("");
+
+}
+
+
+function exportOne(index){
+
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        HISTORY_KEY
+      ) || "[]"
+    );
+
+
+  const item =
+    history[index];
+
+
+  if(!item)return;
+
+
+  const csv =
+    [
+      "Date,Red,Red Score,Blue,Blue Score,Winner,Format",
+
+      [
+        item.date,
+        item.redName,
+        item.redScore,
+        item.blueName,
+        item.blueScore,
+        item.winner,
+        `Best of ${item.format}`
+      ]
+      .map(
+        value =>
+          `"${String(value)
+            .replaceAll('"','""')}"`
+      )
+      .join(",")
+
+    ].join("\n");
+
+
+  const link =
+    document.createElement("a");
+
+
+  link.href =
+    URL.createObjectURL(
+      new Blob(
+        [csv],
+        {type:"text/csv"}
+      )
+    );
+
+
+  link.download =
+    `taekwondo_match_${index+1}.csv`;
+
+
+  link.click();
+
+
+  URL.revokeObjectURL(
+    link.href
+  );
+
 }
 
 
@@ -2878,164 +4051,158 @@ function newMatch(){
    SETTINGS
 ========================================================= */
 
-function openSettings(){
+function fillSettings(){
 
-  $("setRoundTime").value=
+  $("sRoundTime").value =
     cfg.roundTime;
 
-  $("setBreakTime").value=
+  $("sBreakTime").value =
     cfg.breakTime;
 
-  $("setFormat").value=
+  $("sFormat").value =
     cfg.format;
 
-  $("setReferees").value=
+  $("sReferees").value =
     cfg.refereeCount;
 
-  $("setPunch").value=
+  $("sPunch").value =
     cfg.punch;
 
-  $("setBody").value=
+  $("sBody").value =
     cfg.body;
 
-  $("setHead").value=
+  $("sHead").value =
     cfg.head;
 
-  $("setGap").value=
+  $("sGap").value =
     cfg.gap;
 
-  $("setTarget").value=
+  $("sTarget").value =
     cfg.target;
 
-  $("setGamLimit").value=
+  $("sGamLimit").value =
     cfg.gamLimit;
 
-  $("setRoundGam").checked=
+  $("sRoundGam").checked =
     cfg.roundGam;
 
-  $("setAutoNext").checked=
+  $("sAutoNext").checked =
     cfg.autoNext;
 
-  $("setSound").checked=
+  $("sSound").checked =
     cfg.sound;
 
-  $("setScoreSize").value=
-    cfg.scoreSize;
-
-  $("settingsOverlay")
-    .classList.remove("hidden");
-}
-
-
-function closeSettings(){
-
-  $("settingsOverlay")
-    .classList.add("hidden");
 }
 
 
 function saveSettings(){
 
-  const num=(
-    id,
-    min,
-    def
-  )=>{
-
-    const value=
-      Number($(id).value);
-
-    return Number.isFinite(value)
-      ? Math.max(min,value)
-      : def;
-  };
-
-
-  cfg.roundTime=
-    num(
-      "setRoundTime",
+  cfg.roundTime =
+    Math.max(
       10,
-      120
+      Number(
+        $("sRoundTime").value
+      ) || 120
     );
 
-  cfg.breakTime=
-    num(
-      "setBreakTime",
+
+  cfg.breakTime =
+    Math.max(
       0,
-      30
-    );
-
-  cfg.format=
-    Number(
-      $("setFormat").value
+      Number(
+        $("sBreakTime").value
+      ) || 0
     );
 
 
-  cfg.refereeCount=
-    Math.min(
-      3,
-      Math.max(
-        1,
+  cfg.format =
+    [1,3,5].includes(
+      Number(
+        $("sFormat").value
+      )
+    )
+      ? Number(
+          $("sFormat").value
+        )
+      : 3;
+
+
+  cfg.refereeCount =
+    Math.max(
+      1,
+      Math.min(
+        3,
         Number(
-          $("setReferees").value
+          $("sReferees").value
         ) || 2
       )
     );
 
 
-  cfg.punch=
-    num(
-      "setPunch",
+  cfg.punch =
+    Math.max(
       0,
-      1
+      Number(
+        $("sPunch").value
+      ) || 0
     );
 
-  cfg.body=
-    num(
-      "setBody",
+
+  cfg.body =
+    Math.max(
       0,
-      2
+      Number(
+        $("sBody").value
+      ) || 0
     );
 
-  cfg.head=
-    num(
-      "setHead",
+
+  cfg.head =
+    Math.max(
       0,
-      3
+      Number(
+        $("sHead").value
+      ) || 0
     );
 
-  cfg.gap=
-    num(
-      "setGap",
+
+  cfg.gap =
+    Math.max(
       0,
-      0
+      Number(
+        $("sGap").value
+      ) || 0
     );
 
-  cfg.target=
-    num(
-      "setTarget",
+
+  cfg.target =
+    Math.max(
       0,
-      0
+      Number(
+        $("sTarget").value
+      ) || 0
     );
 
-  cfg.gamLimit=
-    num(
-      "setGamLimit",
-      1,
-      10
+
+  cfg.gamLimit =
+    Math.max(
+      0,
+      Number(
+        $("sGamLimit").value
+      ) || 0
     );
 
-  cfg.roundGam=
-    $("setRoundGam").checked;
 
-  cfg.autoNext=
-    $("setAutoNext").checked;
+  cfg.roundGam =
+    $("sRoundGam").checked;
 
-  cfg.sound=
-    $("setSound").checked;
 
-  cfg.scoreSize=
-    $("setScoreSize").value;
+  cfg.autoNext =
+    $("sAutoNext").checked;
+
+
+  cfg.sound =
+    $("sSound").checked;
 
 
   pendingVotes.clear();
@@ -3046,157 +4213,208 @@ function saveSettings(){
     !inBreak
   ){
 
-    seconds=
+    seconds =
       cfg.roundTime;
+
   }
 
 
-  closeSettings();
-
   setStatus(
-    "Settings saved."
+    `Settings saved • ${cfg.refereeCount} referee(s)`
   );
+
+
+  if(
+    firebaseReady &&
+    boardClaimed
+  ){
+
+    update(
+      ref(
+        db,
+        `matches/${roomId}/meta`
+      ),
+      {
+        refereeCount:
+          cfg.refereeCount
+      }
+    );
+
+  }
+
 
   render();
 
-  updateFirebaseMeta();
+
+  $("settingsOverlay").style.display =
+    "none";
+
 }
 
 
 /* =========================================================
-   UNDO
+   QR
 ========================================================= */
 
-function undoLast(){
-
-  if(!history.length){
-
-    setStatus(
-      "Nothing to undo."
-    );
-
-    return;
-  }
-
-
-  stopClocks();
-
-
-  const old=
-    JSON.parse(
-      history.pop()
-    );
-
-
-  fighters=
-    old.fighters;
-
-  round=
-    old.round;
-
-  seconds=
-    old.seconds;
-
-  breakSeconds=
-    old.breakSeconds;
-
-  inBreak=
-    old.inBreak;
-
-  matchOver=
-    old.matchOver;
-
-
-  closeWinner();
-
-  sound("undo");
-
-  setStatus(
-    "Last action undone."
-  );
-
-  render();
-}
-
-
-/* =========================================================
-   REMOTE VOTE STATUS
-========================================================= */
-
-function showRemoteStatus(
-  message,
-  duration=1600
+function buildUrl(
+  type,
+  number
 ){
 
-  $("remoteStatus").textContent=
-    message;
+  const base =
+    location.origin +
+    location.pathname;
+
+
+  if(type === "tv"){
+
+    return (
+      `${base}?display=1&room=` +
+      encodeURIComponent(roomId)
+    );
+
+  }
+
+
+  return (
+    `${base}?controller=1&room=` +
+    encodeURIComponent(roomId) +
+    `&ref=${number}`
+  );
+
+}
+
+
+function showQR(role = 1){
+
+  $("qrOverlay").style.display =
+    "flex";
+
+
+  document
+    .querySelectorAll(
+      "#qrTabs button"
+    )
+    .forEach(
+      button => {
+
+        button.classList.toggle(
+          "active",
+          String(
+            button.dataset.qrRole
+          ) === String(role)
+        );
+
+
+        button.disabled =
+          button.dataset.qrRole !== "tv" &&
+          Number(
+            button.dataset.qrRole
+          ) > cfg.refereeCount;
+
+      }
+    );
+
+
+  const url =
+    role === "tv"
+      ? buildUrl("tv")
+      : buildUrl(
+          "ref",
+          Number(role)
+        );
+
+
+  $("qrImage").src =
+    "https://api.qrserver.com/v1/create-qr-code/" +
+    "?size=300x300&margin=8&data=" +
+    encodeURIComponent(url);
+
+
+  $("qrLink").textContent =
+    url;
+
+
+  $("copyQr").onclick =
+    async ()=>{
+
+      try{
+
+        await navigator.clipboard.writeText(
+          url
+        );
+
+        $("copyQr").textContent =
+          "COPIED";
+
+        setTimeout(
+          ()=>{
+            $("copyQr").textContent =
+              "COPY LINK";
+          },
+          1000
+        );
+
+      }
+      catch(error){
+
+        alert(url);
+
+      }
+
+    };
+
+}
+
+
+/* =========================================================
+   REMOTE REFEREE STATUS
+========================================================= */
+
+function setRemoteStatus(
+  text,
+  milliseconds = 1800
+){
+
+  $("remoteStatus").textContent =
+    text;
+
 
   clearTimeout(
     remoteStatusTimer
   );
 
-  remoteStatusTimer=
-    setTimeout(()=>{
 
-      $("remoteStatus").textContent=
-        "";
+  if(milliseconds){
 
-    },duration);
-}
+    remoteStatusTimer =
+      setTimeout(
+        ()=>{
+          $("remoteStatus").textContent =
+            "REFEREE VOTES: —";
+        },
+        milliseconds
+      );
 
+  }
 
-function clearRemoteStatus(){
-
-  clearTimeout(
-    remoteStatusTimer
-  );
-
-  $("remoteStatus").textContent=
-    "";
 }
 
 
 /* =========================================================
-   REMOTE REFEREE VOTING
+   PENDING VOTES
 ========================================================= */
-
-function confirmationWindow(){
-
-  if(cfg.refereeCount===2){
-    return 1500;
-  }
-
-  if(cfg.refereeCount===3){
-    return 1750;
-  }
-
-  return 0;
-}
-
-
-function pendingKey(
-  side,
-  points
-){
-
-  return side+"_"+points;
-}
-
 
 function purgePending(){
 
-  const windowMs=
+  const windowMs =
     confirmationWindow();
 
-  if(windowMs<=0){
 
-    pendingVotes.clear();
-
-    return;
-  }
+  if(!windowMs)return;
 
 
-  const now=
+  const now =
     Date.now();
 
 
@@ -3205,98 +4423,150 @@ function purgePending(){
       key,
       list
     ]
-    of pendingVotes.entries()
+    of pendingVotes
   ){
 
-    const valid=
-      list.filter(item=>{
+    const keep =
+      list.filter(
+        vote =>
+          Math.abs(
+            now - vote.ts
+          ) <= windowMs
+      );
 
-        return Math.abs(
-          now-item.ts
-        )<=windowMs;
 
-      });
-
-
-    if(valid.length){
+    if(keep.length){
 
       pendingVotes.set(
         key,
-        valid
+        keep
       );
 
-    }else{
+    }
+    else{
 
-      pendingVotes.delete(key);
+      pendingVotes.delete(
+        key
+      );
 
     }
 
   }
+
 }
 
+
+function addPending(
+  key,
+  vote
+){
+
+  const list =
+    pendingVotes.get(key) || [];
+
+
+  list.push(vote);
+
+
+  if(list.length > 20){
+
+    list.shift();
+
+  }
+
+
+  pendingVotes.set(
+    key,
+    list
+  );
+
+}
+
+
+/* =========================================================
+   PROCESS REMOTE VOTE
+========================================================= */
 
 function processRemoteVote(
   voteId,
   vote
 ){
 
+  /*
+    IMPORTANT:
+    If round ended, break started,
+    or match over, remote referee
+    votes are completely ignored.
+  */
+
   if(
-    !vote ||
     matchOver ||
     inBreak
   ){
+
     return;
+
   }
 
 
-  const refNo=
-    Number(vote.refId);
-
-  const side=
+  const side =
     vote.side;
 
-  const points=
+  const points =
     Number(vote.points);
 
-  const ts=
+  const referee =
+    Number(vote.refId);
+
+  const timestamp =
     Number(vote.ts);
 
 
   if(
-    !refNo ||
-    refNo<1 ||
-    refNo>cfg.refereeCount
+    !["red","blue"].includes(side)
   ){
+
     return;
+
   }
 
 
   if(
-    side!=="red" &&
-    side!=="blue"
+    ![1,2,3].includes(referee)
   ){
+
     return;
+
   }
 
 
   if(
     !Number.isFinite(points) ||
-    points<=0
+    !Number.isFinite(timestamp)
   ){
+
     return;
+
   }
 
 
-  if(!Number.isFinite(ts)){
+  if(
+    referee > cfg.refereeCount
+  ){
+
     return;
+
   }
 
 
-  /* ONE REFEREE:
-     immediately score.
-  */
+  /* =========================
+     ONE REFEREE
+     NO CONFIRMATION
+  ========================= */
 
-  if(cfg.refereeCount===1){
+  if(
+    cfg.refereeCount === 1
+  ){
 
     addPointsValue(
       side,
@@ -3304,1086 +4574,826 @@ function processRemoteVote(
       "Referee 1"
     );
 
+
+    setRemoteStatus(
+      `REFEREE 1 CONFIRMED • ${side.toUpperCase()} +${points}`,
+      900
+    );
+
+
     return;
+
   }
 
+
+  /* =========================
+     TWO / THREE REFEREES
+  ========================= */
 
   purgePending();
 
 
-  const key=
-    pendingKey(
-      side,
-      points
-    );
+  const key =
+    `${side}_${points}`;
 
-
-  let list=
+  const list =
     pendingVotes.get(key) || [];
 
 
-  /* Remove stale votes */
-
-  const windowMs=
+  const windowMs =
     confirmationWindow();
 
-  list=
-    list.filter(item=>{
 
-      return Math.abs(
-        ts-item.ts
-      )<=windowMs;
+  /* =========================
+     TWO REFEREES
+     DIFFERENT REFEREE
+     WITHIN 1.5 SEC
+  ========================= */
 
-    });
+  if(
+    cfg.refereeCount === 2
+  ){
+
+    const matchIndex =
+      list.findIndex(
+        pending =>
+          pending.refId !== referee &&
+          Math.abs(
+            pending.ts -
+            timestamp
+          ) <= windowMs
+      );
 
 
-  /*
-    TWO REFEREES:
-    Any different referee
-    confirming same player +
-    same points within 1.5 sec.
-  */
-
-  if(cfg.refereeCount===2){
-
-    let matchIndex=-1;
-
-
-    for(
-      let i=0;
-      i<list.length;
-      i++
+    if(
+      matchIndex >= 0
     ){
-
-      if(
-        list[i].refId!==refNo &&
-        Math.abs(
-          list[i].ts-ts
-        )<=1500
-      ){
-
-        matchIndex=i;
-
-        break;
-      }
-
-    }
-
-
-    if(matchIndex>=0){
 
       list.splice(
         matchIndex,
         1
       );
 
+
       pendingVotes.set(
         key,
         list
       );
 
 
-      showRemoteStatus(
-        "✓ "+
-        side.toUpperCase()+
-        " +"+
-        points+
-        " CONFIRMED — 2 REFEREES",
-        1400
-      );
-
-
       addPointsValue(
         side,
         points,
-        "2 Referees confirmed"
+        "2 referees confirmed"
+      );
+
+
+      setRemoteStatus(
+        `✓ ${side.toUpperCase()} +${points} CONFIRMED`,
+        1000
       );
 
 
       return;
+
     }
 
 
-    list.push({
-      voteId:voteId,
-      refId:refNo,
-      ts:ts
-    });
-
-
-    pendingVotes.set(
+    addPending(
       key,
-      list
+      {
+        voteId,
+        refId:referee,
+        ts:timestamp
+      }
     );
 
 
-    showRemoteStatus(
-      "🟡 "+
-      side.toUpperCase()+
-      " +"+
-      points+
-      " — WAITING 1.5 SEC",
+    setRemoteStatus(
+      `REFEREE ${referee}: ${side.toUpperCase()} +${points} • WAIT 1.5s`,
       1500
     );
 
 
     return;
+
   }
 
 
-  /*
-    THREE REFEREES:
-    Any TWO different referees
-    same player + same score.
-    Score immediately.
-    Maximum joining window = 1.75 sec.
-  */
+  /* =========================
+     THREE REFEREES
+     ANY TWO
+     WITHIN 1.75 SEC
+  ========================= */
 
-  if(cfg.refereeCount===3){
-
-    list.push({
-      voteId:voteId,
-      refId:refNo,
-      ts:ts
-    });
-
-
-    list=
-      list.filter(item=>{
-
-        return Math.abs(
-          ts-item.ts
-        )<=1750;
-
-      });
+  addPending(
+    key,
+    {
+      voteId,
+      refId:referee,
+      ts:timestamp
+    }
+  );
 
 
-    let pairA=null;
-    let pairB=null;
+  const queue =
+    pendingVotes.get(key) || [];
 
 
-    outer:
+  let pair = null;
+
+
+  for(
+    let i=0;
+    i<queue.length;
+    i++
+  ){
+
     for(
-      let i=0;
-      i<list.length;
-      i++
+      let j=i+1;
+      j<queue.length;
+      j++
     ){
 
-      for(
-        let j=i+1;
-        j<list.length;
-        j++
+      if(
+        queue[i].refId !==
+        queue[j].refId &&
+        Math.abs(
+          queue[i].ts -
+          queue[j].ts
+        ) <= windowMs
       ){
 
-        if(
-          list[i].refId!==
-          list[j].refId &&
+        pair =
+          [i,j];
 
-          Math.abs(
-            list[i].ts-
-            list[j].ts
-          )<=1750
-        ){
-
-          pairA=list[i];
-          pairB=list[j];
-
-          break outer;
-        }
+        break;
 
       }
 
     }
 
 
-    if(pairA && pairB){
+    if(pair)break;
 
-      list=
-        list.filter(item=>{
-
-          return (
-            item.voteId!==pairA.voteId &&
-            item.voteId!==pairB.voteId
-          );
-
-        });
+  }
 
 
-      pendingVotes.set(
-        key,
-        list
-      );
+  if(pair){
 
-
-      showRemoteStatus(
-        "✓ "+
-        side.toUpperCase()+
-        " +"+
-        points+
-        " CONFIRMED — 2 OF 3",
-        1400
-      );
-
-
-      addPointsValue(
-        side,
-        points,
-        "2 of 3 Referees confirmed"
-      );
-
-
-      return;
-    }
+    const indexes =
+      new Set(pair);
 
 
     pendingVotes.set(
       key,
-      list
+      queue.filter(
+        (_,index)=>
+          !indexes.has(index)
+      )
     );
 
 
-    showRemoteStatus(
-      "🟡 "+
-      side.toUpperCase()+
-      " +"+
-      points+
-      " — REFEREE VOTE RECEIVED",
+    /*
+      IMPORTANT:
+      3 referees mein
+      2 matching votes aate hi
+      score immediately add hota hai.
+    */
+
+    addPointsValue(
+      side,
+      points,
+      "2 of 3 referees confirmed"
+    );
+
+
+    setRemoteStatus(
+      `✓ ${side.toUpperCase()} +${points} CONFIRMED — 2/3`,
+      1000
+    );
+
+  }
+  else{
+
+    setRemoteStatus(
+      `REFEREE ${referee}: ${side.toUpperCase()} +${points} • 2nd referee within 1.75s`,
       1750
     );
+
   }
+
 }
 
 
 /* =========================================================
-   BOARD FIREBASE VOTE LISTENER
+   BOARD VOTE LISTENER
 ========================================================= */
 
-function subscribeBoardVotes(){
+function subscribeBoardVotes(
+  session
+){
 
-  if(
-    !firebaseReady ||
-    !db ||
-    !roomId ||
-    !sessionId
-  ){
-    return;
+  if(boardVotesUnsub){
+
+    boardVotesUnsub();
+
   }
 
 
-  if(boardVoteUnsubscribe){
-
-    boardVoteUnsubscribe();
-  }
-
-
-  boardSeenVotes=
+  boardSeen =
     new Set();
 
-  boardVotesInitialized=
+  boardVotesInit =
     false;
 
 
-  const ref=
-    votesRef(sessionId);
-
-
-  const callback=
-    snapshot=>{
-
-      const votes=
-        snapshot.val() || {};
-
-
-      /*
-        First snapshot:
-        old votes are ignored.
-      */
-
-      if(!boardVotesInitialized){
-
-        Object.keys(votes)
-          .forEach(id=>{
-            boardSeenVotes.add(id);
-          });
-
-        boardVotesInitialized=true;
-
-        return;
-      }
-
-
-      Object.entries(votes)
-        .forEach(([id,vote])=>{
-
-          if(
-            boardSeenVotes.has(id)
-          ){
-            return;
-          }
-
-
-          boardSeenVotes.add(id);
-
-          processRemoteVote(
-            id,
-            vote
-          );
-
-        });
-
-    };
-
-
-  ref.on(
-    "value",
-    callback,
-    error=>{
-
-      console.error(
-        "Vote listener error:",
-        error
-      );
-
-      setCloudStatus(
-        "VOTE ERROR",
-        "error"
-      );
-
-    }
-  );
-
-
-  boardVoteUnsubscribe=()=>{
-
-    ref.off(
-      "value",
-      callback
-    );
-
-  };
-}
-
-
-/* =========================================================
-   CONTROLLER YELLOW FLASH
-========================================================= */
-
-function showControllerFlash(
-  side,
-  points,
-  refNo,
-  countText=""
-){
-
-  if(!isControllerMode){
-    return;
-  }
-
-
-  const flash=
-    $("refFlash");
-
-  const title=
-    $("refFlashTitle");
-
-  const text=
-    $("refFlashText");
-
-
-  title.textContent=
-    side.toUpperCase()+
-    " +"+
-    points;
-
-
-  if(cfg.refereeCount===1){
-
-    text.textContent=
-      "SCORE SENT";
-
-  }else if(countText){
-
-    text.textContent=
-      countText;
-
-  }else{
-
-    text.textContent=
-      "REFEREE "+
-      refNo+
-      " VOTE — CONFIRM NOW";
-  }
-
-
-  flash.classList.remove("show");
-
-  void flash.offsetWidth;
-
-  flash.classList.add("show");
-
-
-  const duration=
-    cfg.refereeCount===2
-      ? 1500
-      : cfg.refereeCount===3
-        ? 1750
-        : 600;
-
-
-  setTimeout(()=>{
-
-    flash.classList.remove(
-      "show"
-    );
-
-  },duration);
-}
-
-
-/* =========================================================
-   CONTROLLER VOTE LISTENER
-========================================================= */
-
-function subscribeControllerVotes(
-  newSession
-){
-
   if(
     !firebaseReady ||
-    !db ||
     !roomId ||
-    !newSession
+    !session
   ){
+
     return;
+
   }
 
 
-  if(controllerVoteUnsubscribe){
-
-    controllerVoteUnsubscribe();
-  }
-
-
-  controllerSeenVotes=
-    new Set();
-
-  controllerVotesInitialized=
-    false;
+  const votesRef =
+    ref(
+      db,
+      `matches/${roomId}/sessions/${session}/votes`
+    );
 
 
-  const ref=
-    votesRef(newSession);
+  boardVotesUnsub =
+    onValue(
+      votesRef,
+      snapshot => {
+
+        const votes =
+          snapshot.val() || {};
 
 
-  const callback=
-    snapshot=>{
+        /*
+          Initial data is old/current
+          data. Do NOT replay it.
+        */
 
-      const votes=
-        snapshot.val() || {};
+        if(!boardVotesInit){
 
+          Object.keys(votes)
+            .forEach(
+              id =>
+                boardSeen.add(id)
+            );
 
-      if(!controllerVotesInitialized){
+          boardVotesInit =
+            true;
 
-        Object.keys(votes)
-          .forEach(id=>{
-            controllerSeenVotes.add(id);
-          });
+          return;
 
-        controllerVotesInitialized=true;
-
-        return;
-      }
-
-
-      Object.entries(votes)
-        .forEach(([id,vote])=>{
-
-          if(
-            controllerSeenVotes.has(id)
-          ){
-            return;
-          }
+        }
 
 
-          controllerSeenVotes.add(id);
+        Object.entries(votes)
+          .forEach(
+            ([id,vote])=>{
+
+              if(
+                boardSeen.has(id)
+              ){
+
+                return;
+
+              }
 
 
-          const voteRef=
-            Number(vote.refId);
-
-          const side=
-            vote.side;
-
-          const points=
-            Number(vote.points);
+              boardSeen.add(id);
 
 
-          if(
-            side==="red" ||
-            side==="blue"
-          ){
-
-            if(
-              cfg.refereeCount===1
-            ){
-
-              showControllerFlash(
-                side,
-                points,
-                voteRef,
-                "SCORE SENT"
-              );
-
-            }else{
-
-              showControllerFlash(
-                side,
-                points,
-                voteRef
+              processRemoteVote(
+                id,
+                vote
               );
 
             }
+          );
 
-          }
-
-        });
-
-    };
-
-
-  ref.on(
-    "value",
-    callback,
-    error=>{
-
-      console.error(
-        "Controller vote listener:",
-        error
-      );
-
-    }
-  );
-
-
-  controllerVoteUnsubscribe=()=>{
-
-    ref.off(
-      "value",
-      callback
+      },
+      error =>
+        console.error(
+          "Vote listener:",
+          error
+        )
     );
 
-  };
 }
 
 
 /* =========================================================
-   CONTROLLER SEND VOTE
+   PHONE FLASH
 ========================================================= */
 
-let lastControllerClick=0;
-
-function sendRefereeVote(
+function showFlash(
   side,
-  type
+  points,
+  message,
+  duration
 ){
 
-  if(!isControllerMode){
-    return;
-  }
+  $("flashBig").textContent =
+    `${side.toUpperCase()} +${points}`;
+
+  $("flashSmall").textContent =
+    message;
 
 
-  if(
-    !firebaseReady ||
-    !firebaseUser ||
-    !controllerState
-  ){
-    return;
-  }
+  $("refFlash").style.display =
+    "flex";
 
 
-  const state=
-    controllerState;
+  setTimeout(
+    ()=>{
+      $("refFlash").style.display =
+        "none";
+    },
+    duration
+  );
 
-
-  const configuredReferees=
-    Number(
-      state.settings &&
-      state.settings.refereeCount
-    ) || 2;
-
-
-  if(
-    refNumber<1 ||
-    refNumber>configuredReferees
-  ){
-
-    alert(
-      "This referee number is not enabled for this match."
-    );
-
-    return;
-  }
-
-
-  if(
-    state.matchOver ||
-    state.inBreak
-  ){
-    return;
-  }
-
-
-  const now=
-    Date.now();
-
-
-  /*
-    Prevent accidental double tap
-    from becoming two votes.
-    150ms is short enough not to
-    block legitimate scoring.
-  */
-
-  if(
-    now-lastControllerClick<150
-  ){
-    return;
-  }
-
-  lastControllerClick=now;
-
-
-  const settings=
-    state.settings || {};
-
-
-  const points=
-    Number(
-      settings[type]
-    );
-
-
-  if(
-    !Number.isFinite(points) ||
-    points<=0
-  ){
-    return;
-  }
-
-
-  const currentSession=
-    state.sessionId;
-
-
-  if(!currentSession){
-    return;
-  }
-
-
-  const newVote=
-    votesRef(currentSession)
-      .push();
-
-
-  newVote.set({
-
-    refId:refNumber,
-
-    side:side,
-
-    points:points,
-
-    ts:
-      firebase.database
-        .ServerValue
-        .TIMESTAMP
-
-  })
-  .then(()=>{
-
-    if(
-      navigator.vibrate
-    ){
-
-      navigator.vibrate(35);
-    }
-
-  })
-  .catch(error=>{
-
-    console.error(
-      "Vote write failed:",
-      error
-    );
-
-    $("controllerCloud")
-      .textContent=
-      "VOTE FAILED";
-
-  });
 }
 
 
 /* =========================================================
-   CONTROLLER UI
+   PHONE STATE
 ========================================================= */
 
-function updateControllerUI(
+function updateController(
   data
 ){
 
-  if(!data)return;
-
-  controllerState=
+  controllerState =
     data;
 
 
-  const settings=
+  if(!data){
+
+    return;
+
+  }
+
+
+  $("controllerRoom").textContent =
+    `ROOM ${data.roomId || roomId}`;
+
+
+  $("controllerRef").textContent =
+    refId;
+
+
+  $("cRedScore").textContent =
+    data.redScore ?? 0;
+
+  $("cBlueScore").textContent =
+    data.blueScore ?? 0;
+
+
+  $("cRound").textContent =
+    data.round ?? 1;
+
+
+  const settings =
     data.settings || {};
 
 
-  cfg.refereeCount=
-    Number(
-      settings.refereeCount
-    ) || 2;
+  $("cRedHead").textContent =
+    `+${settings.head ?? 3}`;
+
+  $("cBlueHead").textContent =
+    `+${settings.head ?? 3}`;
+
+  $("cRedBody").textContent =
+    `+${settings.body ?? 2}`;
+
+  $("cBlueBody").textContent =
+    `+${settings.body ?? 2}`;
+
+  $("cRedPunch").textContent =
+    `+${settings.punch ?? 1}`;
+
+  $("cBluePunch").textContent =
+    `+${settings.punch ?? 1}`;
 
 
-  $("controllerRoom")
-    .textContent=
-    "ROOM "+
-    (
-      data.roomId ||
-      roomId ||
-      "------"
-    );
+  /*
+    VERY IMPORTANT:
+    Referee count is read from laptop state.
+  */
+
+  const configuredRefs =
+    settings.refereeCount || 1;
 
 
-  $("controllerRedName")
-    .textContent=
-    data.redName ||
-    "HONG";
+  /*
+    PHONE SCORE IS LOCKED WHEN:
+    - wrong referee number
+    - no session
+    - round break
+    - match over
+  */
 
-
-  $("controllerBlueName")
-    .textContent=
-    data.blueName ||
-    "CHONG";
-
-
-  $("controllerRedScore")
-    .textContent=
-    Number(
-      data.redScore
-    ) || 0;
-
-
-  $("controllerBlueScore")
-    .textContent=
-    Number(
-      data.blueScore
-    ) || 0;
-
-
-  $("controllerRound")
-    .textContent=
-    "ROUND "+
-    (
-      Number(data.round)||1
-    );
-
-
-  $("controllerTimer")
-    .textContent=
-    fmt(
-      Number(data.seconds)||0
-    );
-
-
-  const values={
-    punch:Number(settings.punch)||0,
-    body:Number(settings.body)||0,
-    head:Number(settings.head)||0
-  };
-
-
-  $("controllerRedPunch")
-    .textContent=
-    "+"+values.punch;
-
-  $("controllerRedBody")
-    .textContent=
-    "+"+values.body;
-
-  $("controllerRedHead")
-    .textContent=
-    "+"+values.head;
-
-  $("controllerBluePunch")
-    .textContent=
-    "+"+values.punch;
-
-  $("controllerBlueBody")
-    .textContent=
-    "+"+values.body;
-
-  $("controllerBlueHead")
-    .textContent=
-    "+"+values.head;
-
-
-  const locked=
-    data.matchOver ||
-    data.inBreak ||
-    !data.sessionId ||
-    refNumber>cfg.refereeCount;
+  const allowed =
+    refId <= configuredRefs &&
+    !!data.sessionId &&
+    !data.matchOver &&
+    !data.inBreak;
 
 
   document
     .querySelectorAll(
-      ".ref-score-btn"
+      ".ref-cell"
     )
-    .forEach(btn=>{
+    .forEach(
+      button => {
 
-      const type=
-        btn.dataset.refPointsType;
+        const type =
+          button.dataset.type;
 
-      const value=
-        values[type];
+        button.disabled =
+          !allowed ||
+          (Number(
+            settings[type]
+          ) || 0) <= 0;
 
-      btn.disabled=
-        locked ||
-        value<=0;
-
-    });
-
-
-  if(
-    data.sessionId &&
-    data.sessionId!==controllerCurrentSession
-  ){
-
-    controllerCurrentSession=
-      data.sessionId;
-
-    subscribeControllerVotes(
-      data.sessionId
+      }
     );
+
+
+  if(data.matchOver){
+
+    $("controllerFoot").textContent =
+      "MATCH OVER — wait for new match";
 
   }
+  else if(data.inBreak){
 
-
-  $("controllerCloud")
-    .textContent=
-    locked
-      ? (
-        data.matchOver
-          ? "MATCH OVER"
-          : data.inBreak
-            ? "BREAK"
-            : refNumber>cfg.refereeCount
-              ? "REFEREE DISABLED"
-              : "WAITING"
-      )
-      : "CONNECTED";
-}
-
-
-/* =========================================================
-   DISPLAY / TV
-========================================================= */
-
-function renderTV(data){
-
-  if(!data)return;
-
-
-  $("tvRoom")
-    .textContent=
-    "ROOM "+
-    (
-      data.roomId ||
-      roomId ||
-      "------"
-    );
-
-
-  $("tvRedName")
-    .textContent=
-    data.redName ||
-    "HONG";
-
-  $("tvBlueName")
-    .textContent=
-    data.blueName ||
-    "CHONG";
-
-
-  $("tvRedScore")
-    .textContent=
-    Number(
-      data.redScore
-    ) || 0;
-
-  $("tvBlueScore")
-    .textContent=
-    Number(
-      data.blueScore
-    ) || 0;
-
-
-  $("tvRedGam")
-    .textContent=
-    Number(
-      data.redGam
-    ) || 0;
-
-  $("tvBlueGam")
-    .textContent=
-    Number(
-      data.blueGam
-    ) || 0;
-
-
-  $("tvRedWins")
-    .textContent=
-    Number(
-      data.redWins
-    ) || 0;
-
-  $("tvBlueWins")
-    .textContent=
-    Number(
-      data.blueWins
-    ) || 0;
-
-
-  $("tvRound")
-    .textContent=
-    "ROUND "+
-    (
-      Number(data.round)||1
-    );
-
-
-  $("tvTimer")
-    .textContent=
-    data.inBreak
-      ? "BREAK "+fmt(
-          Number(data.breakSeconds)||0
-        )
-      : fmt(
-          Number(data.seconds)||0
-        );
-
-
-  $("tvStatus")
-    .textContent=
-    data.status ||
-    "Ready to start";
-
-
-  $("tvWinner")
-    .textContent=
-    data.winner ||
-    "";
-}
-
-
-/* =========================================================
-   BOARD STATE RECOVERY
-========================================================= */
-
-function applySavedState(
-  data
-){
-
-  if(!data)return;
-
-
-  if(data.fighters){
-
-    fighters=
-      data.fighters;
-
-  }else{
-
-    fighters.red.score=
-      Number(data.redScore)||0;
-
-    fighters.blue.score=
-      Number(data.blueScore)||0;
-
-    fighters.red.gam=
-      Number(data.redGam)||0;
-
-    fighters.blue.gam=
-      Number(data.blueGam)||0;
-
-    fighters.red.totalGam=
-      Number(data.redTotalGam)||0;
-
-    fighters.blue.totalGam=
-      Number(data.blueTotalGam)||0;
-
-    fighters.red.wins=
-      Number(data.redWins)||0;
-
-    fighters.blue.wins=
-      Number(data.blueWins)||0;
+    $("controllerFoot").textContent =
+      "BREAK — SCORING LOCKED";
 
   }
+  else{
 
+    $("controllerFoot").textContent =
+      "Score only • GAM-JEOM is controlled from laptop";
 
-  round=
-    Number(data.round)||1;
-
-
-  seconds=
-    Number(data.seconds)||
-    cfg.roundTime;
-
-
-  breakSeconds=
-    Number(data.breakSeconds)||
-    cfg.breakTime;
-
-
-  inBreak=
-    Boolean(data.inBreak);
-
-  matchOver=
-    Boolean(data.matchOver);
-
-
-  if(data.sessionId){
-    sessionId=
-      data.sessionId;
   }
 
 
   if(
-    data.settings
+    refId >
+    configuredRefs
   ){
 
-    cfg={
-      ...cfg,
-      ...data.settings
-    };
+    $("controllerConn").textContent =
+      `ONLY ${configuredRefs} REFEREE(S)`;
+
+    $("controllerConn").className =
+      "controller-wait";
+
+  }
+  else if(data.inBreak){
+
+    $("controllerConn").textContent =
+      "BREAK";
+
+    $("controllerConn").className =
+      "controller-wait";
+
+  }
+  else if(data.matchOver){
+
+    $("controllerConn").textContent =
+      "MATCH OVER";
+
+    $("controllerConn").className =
+      "controller-wait";
+
+  }
+  else{
+
+    $("controllerConn").textContent =
+      "READY";
+
+    $("controllerConn").className =
+      "controller-ready";
 
   }
 
 
   /*
-    Important:
-    On browser refresh, don't create
-    a duplicate timer accidentally.
+    Subscribe to current match session.
   */
 
-  running=false;
+  if(
+    data.sessionId !==
+    controllerSession
+  ){
 
-  stopClocks();
+    controllerSession =
+      data.sessionId;
 
-  render();
+    subscribeControllerVotes(
+      controllerSession
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PHONE VOTE LISTENER
+========================================================= */
+
+function subscribeControllerVotes(
+  session
+){
+
+  if(controllerVotesUnsub){
+
+    controllerVotesUnsub();
+
+  }
+
+
+  controllerSeen =
+    new Set();
+
+  controllerVotesInit =
+    false;
+
+
+  if(
+    !firebaseReady ||
+    !roomId ||
+    !session
+  ){
+
+    return;
+
+  }
+
+
+  const votesRef =
+    ref(
+      db,
+      `matches/${roomId}/sessions/${session}/votes`
+    );
+
+
+  controllerVotesUnsub =
+    onValue(
+      votesRef,
+      snapshot => {
+
+        const votes =
+          snapshot.val() || {};
+
+
+        /*
+          Do not flash old votes
+          when phone first connects.
+        */
+
+        if(!controllerVotesInit){
+
+          Object.keys(votes)
+            .forEach(
+              id =>
+                controllerSeen.add(id)
+            );
+
+          controllerVotesInit =
+            true;
+
+          return;
+
+        }
+
+
+        Object.entries(votes)
+          .forEach(
+            ([id,vote])=>{
+
+              if(
+                controllerSeen.has(id)
+              ){
+
+                return;
+
+              }
+
+
+              controllerSeen.add(id);
+
+
+              const settings =
+                controllerState?.settings || {};
+
+
+              const count =
+                settings.refereeCount || 2;
+
+
+              let duration = 1500;
+
+
+              if(count === 3){
+
+                duration =
+                  1750;
+
+              }
+
+
+              if(count === 1){
+
+                duration =
+                  500;
+
+              }
+
+
+              showFlash(
+
+                vote.side,
+
+                Number(vote.points),
+
+                count === 1
+
+                  ? "SCORE SENT"
+
+                  : `REFEREE ${vote.refId} • WAIT / CONFIRM`,
+
+                duration
+
+              );
+
+            }
+          );
+
+      },
+      error =>
+        console.error(
+          "Controller vote listener:",
+          error
+        )
+    );
+
+}
+
+
+/* =========================================================
+   PHONE SEND VOTE
+========================================================= */
+
+async function sendVote(
+  side,
+  type
+){
+
+  if(
+    !firebaseReady ||
+    !currentUser ||
+    !controllerState
+  ){
+
+    return;
+
+  }
+
+
+  /*
+    HARD LOCK:
+    Phone cannot score after round.
+  */
+
+  if(
+    controllerState.matchOver ||
+    controllerState.inBreak
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    !controllerState.sessionId
+  ){
+
+    return;
+
+  }
+
+
+  const settings =
+    controllerState.settings || {};
+
+
+  const configuredRefs =
+    settings.refereeCount || 1;
+
+
+  if(
+    refId > configuredRefs
+  ){
+
+    return;
+
+  }
+
+
+  const points =
+    Number(
+      settings[type]
+    ) || 0;
+
+
+  if(points <= 0){
+
+    return;
+
+  }
+
+
+  const votesRef =
+    ref(
+      db,
+      `matches/${roomId}/sessions/${controllerState.sessionId}/votes`
+    );
+
+
+  const newVote =
+    push(votesRef);
+
+
+  try{
+
+    await set(
+      newVote,
+      {
+
+        refId,
+
+        side,
+
+        points,
+
+        /*
+          Firebase server timestamp
+          is used so phone clock difference
+          does not break the 1.5 / 1.75 sec window.
+        */
+
+        ts:
+          serverTimestamp()
+
+      }
+    );
+
+
+    if(
+      configuredRefs === 1
+    ){
+
+      showFlash(
+        side,
+        points,
+        "SCORE SENT",
+        500
+      );
+
+    }
+
+  }
+  catch(error){
+
+    showFlash(
+      side,
+      points,
+      "SEND FAILED",
+      900
+    );
+
+    console.error(
+      "Send vote:",
+      error
+    );
+
+  }
+
 }
 
 
@@ -4395,420 +5405,508 @@ async function claimBoard(){
 
   if(
     !firebaseReady ||
-    !firebaseUser ||
     !roomId
   ){
+
     return false;
+
   }
 
 
   try{
 
-    const snap=
-      await metaRef()
-        .once("value");
-
-
-    const data=
-      snap.val();
-
-
-    if(
-      data &&
-      data.boardUid &&
-      data.boardUid!==firebaseUser.uid
-    ){
-
-      setCloudStatus(
-        "ROOM IN USE",
-        "error"
+    const metaRef =
+      ref(
+        db,
+        `matches/${roomId}/meta`
       );
 
-      setStatus(
-        "This room is already controlled by another laptop."
-      );
 
-      return false;
-    }
+    const snapshot =
+      await get(metaRef);
 
 
-    if(!data){
+    if(!snapshot.exists()){
 
-      await metaRef()
-        .set({
+      await set(
+        metaRef,
+        {
 
           boardUid:
-            firebaseUser.uid,
+            currentUser.uid,
 
           refereeCount:
             cfg.refereeCount,
 
           createdAt:
-            firebase.database
-              .ServerValue
-              .TIMESTAMP
+            serverTimestamp()
 
-        });
+        }
+      );
 
-    }else{
+    }
+    else if(
+      snapshot.val()?.boardUid !==
+      currentUser.uid
+    ){
 
-      await metaRef()
-        .update({
+      setCloud(
+        "ROOM IN USE",
+        false
+      );
 
-          refereeCount:
-            cfg.refereeCount
 
-        });
+      setStatus(
+        "This room is controlled by another scoreboard"
+      );
+
+
+      return false;
 
     }
 
 
-    boardClaimed=true;
+    boardClaimed =
+      true;
+
+
+    setCloud(
+      "CLOUD CONNECTED",
+      true
+    );
+
 
     return true;
 
-  }catch(error){
+  }
+  catch(error){
 
-    console.error(
-      "Board claim failed:",
-      error
+    setCloud(
+      "CLOUD ERROR",
+      false
     );
 
-    setCloudStatus(
-      "RULES ERROR",
-      "error"
-    );
 
     setStatus(
-      "Firebase Rules/Auth error. Check Realtime Database Rules."
+      "Firebase connection failed"
     );
 
+
+    console.error(error);
+
+
     return false;
+
   }
+
 }
 
 
 /* =========================================================
-   FIREBASE META UPDATE
+   BOARD BOOT
 ========================================================= */
 
-function updateFirebaseMeta(){
+async function bootBoard(){
 
-  if(
-    !firebaseReady ||
-    !boardClaimed
-  ){
-    return;
-  }
-
-
-  metaRef()
-    .update({
-
-      refereeCount:
-        cfg.refereeCount
-
-    })
-    .catch(error=>{
-
-      console.error(
-        "Meta update:",
-        error
-      );
-
-    });
-}
-
-
-/* =========================================================
-   BOARD / TV / CONTROLLER BOOT
-========================================================= */
-
-function startBoardFirebase(){
-
-  if(!firebaseReady){
-    return;
-  }
-
-
-  claimBoard()
-    .then(ok=>{
-
-      if(!ok){
-        return;
-      }
-
-
-      setCloudStatus(
-        "CLOUD CONNECTED",
-        "ok"
-      );
-
-
-      stateRef()
-        .once("value")
-        .then(snapshot=>{
-
-          const data=
-            snapshot.val();
-
-
-          if(data){
-
-            applySavedState(data);
-
-          }else{
-
-            render();
-
-          }
-
-
-          subscribeBoardVotes();
-
-        })
-        .catch(error=>{
-
-          console.error(
-            "State load failed:",
-            error
-          );
-
-          setCloudStatus(
-            "STATE ERROR",
-            "error"
-          );
-
-          render();
-
-          subscribeBoardVotes();
-
-        });
-
-    });
-}
-
-
-function startControllerFirebase(){
-
-  if(!roomId){
-
-    $("joinOverlay")
-      .classList.remove("hidden");
-
-    return;
-  }
+  roomId =
+    cleanRoom(roomId) ||
+    makeRoom();
 
 
   localStorage.setItem(
-    CONTROLLER_ROOM_KEY,
+    BOARD_ROOM_KEY,
     roomId
   );
 
 
-  stateRef()
-    .on(
-      "value",
-      snapshot=>{
-
-        const data=
-          snapshot.val();
+  $("roomBadge").textContent =
+    `ROOM ${roomId}`;
 
 
-        if(!data){
+  if(!firebaseReady){
 
-          $("controllerCloud")
-            .textContent=
-            "WAITING FOR LAPTOP";
-
-          document
-            .querySelectorAll(
-              ".ref-score-btn"
-            )
-            .forEach(btn=>{
-              btn.disabled=true;
-            });
-
-          return;
-        }
-
-
-        updateControllerUI(data);
-
-      },
-      error=>{
-
-        console.error(
-          "Controller state:",
-          error
-        );
-
-        $("controllerCloud")
-          .textContent=
-          "FIREBASE ERROR";
-
-      }
-    );
-}
-
-
-function startDisplayFirebase(){
-
-  if(!roomId){
-
-    $("joinOverlay")
-      .classList.remove("hidden");
+    render();
 
     return;
+
   }
 
 
-  stateRef()
-    .on(
-      "value",
-      snapshot=>{
-
-        const data=
-          snapshot.val();
+  const claimed =
+    await claimBoard();
 
 
-        if(data){
+  if(!claimed){
 
-          renderTV(data);
+    render();
 
-        }
+    return;
 
-      },
-      error=>{
+  }
 
-        console.error(
-          "TV state:",
-          error
-        );
 
-        $("tvStatus")
-          .textContent=
-          "Firebase connection error";
-
-      }
+  const stateSnapshot =
+    await get(
+      ref(
+        db,
+        `matches/${roomId}/state`
+      )
     );
+
+
+  if(
+    stateSnapshot.exists()
+  ){
+
+    applyBoardState(
+      stateSnapshot.val()
+    );
+
+  }
+  else{
+
+    sessionId =
+      makeSession();
+
+    render();
+
+  }
+
+
+  subscribeBoardVotes(
+    sessionId
+  );
+
 }
 
 
 /* =========================================================
-   QR
+   APPLY SAVED STATE
 ========================================================= */
 
-let currentQrLink="";
-
-
-function baseUrl(){
-
-  return (
-    location.origin+
-    location.pathname
-  );
-}
-
-
-function makeControllerUrl(
-  referee
+function applyBoardState(
+  state
 ){
 
-  return (
-    baseUrl()+
-    "?controller=1"+
-    "&room="+
-    encodeURIComponent(roomId)+
-    "&ref="+
-    referee
-  );
+  fighters = {
+
+    red:{
+      score:
+        Number(state.redScore) || 0,
+
+      gam:
+        Number(state.redGam) || 0,
+
+      totalGam:
+        Number(state.redTotalGam) || 0,
+
+      wins:
+        Number(state.redWins) || 0
+    },
+
+    blue:{
+      score:
+        Number(state.blueScore) || 0,
+
+      gam:
+        Number(state.blueGam) || 0,
+
+      totalGam:
+        Number(state.blueTotalGam) || 0,
+
+      wins:
+        Number(state.blueWins) || 0
+    }
+
+  };
+
+
+  $("redName").textContent =
+    state.redName || "RED";
+
+  $("blueName").textContent =
+    state.blueName || "BLUE";
+
+
+  round =
+    Number(state.round) || 1;
+
+
+  seconds =
+    Number(state.seconds) || 0;
+
+
+  breakSeconds =
+    Number(state.breakSeconds) || 0;
+
+
+  inBreak =
+    !!state.inBreak;
+
+
+  /*
+    On page reload, don't automatically
+    restart an old running timer.
+  */
+
+  running = false;
+
+
+  matchOver =
+    !!state.matchOver;
+
+
+  lastWinnerText =
+    state.lastWinnerText || "";
+
+
+  statusText =
+    state.status || "Ready";
+
+
+  sessionId =
+    state.sessionId ||
+    makeSession();
+
+
+  if(state.settings){
+
+    cfg = {
+      ...cfg,
+      ...state.settings
+    };
+
+  }
+
+
+  render();
+
 }
 
 
-function makeTvUrl(){
+/* =========================================================
+   REMOTE BOOT
+========================================================= */
 
-  return (
-    baseUrl()+
-    "?display=1"+
-    "&room="+
-    encodeURIComponent(roomId)
-  );
-}
+function bootRemote(){
 
+  if(!roomId){
 
-function openQR(
-  role="ref1"
-){
+    openJoin();
 
-  if(isControllerMode ||
-     isDisplayMode){
     return;
+
   }
 
 
-  $("qrOverlay")
-    .classList.remove("hidden");
+  if(!firebaseReady){
 
+    return;
 
-  showQR(role);
-}
-
-
-function showQR(role){
-
-  let link="";
-
-
-  if(role==="tv"){
-
-    link=
-      makeTvUrl();
-
-  }else{
-
-    const no=
-      Number(
-        String(role)
-          .replace("ref","")
-      ) || 1;
-
-    link=
-      makeControllerUrl(no);
   }
 
 
-  currentQrLink=link;
+  setCloud(
+    "CLOUD CONNECTED",
+    true
+  );
 
 
-  $("qrLink")
-    .textContent=
-    link;
+  /* =========================
+     TV
+  ========================= */
+
+  if(isDisplayMode){
+
+    onValue(
+
+      ref(
+        db,
+        `matches/${roomId}/state`
+      ),
+
+      snapshot => {
+
+        const state =
+          snapshot.val();
+
+        if(state){
+
+          renderTVFromState(
+            state
+          );
+
+        }
+
+      },
+
+      error => {
+
+        $("tvStatus").textContent =
+          "Firebase connection failed";
+
+        console.error(error);
+
+      }
+
+    );
 
 
-  $("qrImage").src=
-    "https://api.qrserver.com/v1/create-qr-code/"+
-    "?size=300x300"+
-    "&margin=10"+
-    "&data="+
-    encodeURIComponent(link);
+    const local =
+      localStorage.getItem(
+        LIVE_KEY
+      );
 
 
-  $("qrRef1Btn").disabled=
-    cfg.refereeCount<1;
+    if(local){
 
-  $("qrRef2Btn").disabled=
-    cfg.refereeCount<2;
+      try{
 
-  $("qrRef3Btn").disabled=
-    cfg.refereeCount<3;
+        renderTVFromState(
+          JSON.parse(local)
+        );
+
+      }
+      catch(error){}
+
+    }
+
+  }
+
+
+  /* =========================
+     PHONE
+  ========================= */
+
+  if(isControllerMode){
+
+    onValue(
+
+      ref(
+        db,
+        `matches/${roomId}/state`
+      ),
+
+      snapshot => {
+
+        const state =
+          snapshot.val();
+
+
+        if(state){
+
+          updateController(
+            state
+          );
+
+        }
+        else{
+
+          $("controllerConn").textContent =
+            "WAITING FOR LAPTOP";
+
+          $("controllerConn").className =
+            "controller-wait";
+
+        }
+
+      },
+
+      error => {
+
+        $("controllerConn").textContent =
+          "FIREBASE ERROR";
+
+        $("controllerConn").className =
+          "controller-wait";
+
+        console.error(error);
+
+      }
+
+    );
+
+  }
+
 }
 
 
-function closeQR(){
+/* =========================================================
+   TV RENDER
+========================================================= */
 
-  $("qrOverlay")
-    .classList.add("hidden");
+function renderTVFromState(
+  state
+){
+
+  if(!isDisplayMode)return;
+
+
+  $("tvRoom").textContent =
+    `ROOM ${state.roomId || roomId}`;
+
+
+  $("tvRedName").textContent =
+    state.redName || "RED";
+
+  $("tvBlueName").textContent =
+    state.blueName || "BLUE";
+
+
+  $("tvRedScore").textContent =
+    state.redScore ?? 0;
+
+  $("tvBlueScore").textContent =
+    state.blueScore ?? 0;
+
+
+  $("tvRedGam").textContent =
+    state.redGam ?? 0;
+
+  $("tvBlueGam").textContent =
+    state.blueGam ?? 0;
+
+
+  $("tvRedWins").textContent =
+    state.redWins ?? 0;
+
+  $("tvBlueWins").textContent =
+    state.blueWins ?? 0;
+
+
+  $("tvRound").textContent =
+    `ROUND ${state.round || 1}`;
+
+
+  $("tvTimer").textContent =
+    timeText(
+      state.seconds || 0
+    );
+
+
+  $("tvBreak").style.display =
+    state.inBreak
+      ? "block"
+      : "none";
+
+
+  $("tvBreakTime").textContent =
+    timeText(
+      state.breakSeconds || 0
+    );
+
+
+  $("tvWins").textContent =
+    `${state.redName || "RED"} ${state.redWins || 0} — ${state.blueName || "BLUE"} ${state.blueWins || 0}`;
+
+
+  $("tvWinner").textContent =
+    state.lastWinnerText || "";
+
+
+  $("tvStatus").textContent =
+    state.status || "Ready";
+
 }
 
 
@@ -4820,614 +5918,677 @@ function openJoin(){
 
   if(isControllerMode){
 
-    $("joinTitle")
-      .textContent=
-      "JOIN AS REFEREE "+
-      refNumber;
+    $("joinTitle").textContent =
+      `JOIN AS REFEREE ${refId}`;
 
-  }else{
+  }
+  else{
 
-    $("joinTitle")
-      .textContent=
+    $("joinTitle").textContent =
       "JOIN TV DISPLAY";
 
   }
 
 
-  $("joinRoomInput").value=
+  if(isControllerMode){
+
+    $("joinNote").textContent =
+      `After joining, this phone will be Referee ${refId}.`;
+
+  }
+  else{
+
+    $("joinNote").textContent =
+      "This device will show the TV scoreboard only.";
+
+  }
+
+
+  $("joinRoom").value =
     roomId || "";
 
-  $("joinOverlay")
-    .classList.remove("hidden");
+
+  $("joinOverlay").style.display =
+    "flex";
+
 }
 
 
 function joinRoom(){
 
-  const entered=
+  const room =
     cleanRoom(
-      $("joinRoomInput").value
+      $("joinRoom").value
     );
 
 
-  if(!entered){
+  if(room.length < 4){
 
     alert(
-      "Please enter a valid room code."
+      "Enter a valid room code"
     );
 
     return;
+
   }
-
-
-  roomId=entered;
 
 
   if(isControllerMode){
 
     localStorage.setItem(
       CONTROLLER_ROOM_KEY,
-      roomId
+      room
     );
 
+  }
 
-    location.href=
-      baseUrl()+
-      "?controller=1"+
-      "&room="+
-      encodeURIComponent(roomId)+
-      "&ref="+
-      refNumber;
 
-  }else{
+  if(isDisplayMode){
 
-    location.href=
-      baseUrl()+
-      "?display=1"+
-      "&room="+
-      encodeURIComponent(roomId);
+    localStorage.setItem(
+      DISPLAY_ROOM_KEY,
+      room
+    );
 
   }
-}
 
 
-/* =========================================================
-   REFEREE NUMBER
-========================================================= */
-
-let refNumber=
-  Math.min(
-    3,
-    Math.max(
-      1,
-      Number(
-        params.get("ref") || 1
-      )
-    )
-  );
+  const base =
+    location.origin +
+    location.pathname;
 
 
-if(isControllerMode){
+  if(isControllerMode){
 
-  $("controllerRefNo")
-    .textContent=
-    refNumber;
+    location.href =
+      `${base}?controller=1&room=${encodeURIComponent(room)}&ref=${refId}`;
+
+  }
+  else{
+
+    location.href =
+      `${base}?display=1&room=${encodeURIComponent(room)}`;
+
+  }
 
 }
 
 
 /* =========================================================
-   EVENT HANDLERS — BOARD
+   EVENTS
 ========================================================= */
+
+
+/* Laptop score buttons */
 
 document
   .querySelectorAll(
-    "[data-side][data-type]"
+    ".point-row button"
   )
-  .forEach(btn=>{
+  .forEach(
+    button => {
 
-    btn.addEventListener(
-      "click",
-      ()=>{
+      button.addEventListener(
+        "click",
+        ()=>{
+          addPoints(
+            button.dataset.side,
+            button.dataset.type
+          );
+        }
+      );
 
-        addPoints(
-          btn.dataset.side,
-          btn.dataset.type
-        );
+    }
+  );
 
-      }
-    );
 
-  });
-
+/* Gam-jeom */
 
 document
   .querySelectorAll(
     "[data-gam-side]"
   )
-  .forEach(btn=>{
+  .forEach(
+    button => {
 
-    btn.addEventListener(
-      "click",
-      ()=>{
+      button.addEventListener(
+        "click",
+        ()=>{
 
-        changeGam(
-          btn.dataset.gamSide,
-          Number(
-            btn.dataset.delta
-          )
-        );
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   BOARD BUTTONS
-========================================================= */
-
-$("settingsBtn")
-  .addEventListener(
-    "click",
-    openSettings
-  );
-
-$("startBtn")
-  .addEventListener(
-    "click",
-    startTimer
-  );
-
-$("pauseBtn")
-  .addEventListener(
-    "click",
-    pauseTimer
-  );
-
-$("endBtn")
-  .addEventListener(
-    "click",
-    endRound
-  );
-
-$("undoBtn")
-  .addEventListener(
-    "click",
-    undoLast
-  );
-
-$("newBtn")
-  .addEventListener(
-    "click",
-    newMatch
-  );
-
-$("directBtn")
-  .addEventListener(
-    "click",
-    openDirectWinner
-  );
-
-$("minusFive")
-  .addEventListener(
-    "click",
-    ()=>adjustTimer(-5)
-  );
-
-$("plusFive")
-  .addEventListener(
-    "click",
-    ()=>adjustTimer(5)
-  );
-
-$("startNextBtn")
-  .addEventListener(
-    "click",
-    startNextRound
-  );
-
-$("winnerNextBtn")
-  .addEventListener(
-    "click",
-    winnerContinue
-  );
-
-$("winnerCloseBtn")
-  .addEventListener(
-    "click",
-    closeWinner
-  );
-
-
-$("directRedBtn")
-  .addEventListener(
-    "click",
-    ()=>{
-
-      closeWinner();
-
-      declareMatchWinner(
-        "red",
-        "Direct winner declared by referee."
-      );
-
-    }
-  );
-
-
-$("directBlueBtn")
-  .addEventListener(
-    "click",
-    ()=>{
-
-      closeWinner();
-
-      declareMatchWinner(
-        "blue",
-        "Direct winner declared by referee."
-      );
-
-    }
-  );
-
-
-$("saveSettingsBtn")
-  .addEventListener(
-    "click",
-    saveSettings
-  );
-
-$("cancelSettingsBtn")
-  .addEventListener(
-    "click",
-    closeSettings
-  );
-
-
-$("refereeBtn")
-  .addEventListener(
-    "click",
-    ()=>openQR("ref1")
-  );
-
-
-$("tvBtn")
-  .addEventListener(
-    "click",
-    ()=>{
-
-      if(!roomId)return;
-
-      window.open(
-        makeTvUrl(),
-        "_blank"
-      );
-
-    }
-  );
-
-
-$("qrRef1Btn")
-  .addEventListener(
-    "click",
-    ()=>showQR("ref1")
-  );
-
-$("qrRef2Btn")
-  .addEventListener(
-    "click",
-    ()=>showQR("ref2")
-  );
-
-$("qrRef3Btn")
-  .addEventListener(
-    "click",
-    ()=>showQR("ref3")
-  );
-
-$("qrTvBtn")
-  .addEventListener(
-    "click",
-    ()=>showQR("tv")
-  );
-
-$("closeQrBtn")
-  .addEventListener(
-    "click",
-    closeQR
-  );
-
-
-$("copyQrBtn")
-  .addEventListener(
-    "click",
-    async()=>{
-
-      try{
-
-        await navigator.clipboard
-          .writeText(
-            currentQrLink
+          changeGam(
+            button.dataset.gamSide,
+            Number(
+              button.dataset.delta
+            )
           );
 
-        $("copyQrBtn")
-          .textContent=
-          "COPIED ✓";
-
-
-        setTimeout(()=>{
-
-          $("copyQrBtn")
-            .textContent=
-            "COPY LINK";
-
-        },1200);
-
-      }catch(error){
-
-        alert(
-          currentQrLink
-        );
-
-      }
+        }
+      );
 
     }
   );
 
 
-$("joinRoomBtn")
-  .addEventListener(
-    "click",
-    joinRoom
-  );
-
-
-$("joinRoomInput")
-  .addEventListener(
-    "keydown",
-    event=>{
-
-      if(event.key==="Enter"){
-        joinRoom();
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   CONTROLLER BUTTONS
-========================================================= */
+/*
+  PHONE:
+  pointerup is used instead of click.
+  This prevents weird mobile double-click
+  zoom behavior and keeps each tap a score vote.
+*/
 
 document
   .querySelectorAll(
-    ".ref-score-btn"
+    ".ref-cell"
   )
-  .forEach(btn=>{
+  .forEach(
+    button => {
 
-    btn.addEventListener(
-      "click",
-      ()=>{
+      button.addEventListener(
+        "pointerup",
+        event => {
 
-        sendRefereeVote(
-          btn.dataset.refSide,
-          btn.dataset.refPointsType
-        );
+          event.preventDefault();
 
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   ROOM BADGE
-========================================================= */
-
-if(!isControllerMode &&
-   !isDisplayMode){
-
-  $("roomBadge")
-    .textContent=
-    "ROOM "+
-    roomId;
-
-}
-
-
-/* =========================================================
-   INITIAL LOCAL RENDER
-========================================================= */
-
-render();
-
-
-/* =========================================================
-   FIREBASE INITIALIZATION
-========================================================= */
-
-try{
-
-  firebase.initializeApp(
-    firebaseConfig
-  );
-
-  db=
-    firebase.database();
-
-  firebase.auth()
-    .onAuthStateChanged(
-      user=>{
-
-        if(!user){
-          return;
-        }
-
-
-        firebaseUser=user;
-
-        firebaseReady=true;
-
-
-        if(isControllerMode){
-
-          $("controllerCloud")
-            .textContent=
-            "CONNECTED";
-
-          startControllerFirebase();
-
-        }else if(isDisplayMode){
-
-          startDisplayFirebase();
-
-        }else{
-
-          setCloudStatus(
-            "AUTH OK",
-            "ok"
+          sendVote(
+            button.dataset.refSide,
+            button.dataset.type
           );
 
-          startBoardFirebase();
+        }
+      );
+
+    }
+  );
+
+
+/* Fighter names */
+
+[
+  "redName",
+  "blueName"
+]
+.forEach(
+  id => {
+
+    $(id).addEventListener(
+      "input",
+      ()=>{
+
+        if(
+          !isControllerMode &&
+          !isDisplayMode
+        ){
+
+          render();
 
         }
 
       }
-    );
-
-
-  firebase.auth()
-    .signInAnonymously()
-    .catch(error=>{
-
-      console.error(
-        "Firebase anonymous login failed:",
-        error
-      );
-
-
-      firebaseReady=false;
-
-
-      if(isControllerMode){
-
-        $("controllerCloud")
-          .textContent=
-          "LOGIN FAILED";
-
-      }else if(isDisplayMode){
-
-        $("tvStatus")
-          .textContent=
-          "Firebase login failed";
-
-      }else{
-
-        setCloudStatus(
-          "AUTH FAILED",
-          "error"
-        );
-
-        setStatus(
-          "Firebase login failed — enable Anonymous Authentication."
-        );
-
-      }
-
-    });
-
-
-}catch(error){
-
-  console.error(
-    "Firebase initialization failed:",
-    error
-  );
-
-
-  firebaseReady=false;
-
-
-  if(isControllerMode){
-
-    $("controllerCloud")
-      .textContent=
-      "FIREBASE ERROR";
-
-  }else if(isDisplayMode){
-
-    $("tvStatus")
-      .textContent=
-      "Firebase unavailable";
-
-  }else{
-
-    setCloudStatus(
-      "FIREBASE ERROR",
-      "error"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   MODE JOIN
-========================================================= */
-
-if(
-  (isControllerMode ||
-   isDisplayMode) &&
-  !roomId
-){
-
-  openJoin();
-
-}
-
-
-/* =========================================================
-   CONTROLLER INITIAL STATE
-========================================================= */
-
-if(isControllerMode){
-
-  $("controllerRoom")
-    .textContent=
-    roomId
-      ? "ROOM "+roomId
-      : "ROOM ------";
-
-
-  document
-    .querySelectorAll(
-      ".ref-score-btn"
-    )
-    .forEach(btn=>{
-      btn.disabled=true;
-    });
-
-}
-
-
-/* =========================================================
-   GLOBAL ERROR REPORTING
-========================================================= */
-
-window.addEventListener(
-  "error",
-  event=>{
-
-    console.error(
-      "App error:",
-      event.error || event.message
     );
 
   }
 );
+
+
+/* Timer */
+
+$("startBtn").onclick =
+  startTimer;
+
+$("pauseBtn").onclick =
+  pauseTimer;
+
+$("endBtn").onclick =
+  endRound;
+
+$("minus5").onclick =
+  ()=>adjustTime(-5);
+
+$("plus5").onclick =
+  ()=>adjustTime(5);
+
+
+/* Main buttons */
+
+$("undoBtn").onclick =
+  undo;
+
+$("directBtn").onclick =
+  directWinner;
+
+$("newBtn").onclick =
+  newMatch;
+
+$("nextRoundBtn").onclick =
+  startNextRound;
+
+
+/* Settings */
+
+$("settingsBtn").onclick =
+  ()=>{
+    fillSettings();
+    $("settingsOverlay").style.display =
+      "flex";
+  };
+
+
+$("closeSettings").onclick =
+  ()=>{
+    $("settingsOverlay").style.display =
+      "none";
+  };
+
+
+$("saveSettings").onclick =
+  saveSettings;
+
+
+/* History */
+
+$("historyBtn").onclick =
+  ()=>{
+    renderHistory();
+
+    $("historyOverlay").style.display =
+      "flex";
+  };
+
+
+$("closeHistory").onclick =
+  ()=>{
+    $("historyOverlay").style.display =
+      "none";
+  };
+
+
+$("clearHistory").onclick =
+  ()=>{
+    if(
+      confirm(
+        "Clear all history?"
+      )
+    ){
+
+      localStorage.removeItem(
+        HISTORY_KEY
+      );
+
+      renderHistory();
+
+    }
+  };
+
+
+$("historyList").addEventListener(
+  "click",
+  event => {
+
+    const exportButton =
+      event.target.closest(
+        "[data-export]"
+      );
+
+    const deleteButton =
+      event.target.closest(
+        "[data-delete]"
+      );
+
+
+    if(exportButton){
+
+      exportOne(
+        Number(
+          exportButton.dataset.export
+        )
+      );
+
+    }
+
+
+    if(deleteButton){
+
+      const index =
+        Number(
+          deleteButton.dataset.delete
+        );
+
+
+      const history =
+        JSON.parse(
+          localStorage.getItem(
+            HISTORY_KEY
+          ) || "[]"
+        );
+
+
+      history.splice(
+        index,
+        1
+      );
+
+
+      localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(history)
+      );
+
+
+      renderHistory();
+
+    }
+
+  }
+);
+
+
+/* QR */
+
+$("qrBtn").onclick =
+  ()=>{
+    showQR(1);
+  };
+
+
+$("closeQr").onclick =
+  ()=>{
+    $("qrOverlay").style.display =
+      "none";
+  };
+
+
+document
+  .querySelectorAll(
+    "#qrTabs button"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        ()=>{
+          showQR(
+            button.dataset.qrRole
+          );
+        };
+
+    }
+  );
+
+
+/* TV */
+
+$("tvBtn").onclick =
+  ()=>{
+    window.open(
+      buildUrl("tv"),
+      "_blank"
+    );
+  };
+
+
+/* Winner */
+
+$("winnerNext").onclick =
+  ()=>{
+
+    if(
+      pendingAction ===
+      "round"
+    ){
+
+      startNextRound();
+
+    }
+    else if(
+      pendingAction ===
+      "direct"
+    ){
+
+      declareMatchWinner(
+        "red"
+      );
+
+    }
+    else{
+
+      $("winnerOverlay").style.display =
+        "none";
+
+    }
+
+  };
+
+
+$("winnerClose").onclick =
+  ()=>{
+
+    if(
+      pendingAction ===
+      "direct"
+    ){
+
+      declareMatchWinner(
+        "blue"
+      );
+
+    }
+    else{
+
+      $("winnerOverlay").style.display =
+        "none";
+
+      pendingAction =
+        null;
+
+    }
+
+  };
+
+
+/* Join */
+
+$("joinRoomBtn").onclick =
+  joinRoom;
+
+
+$("joinRoom").addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key ===
+      "Enter"
+    ){
+
+      joinRoom();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   STOP BROWSER DOUBLE-TAP ZOOM
+========================================================= */
+
+document.addEventListener(
+  "dblclick",
+  event => {
+
+    event.preventDefault();
+
+  },
+  {
+    passive:false
+  }
+);
+
+
+let lastTouch =
+  0;
+
+
+document.addEventListener(
+  "touchend",
+  event => {
+
+    const now =
+      Date.now();
+
+
+    if(
+      now - lastTouch < 300
+    ){
+
+      event.preventDefault();
+
+    }
+
+
+    lastTouch =
+      now;
+
+  },
+  {
+    passive:false
+  }
+);
+
+
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
+
+onAuthStateChanged(
+  auth,
+  user => {
+
+    if(user){
+
+      currentUser =
+        user;
+
+      firebaseReady =
+        true;
+
+      bootOnce();
+
+    }
+    else if(
+      !firebaseReady
+    ){
+
+      signInAnonymously(
+        auth
+      )
+      .catch(
+        error => {
+
+          setCloud(
+            "AUTH ERROR",
+            false
+          );
+
+
+          if(isControllerMode){
+
+            $("controllerConn").textContent =
+              "AUTH ERROR";
+
+          }
+
+
+          if(isDisplayMode){
+
+            $("tvStatus").textContent =
+              "AUTH ERROR";
+
+          }
+
+
+          console.error(
+            error
+          );
+
+        }
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   BOOT
+========================================================= */
+
+async function bootOnce(){
+
+  if(booted)return;
+
+
+  booted =
+    true;
+
+
+  if(
+    !isControllerMode &&
+    !isDisplayMode
+  ){
+
+    await bootBoard();
+
+  }
+  else{
+
+    bootRemote();
+
+  }
+
+}
+
+
+/* =========================================================
+   INITIAL UI
+========================================================= */
+
+if(
+  isControllerMode ||
+  isDisplayMode
+){
+
+  if(!roomId){
+
+    openJoin();
+
+  }
+  else{
+
+    $("joinOverlay").style.display =
+      "none";
+
+  }
+
+}
+
+
+if(
+  !isControllerMode &&
+  !isDisplayMode
+){
+
+  $("redName").textContent =
+    "RED";
+
+  $("blueName").textContent =
+    "BLUE";
+
+
+  render();
+
+}
 
 </script>
 
