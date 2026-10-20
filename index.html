@@ -963,374 +963,136 @@ body.controller-mode #controllerScreen{
 
 <section id="controllerScreen">
 
-  <style>
-    /* ===== MOBILE REFEREE CONTROLLER ===== */
+  <div class="controller-header">
 
-    #controllerScreen{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100dvh;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      background:#111;
-      touch-action:manipulation;
-      user-select:none;
-      -webkit-user-select:none;
-      -webkit-touch-callout:none;
-    }
-
-    /* Top status bar */
-    #controllerScreen .mobile-status{
-      height:38px;
-      min-height:38px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 10px;
-      background:#080a0f;
-      color:#fff;
-      font-size:12px;
-      font-weight:700;
-      z-index:5;
-    }
-
-    #controllerScreen .mobile-status-left{
-      display:flex;
-      align-items:center;
-      gap:7px;
-    }
-
-    #controllerScreen .mobile-status-dot{
-      width:9px;
-      height:9px;
-      border-radius:50%;
-      background:#20d46b;
-      box-shadow:0 0 8px #20d46b;
-    }
-
-    #controllerScreen .mobile-status-right{
-      opacity:.75;
-      font-size:11px;
-    }
-
-    /* Keep existing JS elements alive */
-    #controllerScreen .controller-hidden-data{
-      display:none !important;
-    }
-
-    /* ===== MAIN 3 ROW × 2 COLUMN GRID ===== */
-
-    #controllerScreen .mobile-score-grid{
-      flex:1;
-      min-height:0;
-      width:100%;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      grid-template-rows:repeat(3,1fr);
-      gap:3px;
-      background:#fff;
-      overflow:hidden;
-    }
-
-    /* Every scoring cell */
-    #controllerScreen .mobile-score-cell{
-      min-width:0;
-      min-height:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:8px;
-    }
-
-    /* Red side */
-    #controllerScreen .mobile-red{
-      background:#ef3f43;
-    }
-
-    /* Blue side */
-    #controllerScreen .mobile-blue{
-      background:#2447b8;
-    }
-
-    /* Button itself */
-    #controllerScreen .ref-score-btn{
-      width:100%;
-      height:100%;
-      min-height:0;
-
-      border:0;
-      border-radius:0;
-
-      background:transparent;
-      color:#fff;
-
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-
-      font-size:18px;
-      font-weight:800;
-
-      padding:5px;
-      margin:0;
-
-      cursor:pointer;
-
-      touch-action:manipulation;
-      -webkit-tap-highlight-color:transparent;
-
-      transition:
-        transform .08s ease,
-        filter .08s ease,
-        opacity .15s ease;
-    }
-
-    #controllerScreen .ref-score-btn:active{
-      transform:scale(.96);
-      filter:brightness(1.15);
-    }
-
-    #controllerScreen .ref-score-btn:disabled{
-      opacity:.35;
-      filter:grayscale(.5);
-      cursor:not-allowed;
-    }
-
-    /* Point number */
-    #controllerScreen .ref-score-btn .ref-big{
-      display:block;
-      font-size:clamp(55px,14vw,105px);
-      line-height:.9;
-      font-weight:900;
-      margin:0;
-      text-shadow:0 2px 5px #0004;
-    }
-
-    /* Small label */
-    #controllerScreen .ref-score-label{
-      font-size:clamp(12px,3.5vw,20px);
-      font-weight:700;
-      opacity:.9;
-      margin-top:10px;
-      letter-spacing:.5px;
-    }
-
-    /* Divider between Red and Blue */
-    #controllerScreen .mobile-divider{
-      display:none;
-    }
-
-    /* Remove old desktop referee layout */
-    #controllerScreen .controller-header,
-    #controllerScreen .controller-scorebar,
-    #controllerScreen .controller-footer,
-    #controllerScreen .controller-sides{
-      display:none !important;
-    }
-
-    /* Very small phones */
-    @media(max-height:600px){
-      #controllerScreen .mobile-status{
-        height:30px;
-        min-height:30px;
-      }
-
-      #controllerScreen .ref-score-btn .ref-big{
-        font-size:48px;
-      }
-
-      #controllerScreen .ref-score-label{
-        margin-top:5px;
-        font-size:11px;
-      }
-    }
-  </style>
-
-
-  <!-- TOP STATUS -->
-
-  <div class="mobile-status">
-
-    <div class="mobile-status-left">
-      <span class="mobile-status-dot"></span>
-
-      <span id="controllerCloud">
-        CONNECTING...
-      </span>
+    <div class="controller-title">
+      🥋 REFEREE <span id="controllerRefNo">1</span>
     </div>
 
-    <div class="mobile-status-right">
-      REFEREE <span id="controllerRefNo">1</span>
+    <div class="controller-info">
+      <div id="controllerRoom">ROOM ------</div>
+      <div id="controllerCloud">CONNECTING...</div>
     </div>
 
   </div>
 
 
-  <!--
-    Hidden data required by the existing JavaScript.
-    Do not remove these IDs.
-  -->
+  <div class="controller-scorebar">
 
-  <div class="controller-hidden-data">
+    <div class="controller-current red-text">
+      <span id="controllerRedScore">0</span>
+    </div>
 
-    <span id="controllerRoom">ROOM ------</span>
+    <div class="controller-round">
+      <div id="controllerRound">ROUND 1</div>
+      <div id="controllerTimer">02:00</div>
+    </div>
 
-    <span id="controllerRedScore">0</span>
-    <span id="controllerBlueScore">0</span>
-
-    <span id="controllerRound">ROUND 1</span>
-    <span id="controllerTimer">02:00</span>
-
-    <span id="controllerRedName">HONG</span>
-    <span id="controllerBlueName">CHONG</span>
-
-    <span id="controllerRedPunch">+1</span>
-    <span id="controllerRedBody">+2</span>
-    <span id="controllerRedHead">+3</span>
-
-    <span id="controllerBluePunch">+1</span>
-    <span id="controllerBlueBody">+2</span>
-    <span id="controllerBlueHead">+3</span>
+    <div class="controller-current blue-text">
+      <span id="controllerBlueScore">0</span>
+    </div>
 
   </div>
 
 
-  <!--
-    =====================================================
-    MOBILE SCORE GRID
+  <div class="controller-sides">
 
-    ROW 1 = +1
-    ROW 2 = +2
-    ROW 3 = +3
+    <section class="ref-side red-side">
 
-    LEFT  = RED
-    RIGHT = BLUE
-    =====================================================
-  -->
+      <div class="ref-side-title">
+        RED
+      </div>
 
-  <div class="mobile-score-grid">
+      <div class="ref-side-sub" id="controllerRedName">
+        HONG
+      </div>
 
+      <div class="ref-buttons">
 
-    <!-- ================= ROW 1 : +1 ================= -->
+        <button
+          class="ref-score-btn"
+          data-ref-side="red"
+          data-ref-points-type="punch"
+        >
+          PUNCH
+          <span class="ref-big" id="controllerRedPunch">+1</span>
+        </button>
 
-    <div class="mobile-score-cell mobile-red">
+        <button
+          class="ref-score-btn"
+          data-ref-side="red"
+          data-ref-points-type="body"
+        >
+          BODY
+          <span class="ref-big" id="controllerRedBody">+2</span>
+        </button>
 
-      <button
-        class="ref-score-btn"
-        data-ref-side="red"
-        data-ref-points-type="punch"
-        type="button"
-      >
-        <span class="ref-score-label">RED</span>
+        <button
+          class="ref-score-btn"
+          data-ref-side="red"
+          data-ref-points-type="head"
+        >
+          HEAD
+          <span class="ref-big" id="controllerRedHead">+3</span>
+        </button>
 
-        <span class="ref-big" id="mobileRed1">
-          +1
-        </span>
-      </button>
+      </div>
 
-    </div>
-
-
-    <div class="mobile-score-cell mobile-blue">
-
-      <button
-        class="ref-score-btn"
-        data-ref-side="blue"
-        data-ref-points-type="punch"
-        type="button"
-      >
-        <span class="ref-score-label">BLUE</span>
-
-        <span class="ref-big" id="mobileBlue1">
-          +1
-        </span>
-      </button>
-
-    </div>
+    </section>
 
 
-    <!-- ================= ROW 2 : +2 ================= -->
+    <section class="ref-side blue-side">
 
-    <div class="mobile-score-cell mobile-red">
+      <div class="ref-side-title">
+        BLUE
+      </div>
 
-      <button
-        class="ref-score-btn"
-        data-ref-side="red"
-        data-ref-points-type="body"
-        type="button"
-      >
-        <span class="ref-score-label">RED</span>
+      <div class="ref-side-sub" id="controllerBlueName">
+        CHONG
+      </div>
 
-        <span class="ref-big" id="mobileRed2">
-          +2
-        </span>
-      </button>
+      <div class="ref-buttons">
 
-    </div>
+        <button
+          class="ref-score-btn"
+          data-ref-side="blue"
+          data-ref-points-type="punch"
+        >
+          PUNCH
+          <span class="ref-big" id="controllerBluePunch">+1</span>
+        </button>
 
+        <button
+          class="ref-score-btn"
+          data-ref-side="blue"
+          data-ref-points-type="body"
+        >
+          BODY
+          <span class="ref-big" id="controllerBlueBody">+2</span>
+        </button>
 
-    <div class="mobile-score-cell mobile-blue">
+        <button
+          class="ref-score-btn"
+          data-ref-side="blue"
+          data-ref-points-type="head"
+        >
+          HEAD
+          <span class="ref-big" id="controllerBlueHead">+3</span>
+        </button>
 
-      <button
-        class="ref-score-btn"
-        data-ref-side="blue"
-        data-ref-points-type="body"
-        type="button"
-      >
-        <span class="ref-score-label">BLUE</span>
+      </div>
 
-        <span class="ref-big" id="mobileBlue2">
-          +2
-        </span>
-      </button>
+    </section>
 
-    </div>
-
-
-    <!-- ================= ROW 3 : +3 ================= -->
-
-    <div class="mobile-score-cell mobile-red">
-
-      <button
-        class="ref-score-btn"
-        data-ref-side="red"
-        data-ref-points-type="head"
-        type="button"
-      >
-        <span class="ref-score-label">RED</span>
-
-        <span class="ref-big" id="mobileRed3">
-          +3
-        </span>
-      </button>
-
-    </div>
+  </div>
 
 
-    <div class="mobile-score-cell mobile-blue">
-
-      <button
-        class="ref-score-btn"
-        data-ref-side="blue"
-        data-ref-points-type="head"
-        type="button"
-      >
-        <span class="ref-score-label">BLUE</span>
-
-        <span class="ref-big" id="mobileBlue3">
-          +3
-        </span>
-      </button>
-
-    </div>
-
-
+  <div class="controller-footer">
+    SCORE ONLY • GAM-JEOM CONTROLLED FROM LAPTOP
   </div>
 
 </section>
+
 
 <!-- ================= YELLOW FLASH ================= -->
 
