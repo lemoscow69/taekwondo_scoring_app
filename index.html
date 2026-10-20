@@ -4417,14 +4417,14 @@ function renderTV(data){
 
 
   $("tvTimer")
-    .textContent=
-    data.inBreak
-      ? "BREAK "+fmt(
-          Number(data.breakSeconds)||0
-        )
-      : fmt(
-          Number(data.seconds)||0
-        );
+  .textContent=
+  data.inBreak
+    ? fmt(
+        Number(data.breakSeconds)||0
+      )
+    : fmt(
+        Number(data.seconds)||0
+      );
 
 
   $("tvStatus")
