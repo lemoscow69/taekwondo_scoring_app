@@ -1,63 +1,17 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taekwondo Scoreboard</title>
 
-
 <style>
-
-*{
-  box-sizing:border-box
-}
-
-html,
-body{
-  margin:0;
-  width:100%;
-  min-height:100%;
-  overscroll-behavior:none;
-}
-
-body{
-  background:#10131a;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-  touch-action:manipulation;
-}
-
-button,
-input,
-select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-  border:0;
-  border-radius:9px;
-  padding:10px 12px;
-  font-weight:bold;
-  color:white;
-  background:#394150;
-  touch-action:manipulation;
-}
-
-button:active{
-  transform:scale(.97)
-}
-
-button:disabled{
-  opacity:.45;
-  cursor:not-allowed
-}
-
+*{box-sizing:border-box}
+body{margin:0;background:#10131a;color:#fff;font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:10px 12px;font-weight:bold;color:white;background:#394150}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.45;cursor:not-allowed}
 
 header{
   display:flex;
@@ -68,11 +22,7 @@ header{
   gap:10px;
   flex-wrap:wrap
 }
-
-header h1{
-  font-size:clamp(16px,2.5vw,26px);
-  margin:0
-}
+header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 
 .header-right{
   display:flex;
@@ -81,686 +31,5171 @@ header h1{
   flex-wrap:wrap
 }
 
-.small-btn{
-  font-size:13px;
-  padding:9px
-}
+.small-btn{font-size:13px;padding:9px}
 
 .room-badge{
   font-size:11px;
   font-weight:bold;
   background:#263238;
   color:#ffd54f;
-  padding:7px 9px;
+  padding:8px 9px;
   border-radius:7px
 }
 
-
-/* =========================================================
-   REFEREE MOBILE SCREEN
-   ========================================================= */
-
-.referee-screen{
-  width:100%;
-  min-height:100dvh;
-  height:100dvh;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:#10131a;
-}
-
-.referee-top{
-  flex:0 0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 12px;
-  background:#080a0f;
-  border-bottom:1px solid #303642;
-  z-index:5;
-}
-
-.referee-title{
-  font-size:18px;
-  font-weight:900;
-  letter-spacing:.5px;
-}
-
-.referee-room{
-  font-size:12px;
-  color:#ffd54f;
-  font-weight:800;
-}
-
-.referee-board{
-  flex:1;
-  min-height:0;
-  display:grid;
-  grid-template-rows:repeat(3,1fr);
-  width:100%;
-  overflow:hidden;
-}
-
-.referee-row{
-  min-height:0;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  border-bottom:2px solid #fff;
-}
-
-.referee-row:last-child{
-  border-bottom:0;
-}
-
-.referee-cell{
-  min-width:0;
-  min-height:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:5px;
-}
-
-.referee-cell.red{
-  background:#b40000;
-  border-right:2px solid #fff;
-}
-
-.referee-cell.blue{
-  background:#004ea8;
-}
-
-.ref-score-btn{
-  width:100%;
-  height:100%;
-  min-height:0;
-  border-radius:0;
-  border:0;
-  padding:0;
-  margin:0;
-  background:transparent;
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  font-weight:900;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
-  touch-action:manipulation;
-}
-
-.ref-score-btn:hover{
-  background:rgba(255,255,255,.08);
-}
-
-.ref-score-btn:active{
-  transform:none;
-  background:rgba(255,255,255,.18);
-}
-
-.ref-score-label{
-  font-size:clamp(15px,4vw,28px);
-  font-weight:900;
-  line-height:1;
-}
-
-.ref-score-value{
-  font-size:clamp(42px,14vw,110px);
-  font-weight:1000;
-  line-height:.9;
-}
-
-.referee-bottom{
-  flex:0 0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:34px;
-  padding:5px;
-  background:#080a0f;
-  color:#9aa4b2;
+.cloud-badge{
   font-size:11px;
-  font-weight:700;
+  font-weight:bold;
+  background:#263238;
+  color:#90caf9;
+  padding:8px 9px;
+  border-radius:7px
 }
 
+.cloud-badge.ok{color:#69f0ae}
+.cloud-badge.error{color:#ff8a80}
 
-/* =========================================================
-   ORIGINAL SCOREBOARD
-   ========================================================= */
-
-.scoreboard{
+.board{
   display:grid;
-  grid-template-columns:1fr 300px 1fr;
-  gap:10px;
+  grid-template-columns:1fr minmax(150px,25%) 1fr;
+  min-height:calc(100vh - 58px);
+  gap:8px;
+  padding:8px
+}
+
+.fighter{
+  border-radius:14px;
   padding:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:0
 }
 
-.side{
-  min-width:0;
-}
+.red{background:linear-gradient(160deg,#b71c1c,#ef5350)}
+.blue{background:linear-gradient(160deg,#0d47a1,#2196f3)}
 
-.red-side{
-  background:#b71c1c;
-}
-
-.blue-side{
-  background:#0d47a1;
+.fighter-name{
+  width:100%;
+  font-weight:bold;
+  font-size:clamp(18px,3vw,30px);
+  text-align:center;
+  background:#0003;
+  color:white;
+  border:1px solid #ffffff55;
+  border-radius:8px;
+  padding:8px
 }
 
 .score{
   font-size:clamp(80px,17vw,180px);
-  line-height:.9;
   font-weight:900;
+  line-height:1.1;
+  text-shadow:0 4px 8px #0005
+}
+
+.score.flash{animation:flash .3s ease}
+
+@keyframes flash{
+  50%{transform:scale(1.12);color:#ffd54f}
 }
 
 .points{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:6px;
+  width:100%;
+  margin:8px 0
 }
 
 .points button{
-  min-height:52px;
+  background:#111a;
+  font-size:clamp(12px,1.5vw,17px);
+  padding:14px 4px;
+  min-height:55px
+}
+
+.points button span{
+  display:block;
+  font-size:22px;
+  margin-top:4px
 }
 
 .gam-box{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:10px 0;
+  width:100%
+}
+
+.gam-box button{
+  font-size:23px;
+  min-width:48px;
+  min-height:48px;
+  background:#111a
+}
+
+.gam-count{
+  font-size:25px;
+  font-weight:900;
+  min-width:30px;
+  text-align:center
+}
+
+.gam-label{
+  font-size:13px;
+  font-weight:bold
+}
+
+.total-gam{
+  font-size:12px;
+  background:#0003;
+  padding:5px 9px;
+  border-radius:6px
+}
+
+.round-wins{
+  font-size:14px;
+  text-align:center;
+  color:#ddd
+}
+
+.center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+  background:#1b202a;
+  border-radius:14px;
+  padding:12px 8px
+}
+
+.round-label{
+  font-size:17px;
+  font-weight:bold;
+  color:#ffd54f;
+  text-align:center
+}
+
+.timer{
+  font-size:clamp(38px,7vw,75px);
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:1px
+}
+
+.timer-adjust{
+  display:flex;
+  gap:8px
+}
+
+.timer-adjust button{font-size:14px}
+
+.center-actions{
+  width:100%;
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:6px;
+  grid-template-columns:1fr;
+  gap:7px
 }
 
+.center-actions button{min-height:43px}
 
-/* =========================================================
-   GENERAL
-   ========================================================= */
+.start{background:#2e7d32}
+.pause{background:#ef6c00}
+.end{background:#b71c1c}
+.direct{background:#6a1b9a}
+.undo{background:#455a64}
+.new{background:#37474f}
 
-.hidden{
-  display:none !important;
+.break-box{
+  width:100%;
+  text-align:center;
+  border:1px solid #ffffff22;
+  border-radius:10px;
+  padding:9px
 }
+
+.break-clock{
+  font-size:28px;
+  font-weight:bold;
+  color:#ffd54f
+}
+
+.status{
+  font-size:12px;
+  color:#cfd8dc;
+  text-align:center;
+  line-height:1.4
+}
+
+.remote-status{
+  width:100%;
+  min-height:25px;
+  font-size:12px;
+  color:#ffd54f;
+  text-align:center;
+  font-weight:bold
+}
+
+.hidden{display:none!important}
 
 .overlay{
   position:fixed;
   inset:0;
-  z-index:1000;
-  background:rgba(0,0,0,.78);
+  background:#000c;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:16px;
+  z-index:100
 }
 
 .modal{
-  width:min(700px,100%);
+  width:min(520px,100%);
   max-height:90vh;
   overflow:auto;
-  background:#171c25;
-  border:1px solid #394150;
-  border-radius:14px;
-  padding:18px;
+  background:#202631;
+  border:1px solid #ffffff33;
+  border-radius:16px;
+  padding:22px;
+  text-align:center
 }
 
-input,
-select{
-  background:#0e1117;
-  color:#fff;
-  border:1px solid #394150;
+.modal h2{
+  font-size:clamp(25px,5vw,40px);
+  margin:8px 0 14px
+}
+
+.modal p{line-height:1.5}
+
+.modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:16px
+}
+
+.settings{text-align:left}
+.settings h2{text-align:center}
+
+.settings label{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin:12px 0;
+  font-size:14px
+}
+
+.settings input,
+.settings select{
+  width:130px;
+  max-width:50%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #777;
+  background:#111821;
+  color:white
+}
+
+.settings input[type=checkbox]{width:22px}
+
+.qr-box img{
+  width:240px;
+  height:240px;
+  max-width:70vw;
+  background:white;
+  padding:8px;
+  border-radius:10px
+}
+
+.qr-role-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  justify-content:center;
+  margin:10px 0
+}
+
+.qr-link{
+  font-size:11px;
+  color:#b0bec5;
+  word-break:break-all;
+  background:#111821;
+  padding:9px;
+  border-radius:7px;
+  margin-top:10px
+}
+
+/* TV */
+
+#tvScreen{
+  display:none;
+  min-height:100vh;
+  background:#05070a;
+  padding:20px
+}
+
+body.display-mode #tvScreen{
+  display:flex;
+  flex-direction:column
+}
+
+body.display-mode #boardApp{
+  display:none
+}
+
+.tv-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:15px
+}
+
+.tv-title{
+  font-size:clamp(22px,4vw,45px);
+  font-weight:900
+}
+
+.tv-room{
+  color:#ffd54f;
+  font-weight:bold
+}
+
+.tv-main{
+  flex:1;
+  display:grid;
+  grid-template-columns:1fr minmax(180px,25%) 1fr;
+  gap:15px
+}
+
+.tv-fighter{
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+
+.tv-fighter.red{background:linear-gradient(160deg,#8b1111,#e53935)}
+.tv-fighter.blue{background:linear-gradient(160deg,#063575,#1976d2)}
+
+.tv-name{
+  font-size:clamp(24px,4vw,60px);
+  font-weight:900
+}
+
+.tv-score{
+  font-size:clamp(100px,20vw,300px);
+  line-height:1;
+  font-weight:900
+}
+
+.tv-meta{
+  font-size:clamp(15px,2vw,28px);
+  font-weight:bold
+}
+
+.tv-center{
+  border-radius:20px;
+  background:#151a22;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align:center
+}
+
+.tv-round{
+  font-size:clamp(20px,3vw,40px);
+  color:#ffd54f;
+  font-weight:900
+}
+
+.tv-timer{
+  font-size:clamp(50px,8vw,110px);
+  font-weight:900
+}
+
+.tv-status{
+  margin-top:20px;
+  font-size:clamp(13px,2vw,24px);
+  color:#cfd8dc
+}
+
+.tv-winner{
+  margin-top:15px;
+  color:#ffd54f;
+  font-size:clamp(16px,2.5vw,32px);
+  font-weight:900
+}
+
+/* REFEREE MOBILE CONTROLLER */
+
+#controllerScreen{
+  display:none
+}
+
+body.controller-mode{
+  background:#080a0f
+}
+
+body.controller-mode #boardApp,
+body.controller-mode #tvScreen{
+  display:none
+}
+
+body.controller-mode #controllerScreen{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  height:100vh;
+  overflow:hidden
+}
+
+.controller-header{
+  flex:0 0 auto;
+  background:#080a0f;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  border-bottom:1px solid #ffffff22
+}
+
+.controller-title{
+  font-size:16px;
+  font-weight:900
+}
+
+.controller-info{
+  font-size:10px;
+  color:#b0bec5;
+  text-align:right
+}
+
+.controller-scorebar{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:5px;
+  background:#111821;
+  padding:8px
+}
+
+.controller-current{
+  font-size:30px;
+  font-weight:900;
+  text-align:center
+}
+
+.controller-current.red-text{color:#ff5252}
+.controller-current.blue-text{color:#42a5f5}
+
+.controller-round{
+  text-align:center;
+  color:#ffd54f;
+  font-size:11px;
+  font-weight:bold
+}
+
+.controller-sides{
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-rows:1fr 1fr
+}
+
+.ref-side{
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  position:relative
+}
+
+.ref-side.red-side{
+  background:linear-gradient(160deg,#8e1515,#d32f2f)
+}
+
+.ref-side.blue-side{
+  background:linear-gradient(160deg,#073d82,#1976d2)
+}
+
+.ref-side.red-side{
+  border-bottom:5px solid #ffd54f
+}
+
+.ref-side-title{
+  font-size:clamp(25px,8vw,45px);
+  font-weight:900;
+  margin-bottom:3px
+}
+
+.ref-side-sub{
+  font-size:12px;
+  opacity:.85;
+  margin-bottom:8px
+}
+
+.ref-buttons{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  width:min(95%,500px)
+}
+
+.ref-score-btn{
+  min-height:72px;
+  background:#0009;
+  border:2px solid #ffffff44;
+  font-size:13px;
+  padding:7px 3px
+}
+
+.ref-score-btn .ref-big{
+  display:block;
+  font-size:30px;
+  line-height:1;
+  margin-top:4px
+}
+
+.controller-footer{
+  flex:0 0 auto;
+  background:#080a0f;
+  color:#b0bec5;
+  text-align:center;
+  padding:7px;
+  font-size:10px
+}
+
+/* Yellow referee flash */
+
+#refFlash{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:500;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,193,7,.22);
+  pointer-events:none
+}
+
+#refFlash.show{
+  display:flex;
+  animation:yellowFlash .18s ease
+}
+
+@keyframes yellowFlash{
+  0%{opacity:0}
+  40%{opacity:1}
+  100%{opacity:1}
+}
+
+.ref-flash-card{
+  width:min(90%,430px);
+  background:#ffd600;
+  color:#111;
+  border:4px solid #fff;
+  border-radius:20px;
+  padding:25px 15px;
+  text-align:center;
+  box-shadow:0 0 50px #ffd600
+}
+
+.ref-flash-title{
+  font-size:clamp(28px,8vw,50px);
+  font-weight:900
+}
+
+.ref-flash-text{
+  font-size:clamp(16px,4vw,24px);
+  font-weight:bold;
+  margin-top:8px
+}
+
+#joinOverlay .modal input{
+  width:100%;
+  padding:13px;
   border-radius:8px;
-  padding:9px 10px;
+  border:1px solid #777;
+  background:#111821;
+  color:white;
+  text-align:center;
+  text-transform:uppercase;
+  font-size:20px;
+  font-weight:bold
 }
 
-@media(max-width:700px){
+@media(max-width:650px){
+  header{padding:8px}
+  .board{
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    padding:6px
+  }
 
-  .scoreboard{
+  .center{
+    grid-column:1/-1;
+    grid-row:1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:center
+  }
+
+  .center .round-label,
+  .center .timer,
+  .center .timer-adjust,
+  .center .status,
+  .center .remote-status{
+    grid-column:1/-1
+  }
+
+  .center-actions{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .fighter{padding:8px 5px}
+
+  .score{
+    font-size:clamp(70px,19vw,120px)
+  }
+
+  .points button{
+    padding:10px 2px;
+    min-height:48px
+  }
+
+  .gam-box{gap:5px}
+
+  .gam-box button{
+    min-width:38px;
+    min-height:42px
+  }
+
+  .header-right{
+    width:100%;
+    justify-content:flex-end
+  }
+
+  .tv-main{
     grid-template-columns:1fr;
+    grid-template-rows:1fr auto 1fr
   }
 
+  .tv-center{order:0}
+  .tv-fighter.red{order:-1}
+  .tv-fighter.blue{order:1}
 }
-
-
-/* =========================================================
-   MOBILE REFEREE — EXACT VERTICAL TOUCH LAYOUT
-   ========================================================= */
-
-@media(max-width:700px){
-
-  body.referee-mode{
-    overflow:hidden;
-  }
-
-  body.referee-mode header,
-  body.referee-mode .main-board,
-  body.referee-mode .scoreboard{
-    display:none !important;
-  }
-
-  body.referee-mode .referee-screen{
-    display:flex;
-  }
-
-}
-
-
-/* =========================================================
-   DESKTOP: REFEREE SCREEN HIDDEN
-   ========================================================= */
-
-@media(min-width:701px){
-
-  .referee-screen{
-    display:none !important;
-  }
-
-}
-
 </style>
-
 </head>
-
 
 <body>
 
+<!-- ================= BOARD ================= -->
 
-<!-- ========================================================
-     REFEREE MOBILE VIEW
-     ======================================================== -->
-
-<div
-  id="refereeScreen"
-  class="referee-screen hidden"
->
-
-  <div class="referee-top">
-
-    <div class="referee-title">
-      TAEKWONDO REFEREE
-    </div>
-
-    <div
-      id="refereeRoom"
-      class="referee-room"
-    >
-      ROOM ------
-    </div>
-
-  </div>
-
-
-  <div class="referee-board">
-
-
-    <!-- =========================
-         +3
-         ========================= -->
-
-    <div class="referee-row">
-
-      <div class="referee-cell red">
-
-        <button
-          id="refRedHead"
-          class="ref-score-btn"
-          data-ref-side="red"
-          data-ref-points-type="head"
-          type="button"
-        >
-
-          <span class="ref-score-label">
-            RED
-          </span>
-
-          <span
-            id="refRedHeadValue"
-            class="ref-score-value"
-          >
-            +3
-          </span>
-
-        </button>
-
-      </div>
-
-
-      <div class="referee-cell blue">
-
-        <button
-          id="refBlueHead"
-          class="ref-score-btn"
-          data-ref-side="blue"
-          data-ref-points-type="head"
-          type="button"
-        >
-
-          <span class="ref-score-label">
-            BLUE
-          </span>
-
-          <span
-            id="refBlueHeadValue"
-            class="ref-score-value"
-          >
-            +3
-          </span>
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         +2
-         ========================= -->
-
-    <div class="referee-row">
-
-      <div class="referee-cell red">
-
-        <button
-          id="refRedBody"
-          class="ref-score-btn"
-          data-ref-side="red"
-          data-ref-points-type="body"
-          type="button"
-        >
-
-          <span class="ref-score-label">
-            RED
-          </span>
-
-          <span
-            id="refRedBodyValue"
-            class="ref-score-value"
-          >
-            +2
-          </span>
-
-        </button>
-
-      </div>
-
-
-      <div class="referee-cell blue">
-
-        <button
-          id="refBlueBody"
-          class="ref-score-btn"
-          data-ref-side="blue"
-          data-ref-points-type="body"
-          type="button"
-        >
-
-          <span class="ref-score-label">
-            BLUE
-          </span>
-
-          <span
-            id="refBlueBodyValue"
-            class="ref-score-value"
-          >
-            +2
-          </span>
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         +1
-         ========================= -->
-
-    <div class="referee-row">
-
-      <div class="referee-cell red">
-
-        <button
-          id="refRedPunch"
-          class="ref-score-btn"
-          data-ref-side="red"
-          data-ref-points-type="punch"
-          type="button"
-        >
-
-          <span class="ref-score-label">
-            RED
-          </span>
-
-          <span
-            id="refRedPunchValue"
-            class="ref-score-value"
-          >
-            +1
-          </span>
-
-        </button>
-
-      </div>
-
-
-      <div class="referee-cell blue">
-
-        <button
-          id="refBluePunch"
-          class="ref-score-btn"
-          data-ref-side="blue"
-          data-ref-points-type="punch"
-          type="button"
-        >
-
-          <span class="ref-score-label">
-            BLUE
-          </span>
-
-          <span
-            id="refBluePunchValue"
-            class="ref-score-value"
-          >
-            +1
-          </span>
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-  </div>
-
-
-  <div
-    id="refereeStatus"
-    class="referee-bottom"
-  >
-    CONNECTING...
-  </div>
-
-</div>
-
-
-<!-- ========================================================
-     ORIGINAL APPLICATION STARTS
-     ======================================================== -->
+<div id="boardApp">
 
 <header>
-
-  <h1>
-    Taekwondo Scoreboard
-  </h1>
+  <h1>🥋 TAEKWONDO SCOREBOARD</h1>
 
   <div class="header-right">
-
-    <div
-      id="roomBadge"
-      class="room-badge"
-    >
-      ROOM ------
-    </div>
-
-    <button
-      id="settingsBtn"
-      class="small-btn"
-      type="button"
-    >
-      SETTINGS
-    </button>
-
+    <span class="room-badge" id="roomBadge">ROOM ------</span>
+    <span class="cloud-badge" id="cloudBadge">CLOUD...</span>
+    <button class="small-btn" id="refereeBtn">📱 REFEREE</button>
+    <button class="small-btn" id="tvBtn">📺 TV</button>
+    <button class="small-btn" id="settingsBtn">⚙ SETTINGS</button>
   </div>
-
 </header>
 
+<main class="board">
 
-<!-- ORIGINAL SCOREBOARD CONTENT -->
+  <section class="fighter red">
 
-<main
-  id="mainBoard"
-  class="scoreboard"
->
+    <input
+      class="fighter-name"
+      id="redName"
+      value="HONG"
+      aria-label="Red fighter name"
+    >
 
-  <!-- RED SIDE -->
+    <div class="score" id="redScore">0</div>
 
-  <section class="side red-side">
+    <div class="points">
+      <button data-side="red" data-type="punch">
+        PUNCH
+        <span id="redPunchLabel">1</span>
+      </button>
 
-    <!-- original red scoreboard content -->
+      <button data-side="red" data-type="body">
+        BODY
+        <span id="redBodyLabel">2</span>
+      </button>
+
+      <button data-side="red" data-type="head">
+        HEAD
+        <span id="redHeadLabel">3</span>
+      </button>
+    </div>
+
+    <div class="gam-label">GAM-JEOM — THIS ROUND</div>
+
+    <div class="gam-box">
+      <button data-gam-side="red" data-delta="-1">−</button>
+      <div class="gam-count" id="redGam">0</div>
+      <button data-gam-side="red" data-delta="1">+</button>
+    </div>
+
+    <div class="total-gam">
+      Match total: <b id="redTotalGam">0</b>
+    </div>
+
+    <div class="round-wins">
+      Rounds won: <b id="redWins">0</b>
+    </div>
 
   </section>
 
 
-  <!-- CENTER -->
+  <section class="center">
 
-  <section>
+    <div class="round-label" id="roundLabel">ROUND 1</div>
 
-    <!-- original timer / round / controls -->
+    <div class="timer" id="timer">02:00</div>
+
+    <div class="timer-adjust">
+      <button id="minusFive">−5 SEC</button>
+      <button id="plusFive">+5 SEC</button>
+    </div>
+
+    <div class="break-box hidden" id="breakBox">
+      <div>BREAK TIME</div>
+
+      <div class="break-clock" id="breakClock">00:30</div>
+
+      <button id="startNextBtn">
+        START NEXT ROUND
+      </button>
+    </div>
+
+    <div class="center-actions">
+
+      <button class="start" id="startBtn">
+        ▶ START
+      </button>
+
+      <button class="pause" id="pauseBtn">
+        Ⅱ PAUSE
+      </button>
+
+      <button class="end" id="endBtn">
+        ■ END ROUND
+      </button>
+
+      <button class="undo" id="undoBtn">
+        ↶ UNDO LAST
+      </button>
+
+      <button class="direct" id="directBtn">
+        🏆 DIRECT WINNER
+      </button>
+
+      <button class="new" id="newBtn">
+        ↻ NEW MATCH
+      </button>
+
+    </div>
+
+    <div class="remote-status" id="remoteStatus"></div>
+
+    <div class="status" id="status">
+      Ready to start
+    </div>
 
   </section>
 
 
-  <!-- BLUE SIDE -->
+  <section class="fighter blue">
 
-  <section class="side blue-side">
+    <input
+      class="fighter-name"
+      id="blueName"
+      value="CHONG"
+      aria-label="Blue fighter name"
+    >
 
-    <!-- original blue scoreboard content -->
+    <div class="score" id="blueScore">0</div>
+
+    <div class="points">
+
+      <button data-side="blue" data-type="punch">
+        PUNCH
+        <span id="bluePunchLabel">1</span>
+      </button>
+
+      <button data-side="blue" data-type="body">
+        BODY
+        <span id="blueBodyLabel">2</span>
+      </button>
+
+      <button data-side="blue" data-type="head">
+        HEAD
+        <span id="blueHeadLabel">3</span>
+      </button>
+
+    </div>
+
+    <div class="gam-label">
+      GAM-JEOM — THIS ROUND
+    </div>
+
+    <div class="gam-box">
+      <button data-gam-side="blue" data-delta="-1">−</button>
+
+      <div class="gam-count" id="blueGam">0</div>
+
+      <button data-gam-side="blue" data-delta="1">+</button>
+    </div>
+
+    <div class="total-gam">
+      Match total: <b id="blueTotalGam">0</b>
+    </div>
+
+    <div class="round-wins">
+      Rounds won: <b id="blueWins">0</b>
+    </div>
 
   </section>
 
 </main>
 
+</div>
+
+
+<!-- ================= TV ================= -->
+
+<section id="tvScreen">
+
+  <div class="tv-header">
+    <div class="tv-title">🥋 TAEKWONDO</div>
+    <div class="tv-room" id="tvRoom">ROOM ------</div>
+  </div>
+
+  <div class="tv-main">
+
+    <div class="tv-fighter red">
+
+      <div class="tv-name" id="tvRedName">
+        HONG
+      </div>
+
+      <div class="tv-score" id="tvRedScore">
+        0
+      </div>
+
+      <div class="tv-meta">
+        GAM-JEOM:
+        <span id="tvRedGam">0</span>
+        |
+        ROUNDS:
+        <span id="tvRedWins">0</span>
+      </div>
+
+    </div>
+
+
+    <div class="tv-center">
+
+      <div class="tv-round" id="tvRound">
+        ROUND 1
+      </div>
+
+      <div class="tv-timer" id="tvTimer">
+        02:00
+      </div>
+
+      <div class="tv-status" id="tvStatus">
+        Ready to start
+      </div>
+
+      <div class="tv-winner" id="tvWinner"></div>
+
+    </div>
+
+
+    <div class="tv-fighter blue">
+
+      <div class="tv-name" id="tvBlueName">
+        CHONG
+      </div>
+
+      <div class="tv-score" id="tvBlueScore">
+        0
+      </div>
+
+      <div class="tv-meta">
+        GAM-JEOM:
+        <span id="tvBlueGam">0</span>
+        |
+        ROUNDS:
+        <span id="tvBlueWins">0</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= REFEREE MOBILE ================= -->
+
+<section id="controllerScreen">
+
+  <style>
+    /* ===== MOBILE REFEREE CONTROLLER ===== */
+
+    #controllerScreen{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100dvh;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      background:#111;
+      touch-action:manipulation;
+      user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
+    }
+
+    /* Top status bar */
+    #controllerScreen .mobile-status{
+      height:38px;
+      min-height:38px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 10px;
+      background:#080a0f;
+      color:#fff;
+      font-size:12px;
+      font-weight:700;
+      z-index:5;
+    }
+
+    #controllerScreen .mobile-status-left{
+      display:flex;
+      align-items:center;
+      gap:7px;
+    }
+
+    #controllerScreen .mobile-status-dot{
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:#20d46b;
+      box-shadow:0 0 8px #20d46b;
+    }
+
+    #controllerScreen .mobile-status-right{
+      opacity:.75;
+      font-size:11px;
+    }
+
+    /* Keep existing JS elements alive */
+    #controllerScreen .controller-hidden-data{
+      display:none !important;
+    }
+
+    /* ===== MAIN 3 ROW × 2 COLUMN GRID ===== */
+
+    #controllerScreen .mobile-score-grid{
+      flex:1;
+      min-height:0;
+      width:100%;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      grid-template-rows:repeat(3,1fr);
+      gap:3px;
+      background:#fff;
+      overflow:hidden;
+    }
+
+    /* Every scoring cell */
+    #controllerScreen .mobile-score-cell{
+      min-width:0;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+    }
+
+    /* Red side */
+    #controllerScreen .mobile-red{
+      background:#ef3f43;
+    }
+
+    /* Blue side */
+    #controllerScreen .mobile-blue{
+      background:#2447b8;
+    }
+
+    /* Button itself */
+    #controllerScreen .ref-score-btn{
+      width:100%;
+      height:100%;
+      min-height:0;
+
+      border:0;
+      border-radius:0;
+
+      background:transparent;
+      color:#fff;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      font-size:18px;
+      font-weight:800;
+
+      padding:5px;
+      margin:0;
+
+      cursor:pointer;
+
+      touch-action:manipulation;
+      -webkit-tap-highlight-color:transparent;
+
+      transition:
+        transform .08s ease,
+        filter .08s ease,
+        opacity .15s ease;
+    }
+
+    #controllerScreen .ref-score-btn:active{
+      transform:scale(.96);
+      filter:brightness(1.15);
+    }
+
+    #controllerScreen .ref-score-btn:disabled{
+      opacity:.35;
+      filter:grayscale(.5);
+      cursor:not-allowed;
+    }
+
+    /* Point number */
+    #controllerScreen .ref-score-btn .ref-big{
+      display:block;
+      font-size:clamp(55px,14vw,105px);
+      line-height:.9;
+      font-weight:900;
+      margin:0;
+      text-shadow:0 2px 5px #0004;
+    }
+
+    /* Small label */
+    #controllerScreen .ref-score-label{
+      font-size:clamp(12px,3.5vw,20px);
+      font-weight:700;
+      opacity:.9;
+      margin-top:10px;
+      letter-spacing:.5px;
+    }
+
+    /* Divider between Red and Blue */
+    #controllerScreen .mobile-divider{
+      display:none;
+    }
+
+    /* Remove old desktop referee layout */
+    #controllerScreen .controller-header,
+    #controllerScreen .controller-scorebar,
+    #controllerScreen .controller-footer,
+    #controllerScreen .controller-sides{
+      display:none !important;
+    }
+
+    /* Very small phones */
+    @media(max-height:600px){
+      #controllerScreen .mobile-status{
+        height:30px;
+        min-height:30px;
+      }
+
+      #controllerScreen .ref-score-btn .ref-big{
+        font-size:48px;
+      }
+
+      #controllerScreen .ref-score-label{
+        margin-top:5px;
+        font-size:11px;
+      }
+    }
+  </style>
+
+
+  <!-- TOP STATUS -->
+
+  <div class="mobile-status">
+
+    <div class="mobile-status-left">
+      <span class="mobile-status-dot"></span>
+
+      <span id="controllerCloud">
+        CONNECTING...
+      </span>
+    </div>
+
+    <div class="mobile-status-right">
+      REFEREE <span id="controllerRefNo">1</span>
+    </div>
+
+  </div>
+
+
+  <!--
+    Hidden data required by the existing JavaScript.
+    Do not remove these IDs.
+  -->
+
+  <div class="controller-hidden-data">
+
+    <span id="controllerRoom">ROOM ------</span>
+
+    <span id="controllerRedScore">0</span>
+    <span id="controllerBlueScore">0</span>
+
+    <span id="controllerRound">ROUND 1</span>
+    <span id="controllerTimer">02:00</span>
+
+    <span id="controllerRedName">HONG</span>
+    <span id="controllerBlueName">CHONG</span>
+
+    <span id="controllerRedPunch">+1</span>
+    <span id="controllerRedBody">+2</span>
+    <span id="controllerRedHead">+3</span>
+
+    <span id="controllerBluePunch">+1</span>
+    <span id="controllerBlueBody">+2</span>
+    <span id="controllerBlueHead">+3</span>
+
+  </div>
+
+
+  <!--
+    =====================================================
+    MOBILE SCORE GRID
+
+    ROW 1 = +1
+    ROW 2 = +2
+    ROW 3 = +3
+
+    LEFT  = RED
+    RIGHT = BLUE
+    =====================================================
+  -->
+
+  <div class="mobile-score-grid">
+
+
+    <!-- ================= ROW 1 : +1 ================= -->
+
+    <div class="mobile-score-cell mobile-red">
+
+      <button
+        class="ref-score-btn"
+        data-ref-side="red"
+        data-ref-points-type="punch"
+        type="button"
+      >
+        <span class="ref-score-label">RED</span>
+
+        <span class="ref-big" id="mobileRed1">
+          +1
+        </span>
+      </button>
+
+    </div>
+
+
+    <div class="mobile-score-cell mobile-blue">
+
+      <button
+        class="ref-score-btn"
+        data-ref-side="blue"
+        data-ref-points-type="punch"
+        type="button"
+      >
+        <span class="ref-score-label">BLUE</span>
+
+        <span class="ref-big" id="mobileBlue1">
+          +1
+        </span>
+      </button>
+
+    </div>
+
+
+    <!-- ================= ROW 2 : +2 ================= -->
+
+    <div class="mobile-score-cell mobile-red">
+
+      <button
+        class="ref-score-btn"
+        data-ref-side="red"
+        data-ref-points-type="body"
+        type="button"
+      >
+        <span class="ref-score-label">RED</span>
+
+        <span class="ref-big" id="mobileRed2">
+          +2
+        </span>
+      </button>
+
+    </div>
+
+
+    <div class="mobile-score-cell mobile-blue">
+
+      <button
+        class="ref-score-btn"
+        data-ref-side="blue"
+        data-ref-points-type="body"
+        type="button"
+      >
+        <span class="ref-score-label">BLUE</span>
+
+        <span class="ref-big" id="mobileBlue2">
+          +2
+        </span>
+      </button>
+
+    </div>
+
+
+    <!-- ================= ROW 3 : +3 ================= -->
+
+    <div class="mobile-score-cell mobile-red">
+
+      <button
+        class="ref-score-btn"
+        data-ref-side="red"
+        data-ref-points-type="head"
+        type="button"
+      >
+        <span class="ref-score-label">RED</span>
+
+        <span class="ref-big" id="mobileRed3">
+          +3
+        </span>
+      </button>
+
+    </div>
+
+
+    <div class="mobile-score-cell mobile-blue">
+
+      <button
+        class="ref-score-btn"
+        data-ref-side="blue"
+        data-ref-points-type="head"
+        type="button"
+      >
+        <span class="ref-score-label">BLUE</span>
+
+        <span class="ref-big" id="mobileBlue3">
+          +3
+        </span>
+      </button>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+<!-- ================= YELLOW FLASH ================= -->
+
+<div id="refFlash">
+
+  <div class="ref-flash-card">
+
+    <div class="ref-flash-title" id="refFlashTitle">
+      RED +1
+    </div>
+
+    <div class="ref-flash-text" id="refFlashText">
+      CONFIRM NOW
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= WINNER ================= -->
+
+<div class="overlay hidden" id="winnerOverlay">
+
+  <div class="modal">
+
+    <h2 id="winnerTitle">
+      ROUND WINNER
+    </h2>
+
+    <p id="winnerText"></p>
+
+    <div class="modal-actions">
+
+      <button class="start" id="winnerNextBtn">
+        NEXT ROUND
+      </button>
+
+      <button
+        id="directRedBtn"
+        class="hidden"
+      >
+        RED WINS
+      </button>
+
+      <button
+        id="directBlueBtn"
+        class="hidden"
+      >
+        BLUE WINS
+      </button>
+
+      <button id="winnerCloseBtn">
+        CLOSE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SETTINGS ================= -->
+
+<div class="overlay hidden" id="settingsOverlay">
+
+  <div class="modal settings">
+
+    <h2>MATCH SETTINGS</h2>
+
+    <label>
+      Round time (seconds)
+      <input
+        id="setRoundTime"
+        type="number"
+        min="10"
+        value="120"
+      >
+    </label>
+
+    <label>
+      Break time (seconds)
+      <input
+        id="setBreakTime"
+        type="number"
+        min="0"
+        value="30"
+      >
+    </label>
+
+    <label>
+      Match format
+
+      <select id="setFormat">
+        <option value="1">Best of 1</option>
+        <option value="3" selected>Best of 3</option>
+        <option value="5">Best of 5</option>
+      </select>
+
+    </label>
+
+    <label>
+      Number of referees
+
+      <select id="setReferees">
+        <option value="1">1 Referee</option>
+        <option value="2" selected>2 Referees</option>
+        <option value="3">3 Referees</option>
+      </select>
+
+    </label>
+
+    <label>
+      Punch points
+      <input
+        id="setPunch"
+        type="number"
+        min="0"
+        value="1"
+      >
+    </label>
+
+    <label>
+      Body points
+      <input
+        id="setBody"
+        type="number"
+        min="0"
+        value="2"
+      >
+    </label>
+
+    <label>
+      Head points
+      <input
+        id="setHead"
+        type="number"
+        min="0"
+        value="3"
+      >
+    </label>
+
+    <label>
+      Point gap (0 = off)
+      <input
+        id="setGap"
+        type="number"
+        min="0"
+        value="12"
+      >
+    </label>
+
+    <label>
+      Target score (0 = off)
+      <input
+        id="setTarget"
+        type="number"
+        min="0"
+        value="0"
+      >
+    </label>
+
+    <label>
+      Gam-jeom limit for match loss
+      <input
+        id="setGamLimit"
+        type="number"
+        min="1"
+        value="10"
+      >
+    </label>
+
+    <label>
+      Round win by 5 Gam-jeom
+      <input
+        id="setRoundGam"
+        type="checkbox"
+        checked
+      >
+    </label>
+
+    <label>
+      Auto-start next round after break
+      <input
+        id="setAutoNext"
+        type="checkbox"
+      >
+    </label>
+
+    <label>
+      Sound effects
+      <input
+        id="setSound"
+        type="checkbox"
+        checked
+      >
+    </label>
+
+    <label>
+      Score size
+
+      <select id="setScoreSize">
+        <option value="small">Small</option>
+        <option value="medium" selected>Medium</option>
+        <option value="large">Large</option>
+      </select>
+
+    </label>
+
+    <div class="modal-actions">
+
+      <button
+        class="start"
+        id="saveSettingsBtn"
+      >
+        SAVE SETTINGS
+      </button>
+
+      <button id="cancelSettingsBtn">
+        CANCEL
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= QR ================= -->
+
+<div class="overlay hidden" id="qrOverlay">
+
+  <div class="modal qr-box">
+
+    <h2>REFEREE CONNECTION</h2>
+
+    <p>
+      Phone camera se QR scan karo.
+    </p>
+
+    <div class="qr-role-buttons">
+
+      <button id="qrRef1Btn">
+        REFEREE 1
+      </button>
+
+      <button id="qrRef2Btn">
+        REFEREE 2
+      </button>
+
+      <button id="qrRef3Btn">
+        REFEREE 3
+      </button>
+
+      <button id="qrTvBtn">
+        TV DISPLAY
+      </button>
+
+    </div>
+
+    <img
+      id="qrImage"
+      alt="QR Code"
+    >
+
+    <div
+      class="qr-link"
+      id="qrLink"
+    ></div>
+
+    <div class="modal-actions">
+
+      <button id="copyQrBtn">
+        COPY LINK
+      </button>
+
+      <button id="closeQrBtn">
+        CLOSE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= JOIN ================= -->
+
+<div class="overlay hidden" id="joinOverlay">
+
+  <div class="modal">
+
+    <h2 id="joinTitle">
+      JOIN MATCH
+    </h2>
+
+    <p>
+      Laptop par dikh raha <b>ROOM CODE</b> yahan enter karo.
+    </p>
+
+    <input
+      id="joinRoomInput"
+      maxlength="12"
+      placeholder="ABC123"
+      autocomplete="off"
+    >
+
+    <div class="modal-actions">
+
+      <button class="start" id="joinRoomBtn">
+        JOIN
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- Firebase classic/compat SDK.
+     Classic scripts intentionally used so all existing functions
+     remain globally accessible and old button handlers cannot lose scope. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
 
 <script>
+"use strict";
 
 /* =========================================================
    BASIC HELPERS
-   ========================================================= */
+========================================================= */
 
-function $(id){
-  return document.getElementById(id);
+const $ = id => document.getElementById(id);
+
+const params = new URLSearchParams(location.search);
+
+const isControllerMode = params.get("controller") === "1";
+const isDisplayMode = params.get("display") === "1";
+
+if(isControllerMode){
+  document.body.classList.add("controller-mode");
+}
+
+if(isDisplayMode){
+  document.body.classList.add("display-mode");
 }
 
 
 /* =========================================================
-   REFEREE MODE DETECTION
-   ========================================================= */
+   FIREBASE CONFIG
+========================================================= */
 
-const params =
-  new URLSearchParams(
-    window.location.search
+const firebaseConfig = {
+  apiKey: "AIzaSyAO7jqaMcHPjElMJMyD91Wxjh1cX8KIqaE",
+  authDomain: "taekwondo-refeeree-system.firebaseapp.com",
+  databaseURL: "https://taekwondo-refeeree-system-default-rtdb.firebaseio.com",
+  projectId: "taekwondo-refeeree-system",
+  storageBucket: "taekwondo-refeeree-system.firebasestorage.app",
+  messagingSenderId: "466920893605",
+  appId: "1:466920893605:web:9acba9b21be096fcf7714c",
+  measurementId: "G-WFE4FGQS5F"
+};
+
+let firebaseReady = false;
+let firebaseUser = null;
+let db = null;
+
+
+/* =========================================================
+   ROOM
+========================================================= */
+
+const BOARD_ROOM_KEY = "taekwondo_board_room_v2";
+const CONTROLLER_ROOM_KEY = "taekwondo_controller_room_v2";
+
+function makeRoomId(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let result = "";
+
+  for(let i=0;i<6;i++){
+    result += chars[Math.floor(Math.random()*chars.length)];
+  }
+
+  return result;
+}
+
+function cleanRoom(value){
+  return String(value || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g,"")
+    .slice(0,12);
+}
+
+let roomId = "";
+
+if(isControllerMode){
+  roomId = cleanRoom(
+    params.get("room") ||
+    localStorage.getItem(CONTROLLER_ROOM_KEY) ||
+    ""
+  );
+}else if(isDisplayMode){
+  roomId = cleanRoom(
+    params.get("room") ||
+    ""
+  );
+}else{
+  roomId = cleanRoom(
+    params.get("room") ||
+    localStorage.getItem(BOARD_ROOM_KEY) ||
+    ""
   );
 
-const isRefereeMode =
-  params.get("referee") === "1" ||
-  params.get("mode") === "referee";
+  if(!roomId){
+    roomId = makeRoomId();
+  }
+
+  localStorage.setItem(BOARD_ROOM_KEY,roomId);
+}
 
 
 /* =========================================================
-   REFEREE ROOM
-   ========================================================= */
+   CONFIG
+========================================================= */
 
-let refereeRoom =
-  String(
-    params.get("room") || ""
-  )
-  .toUpperCase()
-  .replace(/[^A-Z0-9]/g,"")
-  .slice(0,12);
+let cfg = {
+  roundTime:120,
+  breakTime:30,
+  format:3,
+
+  punch:1,
+  body:2,
+  head:3,
+
+  gap:12,
+  target:0,
+
+  gamLimit:10,
+  roundGam:true,
+  autoNext:false,
+  sound:true,
+  scoreSize:"medium",
+
+  refereeCount:2
+};
 
 
 /* =========================================================
-   REFEREE NUMBER
-   ========================================================= */
+   MATCH STATE
+========================================================= */
 
-let refNumber =
-  Number(
-    params.get("ref")
-  ) || 1;
+function freshFighters(){
+  return {
+    red:{
+      score:0,
+      gam:0,
+      totalGam:0,
+      wins:0
+    },
+
+    blue:{
+      score:0,
+      gam:0,
+      totalGam:0,
+      wins:0
+    }
+  };
+}
+
+let fighters = freshFighters();
+
+let round = 1;
+let seconds = cfg.roundTime;
+let breakSeconds = cfg.breakTime;
+
+let timerId = null;
+let breakId = null;
+
+let running = false;
+let inBreak = false;
+let matchOver = false;
+
+let history = [];
+
+let pendingAction = "none";
+
+let audioContext = null;
+
+let sessionId = makeSessionId();
+
+let boardVoteUnsubscribe = null;
+let controllerVoteUnsubscribe = null;
+
+let boardSeenVotes = new Set();
+let controllerSeenVotes = new Set();
+
+let boardVotesInitialized = false;
+let controllerVotesInitialized = false;
+
+let pendingVotes = new Map();
+
+let remoteStatusTimer = null;
+
+let controllerState = null;
+let controllerCurrentSession = "";
+
+let boardClaimed = false;
 
 
 /* =========================================================
-   REFEREE UI
-   ========================================================= */
+   SESSION
+========================================================= */
 
-function showRefereeUI(){
+function makeSessionId(){
+  return (
+    Date.now().toString(36) +
+    Math.random().toString(36).slice(2,8)
+  ).toUpperCase();
+}
 
-  if(!isRefereeMode){
+
+/* =========================================================
+   NAMES
+========================================================= */
+
+function fighterName(side){
+  return $(side+"Name").value.trim() ||
+    (side==="red" ? "HONG" : "CHONG");
+}
+
+function opponent(side){
+  return side==="red" ? "blue" : "red";
+}
+
+function requiredWins(){
+  return Math.ceil(cfg.format/2);
+}
+
+function fmt(value){
+  const s=Math.max(0,Math.floor(value));
+
+  return String(Math.floor(s/60)).padStart(2,"0")+":"+
+    String(s%60).padStart(2,"0");
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setStatus(message){
+  $("status").textContent=message;
+}
+
+function setCloudStatus(message,type=""){
+  const el=$("cloudBadge");
+
+  if(!el)return;
+
+  el.textContent=message;
+
+  el.classList.remove("ok","error");
+
+  if(type){
+    el.classList.add(type);
+  }
+}
+
+
+/* =========================================================
+   FIREBASE PATHS
+========================================================= */
+
+function roomRef(){
+  return db.ref("matches/"+roomId);
+}
+
+function metaRef(){
+  return roomRef().child("meta");
+}
+
+function stateRef(){
+  return roomRef().child("state");
+}
+
+function votesRef(session){
+  return roomRef()
+    .child("sessions")
+    .child(session)
+    .child("votes");
+}
+
+
+/* =========================================================
+   LIVE STATE
+========================================================= */
+
+function makeLiveState(){
+
+  return {
+    roomId:roomId,
+
+    sessionId:sessionId,
+
+    redName:fighterName("red"),
+    blueName:fighterName("blue"),
+
+    redScore:fighters.red.score,
+    blueScore:fighters.blue.score,
+
+    redGam:fighters.red.gam,
+    blueGam:fighters.blue.gam,
+
+    redTotalGam:fighters.red.totalGam,
+    blueTotalGam:fighters.blue.totalGam,
+
+    redWins:fighters.red.wins,
+    blueWins:fighters.blue.wins,
+
+    round:round,
+
+    seconds:seconds,
+    breakSeconds:breakSeconds,
+
+    running:running,
+    inBreak:inBreak,
+    matchOver:matchOver,
+
+    status:$("status") ? $("status").textContent : "",
+
+    winner:$("winnerTitle") ?
+      (
+        $("winnerOverlay").classList.contains("hidden")
+          ? ""
+          : $("winnerTitle").textContent
+      )
+      : "",
+
+    settings:{
+      roundTime:cfg.roundTime,
+      breakTime:cfg.breakTime,
+      format:cfg.format,
+
+      punch:cfg.punch,
+      body:cfg.body,
+      head:cfg.head,
+
+      gap:cfg.gap,
+      target:cfg.target,
+
+      gamLimit:cfg.gamLimit,
+      roundGam:cfg.roundGam,
+      autoNext:cfg.autoNext,
+      sound:cfg.sound,
+      scoreSize:cfg.scoreSize,
+
+      refereeCount:cfg.refereeCount
+    },
+
+    updatedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+}
+
+
+/* =========================================================
+   FIREBASE PUBLISH
+========================================================= */
+
+let publishTimer = null;
+
+function publishState(){
+
+  if(!firebaseReady || !db || !roomId || !boardClaimed){
     return;
   }
 
-  document.body.classList.add(
-    "referee-mode"
-  );
+  const state = makeLiveState();
 
-  $("refereeScreen")
-    .classList.remove("hidden");
+  try{
+    localStorage.setItem(
+      "taekwondoScoreboardLiveState_v3",
+      JSON.stringify(state)
+    );
+  }catch(error){}
 
-  if($("refereeRoom")){
+  clearTimeout(publishTimer);
 
-    $("refereeRoom")
-      .textContent =
-        "ROOM "+
-        (
-          refereeRoom ||
-          "------"
-        );
+  publishTimer=setTimeout(()=>{
 
-  }
+    stateRef()
+      .set(state)
+      .catch(error=>{
+        console.error("Firebase state write failed:",error);
+        setCloudStatus("CLOUD ERROR","error");
+      });
 
+  },40);
 }
 
 
 /* =========================================================
-   REFEREE BUTTON TOUCH
-   ========================================================= */
+   SNAPSHOT / UNDO
+========================================================= */
 
-document
-  .querySelectorAll(".ref-score-btn")
-  .forEach(btn=>{
+function snapshot(){
 
-    btn.addEventListener(
-      "click",
-      function(event){
+  history.push(JSON.stringify({
 
-        event.preventDefault();
+    fighters:fighters,
+
+    round:round,
+
+    seconds:seconds,
+
+    breakSeconds:breakSeconds,
+
+    inBreak:inBreak,
+
+    matchOver:matchOver
+
+  }));
+
+  if(history.length>100){
+    history.shift();
+  }
+}
+
+
+/* =========================================================
+   CLOCKS
+========================================================= */
+
+function stopClocks(){
+
+  if(timerId!==null){
+    clearInterval(timerId);
+  }
+
+  if(breakId!==null){
+    clearInterval(breakId);
+  }
+
+  timerId=null;
+  breakId=null;
+  running=false;
+}
+
+
+/* =========================================================
+   RENDER BOARD
+========================================================= */
+
+function render(){
+
+  for(const side of ["red","blue"]){
+
+    $(side+"Score").textContent=
+      fighters[side].score;
+
+    $(side+"Gam").textContent=
+      fighters[side].gam;
+
+    $(side+"TotalGam").textContent=
+      fighters[side].totalGam;
+
+    $(side+"Wins").textContent=
+      fighters[side].wins;
+
+    $(side+"PunchLabel").textContent=
+      cfg.punch;
+
+    $(side+"BodyLabel").textContent=
+      cfg.body;
+
+    $(side+"HeadLabel").textContent=
+      cfg.head;
+  }
+
+  $("roundLabel").textContent=
+    "ROUND "+round;
+
+  $("timer").textContent=
+    fmt(seconds);
+
+  $("breakClock").textContent=
+    fmt(breakSeconds);
+
+  $("breakBox").classList.toggle(
+    "hidden",
+    !inBreak
+  );
+
+
+  document.querySelectorAll(".score").forEach(el=>{
+
+    if(cfg.scoreSize==="small"){
+
+      el.style.fontSize=
+        "clamp(60px,12vw,120px)";
+
+    }else if(cfg.scoreSize==="large"){
+
+      el.style.fontSize=
+        "clamp(90px,20vw,200px)";
+
+    }else{
+
+      el.style.fontSize=
+        "clamp(80px,17vw,180px)";
+    }
+
+  });
+
+
+  const locked =
+    matchOver ||
+    inBreak;
+
+  document
+    .querySelectorAll(".points button,.gam-box button")
+    .forEach(btn=>{
+      btn.disabled=locked;
+    });
+
+
+  $("startBtn").disabled=
+    matchOver ||
+    inBreak ||
+    running;
+
+  $("pauseBtn").disabled=
+    !running;
+
+  $("endBtn").disabled=
+    matchOver ||
+    inBreak;
+
+  $("startNextBtn").disabled=
+    matchOver ||
+    !inBreak;
+
+
+  publishState();
+}
+
+
+/* =========================================================
+   FLASH / SOUND
+========================================================= */
+
+function flash(side){
+
+  const el=$(side+"Score");
+
+  el.classList.remove("flash");
+
+  void el.offsetWidth;
+
+  el.classList.add("flash");
+}
+
+
+function sound(type){
+
+  if(!cfg.sound)return;
+
+  try{
+
+    const AC=
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AC)return;
+
+    if(!audioContext){
+      audioContext=new AC();
+    }
+
+    if(audioContext.state==="suspended"){
+      audioContext.resume();
+    }
+
+    const notes={
+
+      score:[700,0.12],
+
+      gam:[360,0.18],
+
+      round:[520,0.25],
+
+      horn:[850,0.5],
+
+      undo:[440,0.1]
+
+    };
+
+    const now=
+      audioContext.currentTime;
+
+    const [
+      frequency,
+      duration
+    ]=
+      notes[type] ||
+      notes.score;
+
+    const oscillator=
+      audioContext.createOscillator();
+
+    const gain=
+      audioContext.createGain();
+
+    oscillator.type=
+      type==="horn"
+        ? "sawtooth"
+        : "sine";
+
+    oscillator.frequency
+      .setValueAtTime(
+        frequency,
+        now
+      );
+
+    gain.gain
+      .setValueAtTime(
+        0.0001,
+        now
+      );
+
+    gain.gain
+      .exponentialRampToValueAtTime(
+        0.18,
+        now+0.015
+      );
+
+    gain.gain
+      .exponentialRampToValueAtTime(
+        0.0001,
+        now+duration
+      );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+    oscillator.start(now);
+
+    oscillator.stop(
+      now+duration+0.02
+    );
+
+  }catch(error){
+
+    console.warn(
+      "Sound unavailable",
+      error
+    );
+
+  }
+}
+
+
+/* =========================================================
+   MANUAL SCORE
+========================================================= */
+
+function addPoints(side,type){
+
+  if(matchOver || inBreak)return;
+
+  const points=
+    Number(cfg[type]) || 0;
+
+  if(points<=0)return;
+
+  addPointsValue(
+    side,
+    points,
+    "Manual score"
+  );
+}
+
+
+function addPointsValue(
+  side,
+  points,
+  source="Score"
+){
+
+  if(matchOver || inBreak)return;
+
+  points=Number(points);
+
+  if(!Number.isFinite(points) || points<=0){
+    return;
+  }
+
+  snapshot();
+
+  fighters[side].score += points;
+
+  flash(side);
+
+  sound("score");
+
+  setStatus(
+    source+
+    ": "+
+    fighterName(side)+
+    " +"+
+    points
+  );
+
+  clearRemoteStatus();
+
+  render();
+
+  checkScoreRoundEnd();
+}
+
+
+/* =========================================================
+   GAM-JEOM
+========================================================= */
+
+function changeGam(side,delta){
+
+  if(matchOver||inBreak)return;
+
+  const f=fighters[side];
+
+  const opp=
+    fighters[opponent(side)];
+
+
+  if(delta<0){
+
+    if(
+      f.gam<=0 ||
+      f.totalGam<=0 ||
+      opp.score<=0
+    ){
+      return;
+    }
+
+  }
+
+
+  snapshot();
+
+
+  if(delta>0){
+
+    f.gam++;
+
+    f.totalGam++;
+
+    opp.score+=1;
+
+    sound("gam");
+
+    setStatus(
+      fighterName(side)+
+      " received Gam-jeom. Opponent gets 1 point."
+    );
+
+  }else{
+
+    f.gam--;
+
+    f.totalGam--;
+
+    opp.score=
+      Math.max(
+        0,
+        opp.score-1
+      );
+
+    sound("undo");
+
+    setStatus(
+      "Gam-jeom corrected."
+    );
+  }
+
+
+  render();
+
+
+  if(delta>0){
+
+    if(
+      cfg.roundGam &&
+      (cfg.format===3 ||
+       cfg.format===5) &&
+      f.gam>=5
+    ){
+
+      awardRound(
+        opponent(side),
+        fighterName(side)+
+        " received 5 Gam-jeom in this round."
+      );
+
+      return;
+    }
+
+
+    if(
+      f.totalGam>=cfg.gamLimit
+    ){
+
+      declareMatchWinner(
+        opponent(side),
+        fighterName(side)+
+        " reached "+
+        cfg.gamLimit+
+        " total Gam-jeom."
+      );
+
+      return;
+    }
+
+  }
+
+
+  checkScoreRoundEnd();
+}
+
+
+/* =========================================================
+   ROUND CHECK
+========================================================= */
+
+function checkScoreRoundEnd(){
+
+  if(matchOver||inBreak)return;
+
+  const redScore=
+    fighters.red.score;
+
+  const blueScore=
+    fighters.blue.score;
+
+
+  if(
+    cfg.target>0 &&
+    (
+      redScore>=cfg.target ||
+      blueScore>=cfg.target
+    )
+  ){
+
+    if(redScore!==blueScore){
+
+      awardRound(
+        redScore>blueScore
+          ? "red"
+          : "blue",
+        "Target score reached."
+      );
+
+    }
+
+    return;
+  }
+
+
+  if(
+    cfg.gap>0 &&
+    Math.abs(
+      redScore-blueScore
+    )>=cfg.gap
+  ){
+
+    awardRound(
+      redScore>blueScore
+        ? "red"
+        : "blue",
+      "Point gap reached."
+    );
+
+  }
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+  if(
+    matchOver ||
+    inBreak ||
+    running
+  ){
+    return;
+  }
+
+
+  if(seconds<=0){
+
+    endRound();
+
+    return;
+  }
+
+
+  try{
+
+    const AC=
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(
+      AC &&
+      !audioContext
+    ){
+
+      audioContext=
+        new AC();
+    }
+
+    if(
+      audioContext &&
+      audioContext.state==="suspended"
+    ){
+
+      audioContext.resume();
+    }
+
+  }catch(error){}
+
+
+  running=true;
+
+  setStatus(
+    "Round in progress"
+  );
+
+  render();
+
+
+  timerId=setInterval(()=>{
+
+    seconds--;
+
+
+    if(seconds<=0){
+
+      seconds=0;
+
+      render();
+
+      endRound();
+
+      return;
+    }
+
+
+    render();
+
+  },1000);
+}
+
+
+function pauseTimer(){
+
+  if(!running)return;
+
+  clearInterval(timerId);
+
+  timerId=null;
+
+  running=false;
+
+  setStatus("Paused");
+
+  render();
+}
+
+
+function adjustTimer(delta){
+
+  if(matchOver||inBreak)return;
+
+  seconds=
+    Math.max(
+      0,
+      seconds+delta
+    );
+
+  render();
+}
+
+
+/* =========================================================
+   END ROUND
+========================================================= */
+
+function endRound(){
+
+  if(matchOver||inBreak)return;
+
+  stopClocks();
+
+  const redScore=
+    fighters.red.score;
+
+  const blueScore=
+    fighters.blue.score;
+
+
+  if(redScore===blueScore){
+
+    showWinner(
+      "ROUND DRAW",
+      "Round "+
+      round+
+      " ended in a draw.",
+      "next"
+    );
+
+  }else{
+
+    awardRound(
+      redScore>blueScore
+        ? "red"
+        : "blue",
+      "Round ended."
+    );
+
+  }
+}
+
+
+/* =========================================================
+   ROUND WIN
+========================================================= */
+
+function awardRound(
+  side,
+  reason
+){
+
+  if(matchOver||inBreak)return;
+
+  stopClocks();
+
+  snapshot();
+
+
+  if(side){
+
+    fighters[side].wins++;
+
+  }
+
+
+  render();
+
+  sound("round");
+
+
+  if(
+    side &&
+    fighters[side].wins>=
+    requiredWins()
+  ){
+
+    declareMatchWinner(
+      side,
+      fighterName(side)+
+      " has won the required number of rounds."
+    );
+
+    return;
+  }
+
+
+  if(!side){
+
+    showWinner(
+      "ROUND DRAW",
+      reason,
+      "next"
+    );
+
+    return;
+  }
+
+
+  showWinner(
+    "ROUND WINNER",
+    fighterName(side)+
+      " wins Round "+
+      round+
+      ".<br>"+
+      reason,
+    "next"
+  );
+}
+
+
+/* =========================================================
+   MATCH WIN
+========================================================= */
+
+function declareMatchWinner(
+  side,
+  reason
+){
+
+  stopClocks();
+
+  matchOver=true;
+
+  inBreak=false;
+
+  render();
+
+  sound("horn");
+
+
+  showWinner(
+    "MATCH WINNER",
+    "🏆 "+
+    fighterName(side)+
+    " WINS THE MATCH!<br>"+
+    reason,
+    "close"
+  );
+}
+
+
+/* =========================================================
+   WINNER MODAL
+========================================================= */
+
+function showWinner(
+  title,
+  message,
+  action
+){
+
+  pendingAction=action;
+
+  $("winnerTitle").textContent=
+    title;
+
+  $("winnerText").innerHTML=
+    message;
+
+  $("winnerNextBtn")
+    .classList.toggle(
+      "hidden",
+      action!=="next"
+    );
+
+  $("directRedBtn")
+    .classList.add("hidden");
+
+  $("directBlueBtn")
+    .classList.add("hidden");
+
+  $("winnerCloseBtn")
+    .classList.remove("hidden");
+
+  $("winnerOverlay")
+    .classList.remove("hidden");
+
+  publishState();
+}
+
+
+function closeWinner(){
+
+  $("winnerOverlay")
+    .classList.add("hidden");
+
+  $("winnerNextBtn")
+    .classList.remove("hidden");
+
+  $("directRedBtn")
+    .classList.add("hidden");
+
+  $("directBlueBtn")
+    .classList.add("hidden");
+
+  publishState();
+}
+
+
+function winnerContinue(){
+
+  if(
+    pendingAction!=="next" ||
+    matchOver
+  ){
+    return;
+  }
+
+  closeWinner();
+
+  beginBreak();
+}
+
+
+/* =========================================================
+   BREAK
+========================================================= */
+
+function beginBreak(){
+
+  if(matchOver)return;
+
+  stopClocks();
+
+  inBreak=true;
+
+  breakSeconds=
+    cfg.breakTime;
+
+  seconds=0;
+
+  setStatus(
+    "Break in progress"
+  );
+
+  render();
+
+
+  if(cfg.breakTime<=0){
+
+    if(cfg.autoNext){
+
+      startNextRound();
+
+    }else{
+
+      setStatus(
+        "Break finished — press START NEXT ROUND."
+      );
+
+      render();
+    }
+
+    return;
+  }
+
+
+  breakId=setInterval(()=>{
+
+    if(
+      !inBreak ||
+      matchOver
+    ){
+
+      clearInterval(breakId);
+
+      breakId=null;
+
+      return;
+    }
+
+
+    breakSeconds--;
+
+    render();
+
+
+    if(breakSeconds<=0){
+
+      clearInterval(breakId);
+
+      breakId=null;
+
+      breakSeconds=0;
+
+
+      if(cfg.autoNext){
+
+        startNextRound();
+
+      }else{
+
+        setStatus(
+          "Break finished — press START NEXT ROUND."
+        );
+
+        render();
+      }
+
+    }
+
+  },1000);
+}
+
+
+/* =========================================================
+   NEXT ROUND
+========================================================= */
+
+function startNextRound(){
+
+  if(
+    matchOver ||
+    !inBreak
+  ){
+    return;
+  }
+
+
+  if(breakId!==null){
+
+    clearInterval(breakId);
+
+    breakId=null;
+  }
+
+
+  if(timerId!==null){
+
+    clearInterval(timerId);
+
+    timerId=null;
+  }
+
+
+  running=false;
+
+  inBreak=false;
+
+  round++;
+
+
+  for(
+    const side of ["red","blue"]
+  ){
+
+    fighters[side].score=0;
+
+    fighters[side].gam=0;
+
+    /*
+      Match total Gam-jeom
+      and rounds won carry over.
+    */
+
+  }
+
+
+  seconds=
+    cfg.roundTime;
+
+  breakSeconds=
+    cfg.breakTime;
+
+  setStatus(
+    "Round "+
+    round+
+    " ready — press START."
+  );
+
+  render();
+
+
+  if(cfg.autoNext){
+
+    startTimer();
+  }
+}
+
+
+/* =========================================================
+   DIRECT WINNER
+========================================================= */
+
+function openDirectWinner(){
+
+  if(matchOver)return;
+
+  stopClocks();
+
+  pendingAction="direct";
+
+
+  $("winnerTitle").textContent=
+    "DECLARE MATCH WINNER";
+
+  $("winnerText").textContent=
+    "Choose the winner of this match.";
+
+  $("winnerNextBtn")
+    .classList.add("hidden");
+
+  $("directRedBtn")
+    .classList.remove("hidden");
+
+  $("directBlueBtn")
+    .classList.remove("hidden");
+
+  $("winnerCloseBtn")
+    .classList.remove("hidden");
+
+  $("winnerOverlay")
+    .classList.remove("hidden");
+}
+
+
+/* =========================================================
+   NEW MATCH
+========================================================= */
+
+function newMatch(){
+
+  if(
+    !confirm(
+      "Start a new match? Current scores will be cleared."
+    )
+  ){
+    return;
+  }
+
+
+  stopClocks();
+
+  fighters=
+    freshFighters();
+
+  round=1;
+
+  seconds=
+    cfg.roundTime;
+
+  breakSeconds=
+    cfg.breakTime;
+
+  inBreak=false;
+
+  matchOver=false;
+
+  history=[];
+
+  pendingAction="none";
+
+  sessionId=
+    makeSessionId();
+
+  pendingVotes.clear();
+
+  boardSeenVotes.clear();
+
+  boardVotesInitialized=false;
+
+
+  closeWinner();
+
+  $("settingsOverlay")
+    .classList.add("hidden");
+
+
+  setStatus(
+    "New match ready."
+  );
+
+  render();
+
+  subscribeBoardVotes();
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function openSettings(){
+
+  $("setRoundTime").value=
+    cfg.roundTime;
+
+  $("setBreakTime").value=
+    cfg.breakTime;
+
+  $("setFormat").value=
+    cfg.format;
+
+  $("setReferees").value=
+    cfg.refereeCount;
+
+  $("setPunch").value=
+    cfg.punch;
+
+  $("setBody").value=
+    cfg.body;
+
+  $("setHead").value=
+    cfg.head;
+
+  $("setGap").value=
+    cfg.gap;
+
+  $("setTarget").value=
+    cfg.target;
+
+  $("setGamLimit").value=
+    cfg.gamLimit;
+
+  $("setRoundGam").checked=
+    cfg.roundGam;
+
+  $("setAutoNext").checked=
+    cfg.autoNext;
+
+  $("setSound").checked=
+    cfg.sound;
+
+  $("setScoreSize").value=
+    cfg.scoreSize;
+
+  $("settingsOverlay")
+    .classList.remove("hidden");
+}
+
+
+function closeSettings(){
+
+  $("settingsOverlay")
+    .classList.add("hidden");
+}
+
+
+function saveSettings(){
+
+  const num=(
+    id,
+    min,
+    def
+  )=>{
+
+    const value=
+      Number($(id).value);
+
+    return Number.isFinite(value)
+      ? Math.max(min,value)
+      : def;
+  };
+
+
+  cfg.roundTime=
+    num(
+      "setRoundTime",
+      10,
+      120
+    );
+
+  cfg.breakTime=
+    num(
+      "setBreakTime",
+      0,
+      30
+    );
+
+  cfg.format=
+    Number(
+      $("setFormat").value
+    );
+
+
+  cfg.refereeCount=
+    Math.min(
+      3,
+      Math.max(
+        1,
+        Number(
+          $("setReferees").value
+        ) || 2
+      )
+    );
+
+
+  cfg.punch=
+    num(
+      "setPunch",
+      0,
+      1
+    );
+
+  cfg.body=
+    num(
+      "setBody",
+      0,
+      2
+    );
+
+  cfg.head=
+    num(
+      "setHead",
+      0,
+      3
+    );
+
+  cfg.gap=
+    num(
+      "setGap",
+      0,
+      0
+    );
+
+  cfg.target=
+    num(
+      "setTarget",
+      0,
+      0
+    );
+
+  cfg.gamLimit=
+    num(
+      "setGamLimit",
+      1,
+      10
+    );
+
+  cfg.roundGam=
+    $("setRoundGam").checked;
+
+  cfg.autoNext=
+    $("setAutoNext").checked;
+
+  cfg.sound=
+    $("setSound").checked;
+
+  cfg.scoreSize=
+    $("setScoreSize").value;
+
+
+  pendingVotes.clear();
+
+
+  if(
+    !running &&
+    !inBreak
+  ){
+
+    seconds=
+      cfg.roundTime;
+  }
+
+
+  closeSettings();
+
+  setStatus(
+    "Settings saved."
+  );
+
+  render();
+
+  updateFirebaseMeta();
+}
+
+
+/* =========================================================
+   UNDO
+========================================================= */
+
+function undoLast(){
+
+  if(!history.length){
+
+    setStatus(
+      "Nothing to undo."
+    );
+
+    return;
+  }
+
+
+  stopClocks();
+
+
+  const old=
+    JSON.parse(
+      history.pop()
+    );
+
+
+  fighters=
+    old.fighters;
+
+  round=
+    old.round;
+
+  seconds=
+    old.seconds;
+
+  breakSeconds=
+    old.breakSeconds;
+
+  inBreak=
+    old.inBreak;
+
+  matchOver=
+    old.matchOver;
+
+
+  closeWinner();
+
+  sound("undo");
+
+  setStatus(
+    "Last action undone."
+  );
+
+  render();
+}
+
+
+/* =========================================================
+   REMOTE VOTE STATUS
+========================================================= */
+
+function showRemoteStatus(
+  message,
+  duration=1600
+){
+
+  $("remoteStatus").textContent=
+    message;
+
+  clearTimeout(
+    remoteStatusTimer
+  );
+
+  remoteStatusTimer=
+    setTimeout(()=>{
+
+      $("remoteStatus").textContent=
+        "";
+
+    },duration);
+}
+
+
+function clearRemoteStatus(){
+
+  clearTimeout(
+    remoteStatusTimer
+  );
+
+  $("remoteStatus").textContent=
+    "";
+}
+
+
+/* =========================================================
+   REMOTE REFEREE VOTING
+========================================================= */
+
+function confirmationWindow(){
+
+  if(cfg.refereeCount===2){
+    return 1500;
+  }
+
+  if(cfg.refereeCount===3){
+    return 1750;
+  }
+
+  return 0;
+}
+
+
+function pendingKey(
+  side,
+  points
+){
+
+  return side+"_"+points;
+}
+
+
+function purgePending(){
+
+  const windowMs=
+    confirmationWindow();
+
+  if(windowMs<=0){
+
+    pendingVotes.clear();
+
+    return;
+  }
+
+
+  const now=
+    Date.now();
+
+
+  for(
+    const [
+      key,
+      list
+    ]
+    of pendingVotes.entries()
+  ){
+
+    const valid=
+      list.filter(item=>{
+
+        return Math.abs(
+          now-item.ts
+        )<=windowMs;
+
+      });
+
+
+    if(valid.length){
+
+      pendingVotes.set(
+        key,
+        valid
+      );
+
+    }else{
+
+      pendingVotes.delete(key);
+
+    }
+
+  }
+}
+
+
+function processRemoteVote(
+  voteId,
+  vote
+){
+
+  if(
+    !vote ||
+    matchOver ||
+    inBreak
+  ){
+    return;
+  }
+
+
+  const refNo=
+    Number(vote.refId);
+
+  const side=
+    vote.side;
+
+  const points=
+    Number(vote.points);
+
+  const ts=
+    Number(vote.ts);
+
+
+  if(
+    !refNo ||
+    refNo<1 ||
+    refNo>cfg.refereeCount
+  ){
+    return;
+  }
+
+
+  if(
+    side!=="red" &&
+    side!=="blue"
+  ){
+    return;
+  }
+
+
+  if(
+    !Number.isFinite(points) ||
+    points<=0
+  ){
+    return;
+  }
+
+
+  if(!Number.isFinite(ts)){
+    return;
+  }
+
+
+  /* ONE REFEREE:
+     immediately score.
+  */
+
+  if(cfg.refereeCount===1){
+
+    addPointsValue(
+      side,
+      points,
+      "Referee 1"
+    );
+
+    return;
+  }
+
+
+  purgePending();
+
+
+  const key=
+    pendingKey(
+      side,
+      points
+    );
+
+
+  let list=
+    pendingVotes.get(key) || [];
+
+
+  /* Remove stale votes */
+
+  const windowMs=
+    confirmationWindow();
+
+  list=
+    list.filter(item=>{
+
+      return Math.abs(
+        ts-item.ts
+      )<=windowMs;
+
+    });
+
+
+  /*
+    TWO REFEREES:
+    Any different referee
+    confirming same player +
+    same points within 1.5 sec.
+  */
+
+  if(cfg.refereeCount===2){
+
+    let matchIndex=-1;
+
+
+    for(
+      let i=0;
+      i<list.length;
+      i++
+    ){
+
+      if(
+        list[i].refId!==refNo &&
+        Math.abs(
+          list[i].ts-ts
+        )<=1500
+      ){
+
+        matchIndex=i;
+
+        break;
+      }
+
+    }
+
+
+    if(matchIndex>=0){
+
+      list.splice(
+        matchIndex,
+        1
+      );
+
+      pendingVotes.set(
+        key,
+        list
+      );
+
+
+      showRemoteStatus(
+        "✓ "+
+        side.toUpperCase()+
+        " +"+
+        points+
+        " CONFIRMED — 2 REFEREES",
+        1400
+      );
+
+
+      addPointsValue(
+        side,
+        points,
+        "2 Referees confirmed"
+      );
+
+
+      return;
+    }
+
+
+    list.push({
+      voteId:voteId,
+      refId:refNo,
+      ts:ts
+    });
+
+
+    pendingVotes.set(
+      key,
+      list
+    );
+
+
+    showRemoteStatus(
+      "🟡 "+
+      side.toUpperCase()+
+      " +"+
+      points+
+      " — WAITING 1.5 SEC",
+      1500
+    );
+
+
+    return;
+  }
+
+
+  /*
+    THREE REFEREES:
+    Any TWO different referees
+    same player + same score.
+    Score immediately.
+    Maximum joining window = 1.75 sec.
+  */
+
+  if(cfg.refereeCount===3){
+
+    list.push({
+      voteId:voteId,
+      refId:refNo,
+      ts:ts
+    });
+
+
+    list=
+      list.filter(item=>{
+
+        return Math.abs(
+          ts-item.ts
+        )<=1750;
+
+      });
+
+
+    let pairA=null;
+    let pairB=null;
+
+
+    outer:
+    for(
+      let i=0;
+      i<list.length;
+      i++
+    ){
+
+      for(
+        let j=i+1;
+        j<list.length;
+        j++
+      ){
 
         if(
-          typeof sendRefereeVote ===
-          "function"
+          list[i].refId!==
+          list[j].refId &&
+
+          Math.abs(
+            list[i].ts-
+            list[j].ts
+          )<=1750
         ){
 
-          sendRefereeVote(
-            this.dataset.refSide,
-            this.dataset.refPointsType
+          pairA=list[i];
+          pairB=list[j];
+
+          break outer;
+        }
+
+      }
+
+    }
+
+
+    if(pairA && pairB){
+
+      list=
+        list.filter(item=>{
+
+          return (
+            item.voteId!==pairA.voteId &&
+            item.voteId!==pairB.voteId
           );
+
+        });
+
+
+      pendingVotes.set(
+        key,
+        list
+      );
+
+
+      showRemoteStatus(
+        "✓ "+
+        side.toUpperCase()+
+        " +"+
+        points+
+        " CONFIRMED — 2 OF 3",
+        1400
+      );
+
+
+      addPointsValue(
+        side,
+        points,
+        "2 of 3 Referees confirmed"
+      );
+
+
+      return;
+    }
+
+
+    pendingVotes.set(
+      key,
+      list
+    );
+
+
+    showRemoteStatus(
+      "🟡 "+
+      side.toUpperCase()+
+      " +"+
+      points+
+      " — REFEREE VOTE RECEIVED",
+      1750
+    );
+  }
+}
+
+
+/* =========================================================
+   BOARD FIREBASE VOTE LISTENER
+========================================================= */
+
+function subscribeBoardVotes(){
+
+  if(
+    !firebaseReady ||
+    !db ||
+    !roomId ||
+    !sessionId
+  ){
+    return;
+  }
+
+
+  if(boardVoteUnsubscribe){
+
+    boardVoteUnsubscribe();
+  }
+
+
+  boardSeenVotes=
+    new Set();
+
+  boardVotesInitialized=
+    false;
+
+
+  const ref=
+    votesRef(sessionId);
+
+
+  const callback=
+    snapshot=>{
+
+      const votes=
+        snapshot.val() || {};
+
+
+      /*
+        First snapshot:
+        old votes are ignored.
+      */
+
+      if(!boardVotesInitialized){
+
+        Object.keys(votes)
+          .forEach(id=>{
+            boardSeenVotes.add(id);
+          });
+
+        boardVotesInitialized=true;
+
+        return;
+      }
+
+
+      Object.entries(votes)
+        .forEach(([id,vote])=>{
+
+          if(
+            boardSeenVotes.has(id)
+          ){
+            return;
+          }
+
+
+          boardSeenVotes.add(id);
+
+          processRemoteVote(
+            id,
+            vote
+          );
+
+        });
+
+    };
+
+
+  ref.on(
+    "value",
+    callback,
+    error=>{
+
+      console.error(
+        "Vote listener error:",
+        error
+      );
+
+      setCloudStatus(
+        "VOTE ERROR",
+        "error"
+      );
+
+    }
+  );
+
+
+  boardVoteUnsubscribe=()=>{
+
+    ref.off(
+      "value",
+      callback
+    );
+
+  };
+}
+
+
+/* =========================================================
+   CONTROLLER YELLOW FLASH
+========================================================= */
+
+function showControllerFlash(
+  side,
+  points,
+  refNo,
+  countText=""
+){
+
+  if(!isControllerMode){
+    return;
+  }
+
+
+  const flash=
+    $("refFlash");
+
+  const title=
+    $("refFlashTitle");
+
+  const text=
+    $("refFlashText");
+
+
+  title.textContent=
+    side.toUpperCase()+
+    " +"+
+    points;
+
+
+  if(cfg.refereeCount===1){
+
+    text.textContent=
+      "SCORE SENT";
+
+  }else if(countText){
+
+    text.textContent=
+      countText;
+
+  }else{
+
+    text.textContent=
+      "REFEREE "+
+      refNo+
+      " VOTE — CONFIRM NOW";
+  }
+
+
+  flash.classList.remove("show");
+
+  void flash.offsetWidth;
+
+  flash.classList.add("show");
+
+
+  const duration=
+    cfg.refereeCount===2
+      ? 1500
+      : cfg.refereeCount===3
+        ? 1750
+        : 600;
+
+
+  setTimeout(()=>{
+
+    flash.classList.remove(
+      "show"
+    );
+
+  },duration);
+}
+
+
+/* =========================================================
+   CONTROLLER VOTE LISTENER
+========================================================= */
+
+function subscribeControllerVotes(
+  newSession
+){
+
+  if(
+    !firebaseReady ||
+    !db ||
+    !roomId ||
+    !newSession
+  ){
+    return;
+  }
+
+
+  if(controllerVoteUnsubscribe){
+
+    controllerVoteUnsubscribe();
+  }
+
+
+  controllerSeenVotes=
+    new Set();
+
+  controllerVotesInitialized=
+    false;
+
+
+  const ref=
+    votesRef(newSession);
+
+
+  const callback=
+    snapshot=>{
+
+      const votes=
+        snapshot.val() || {};
+
+
+      if(!controllerVotesInitialized){
+
+        Object.keys(votes)
+          .forEach(id=>{
+            controllerSeenVotes.add(id);
+          });
+
+        controllerVotesInitialized=true;
+
+        return;
+      }
+
+
+      Object.entries(votes)
+        .forEach(([id,vote])=>{
+
+          if(
+            controllerSeenVotes.has(id)
+          ){
+            return;
+          }
+
+
+          controllerSeenVotes.add(id);
+
+
+          const voteRef=
+            Number(vote.refId);
+
+          const side=
+            vote.side;
+
+          const points=
+            Number(vote.points);
+
+
+          if(
+            side==="red" ||
+            side==="blue"
+          ){
+
+            if(
+              cfg.refereeCount===1
+            ){
+
+              showControllerFlash(
+                side,
+                points,
+                voteRef,
+                "SCORE SENT"
+              );
+
+            }else{
+
+              showControllerFlash(
+                side,
+                points,
+                voteRef
+              );
+
+            }
+
+          }
+
+        });
+
+    };
+
+
+  ref.on(
+    "value",
+    callback,
+    error=>{
+
+      console.error(
+        "Controller vote listener:",
+        error
+      );
+
+    }
+  );
+
+
+  controllerVoteUnsubscribe=()=>{
+
+    ref.off(
+      "value",
+      callback
+    );
+
+  };
+}
+
+
+/* =========================================================
+   CONTROLLER SEND VOTE
+========================================================= */
+
+let lastControllerClick=0;
+
+function sendRefereeVote(
+  side,
+  type
+){
+
+  if(!isControllerMode){
+    return;
+  }
+
+
+  if(
+    !firebaseReady ||
+    !firebaseUser ||
+    !controllerState
+  ){
+    return;
+  }
+
+
+  const state=
+    controllerState;
+
+
+  const configuredReferees=
+    Number(
+      state.settings &&
+      state.settings.refereeCount
+    ) || 2;
+
+
+  if(
+    refNumber<1 ||
+    refNumber>configuredReferees
+  ){
+
+    alert(
+      "This referee number is not enabled for this match."
+    );
+
+    return;
+  }
+
+
+  if(
+    state.matchOver ||
+    state.inBreak
+  ){
+    return;
+  }
+
+
+  const now=
+    Date.now();
+
+
+  /*
+    Prevent accidental double tap
+    from becoming two votes.
+    150ms is short enough not to
+    block legitimate scoring.
+  */
+
+  if(
+    now-lastControllerClick<150
+  ){
+    return;
+  }
+
+  lastControllerClick=now;
+
+
+  const settings=
+    state.settings || {};
+
+
+  const points=
+    Number(
+      settings[type]
+    );
+
+
+  if(
+    !Number.isFinite(points) ||
+    points<=0
+  ){
+    return;
+  }
+
+
+  const currentSession=
+    state.sessionId;
+
+
+  if(!currentSession){
+    return;
+  }
+
+
+  const newVote=
+    votesRef(currentSession)
+      .push();
+
+
+  newVote.set({
+
+    refId:refNumber,
+
+    side:side,
+
+    points:points,
+
+    ts:
+      firebase.database
+        .ServerValue
+        .TIMESTAMP
+
+  })
+  .then(()=>{
+
+    if(
+      navigator.vibrate
+    ){
+
+      navigator.vibrate(35);
+    }
+
+  })
+  .catch(error=>{
+
+    console.error(
+      "Vote write failed:",
+      error
+    );
+
+    $("controllerCloud")
+      .textContent=
+      "VOTE FAILED";
+
+  });
+}
+
+
+/* =========================================================
+   CONTROLLER UI
+========================================================= */
+
+function updateControllerUI(
+  data
+){
+
+  if(!data)return;
+
+  controllerState=
+    data;
+
+
+  const settings=
+    data.settings || {};
+
+
+  cfg.refereeCount=
+    Number(
+      settings.refereeCount
+    ) || 2;
+
+
+  $("controllerRoom")
+    .textContent=
+    "ROOM "+
+    (
+      data.roomId ||
+      roomId ||
+      "------"
+    );
+
+
+  $("controllerRedName")
+    .textContent=
+    data.redName ||
+    "HONG";
+
+
+  $("controllerBlueName")
+    .textContent=
+    data.blueName ||
+    "CHONG";
+
+
+  $("controllerRedScore")
+    .textContent=
+    Number(
+      data.redScore
+    ) || 0;
+
+
+  $("controllerBlueScore")
+    .textContent=
+    Number(
+      data.blueScore
+    ) || 0;
+
+
+  $("controllerRound")
+    .textContent=
+    "ROUND "+
+    (
+      Number(data.round)||1
+    );
+
+
+  $("controllerTimer")
+    .textContent=
+    fmt(
+      Number(data.seconds)||0
+    );
+
+
+  const values={
+    punch:Number(settings.punch)||0,
+    body:Number(settings.body)||0,
+    head:Number(settings.head)||0
+  };
+
+
+  $("controllerRedPunch")
+    .textContent=
+    "+"+values.punch;
+
+  $("controllerRedBody")
+    .textContent=
+    "+"+values.body;
+
+  $("controllerRedHead")
+    .textContent=
+    "+"+values.head;
+
+  $("controllerBluePunch")
+    .textContent=
+    "+"+values.punch;
+
+  $("controllerBlueBody")
+    .textContent=
+    "+"+values.body;
+
+  $("controllerBlueHead")
+    .textContent=
+    "+"+values.head;
+
+
+  const locked=
+    data.matchOver ||
+    data.inBreak ||
+    !data.sessionId ||
+    refNumber>cfg.refereeCount;
+
+
+  document
+    .querySelectorAll(
+      ".ref-score-btn"
+    )
+    .forEach(btn=>{
+
+      const type=
+        btn.dataset.refPointsType;
+
+      const value=
+        values[type];
+
+      btn.disabled=
+        locked ||
+        value<=0;
+
+    });
+
+
+  if(
+    data.sessionId &&
+    data.sessionId!==controllerCurrentSession
+  ){
+
+    controllerCurrentSession=
+      data.sessionId;
+
+    subscribeControllerVotes(
+      data.sessionId
+    );
+
+  }
+
+
+  $("controllerCloud")
+    .textContent=
+    locked
+      ? (
+        data.matchOver
+          ? "MATCH OVER"
+          : data.inBreak
+            ? "BREAK"
+            : refNumber>cfg.refereeCount
+              ? "REFEREE DISABLED"
+              : "WAITING"
+      )
+      : "CONNECTED";
+}
+
+
+/* =========================================================
+   DISPLAY / TV
+========================================================= */
+
+function renderTV(data){
+
+  if(!data)return;
+
+
+  $("tvRoom")
+    .textContent=
+    "ROOM "+
+    (
+      data.roomId ||
+      roomId ||
+      "------"
+    );
+
+
+  $("tvRedName")
+    .textContent=
+    data.redName ||
+    "HONG";
+
+  $("tvBlueName")
+    .textContent=
+    data.blueName ||
+    "CHONG";
+
+
+  $("tvRedScore")
+    .textContent=
+    Number(
+      data.redScore
+    ) || 0;
+
+  $("tvBlueScore")
+    .textContent=
+    Number(
+      data.blueScore
+    ) || 0;
+
+
+  $("tvRedGam")
+    .textContent=
+    Number(
+      data.redGam
+    ) || 0;
+
+  $("tvBlueGam")
+    .textContent=
+    Number(
+      data.blueGam
+    ) || 0;
+
+
+  $("tvRedWins")
+    .textContent=
+    Number(
+      data.redWins
+    ) || 0;
+
+  $("tvBlueWins")
+    .textContent=
+    Number(
+      data.blueWins
+    ) || 0;
+
+
+  $("tvRound")
+    .textContent=
+    "ROUND "+
+    (
+      Number(data.round)||1
+    );
+
+
+  $("tvTimer")
+    .textContent=
+    data.inBreak
+      ? "BREAK "+fmt(
+          Number(data.breakSeconds)||0
+        )
+      : fmt(
+          Number(data.seconds)||0
+        );
+
+
+  $("tvStatus")
+    .textContent=
+    data.status ||
+    "Ready to start";
+
+
+  $("tvWinner")
+    .textContent=
+    data.winner ||
+    "";
+}
+
+
+/* =========================================================
+   BOARD STATE RECOVERY
+========================================================= */
+
+function applySavedState(
+  data
+){
+
+  if(!data)return;
+
+
+  if(data.fighters){
+
+    fighters=
+      data.fighters;
+
+  }else{
+
+    fighters.red.score=
+      Number(data.redScore)||0;
+
+    fighters.blue.score=
+      Number(data.blueScore)||0;
+
+    fighters.red.gam=
+      Number(data.redGam)||0;
+
+    fighters.blue.gam=
+      Number(data.blueGam)||0;
+
+    fighters.red.totalGam=
+      Number(data.redTotalGam)||0;
+
+    fighters.blue.totalGam=
+      Number(data.blueTotalGam)||0;
+
+    fighters.red.wins=
+      Number(data.redWins)||0;
+
+    fighters.blue.wins=
+      Number(data.blueWins)||0;
+
+  }
+
+
+  round=
+    Number(data.round)||1;
+
+
+  seconds=
+    Number(data.seconds)||
+    cfg.roundTime;
+
+
+  breakSeconds=
+    Number(data.breakSeconds)||
+    cfg.breakTime;
+
+
+  inBreak=
+    Boolean(data.inBreak);
+
+  matchOver=
+    Boolean(data.matchOver);
+
+
+  if(data.sessionId){
+    sessionId=
+      data.sessionId;
+  }
+
+
+  if(
+    data.settings
+  ){
+
+    cfg={
+      ...cfg,
+      ...data.settings
+    };
+
+  }
+
+
+  /*
+    Important:
+    On browser refresh, don't create
+    a duplicate timer accidentally.
+  */
+
+  running=false;
+
+  stopClocks();
+
+  render();
+}
+
+
+/* =========================================================
+   BOARD CLAIM
+========================================================= */
+
+async function claimBoard(){
+
+  if(
+    !firebaseReady ||
+    !firebaseUser ||
+    !roomId
+  ){
+    return false;
+  }
+
+
+  try{
+
+    const snap=
+      await metaRef()
+        .once("value");
+
+
+    const data=
+      snap.val();
+
+
+    if(
+      data &&
+      data.boardUid &&
+      data.boardUid!==firebaseUser.uid
+    ){
+
+      setCloudStatus(
+        "ROOM IN USE",
+        "error"
+      );
+
+      setStatus(
+        "This room is already controlled by another laptop."
+      );
+
+      return false;
+    }
+
+
+    if(!data){
+
+      await metaRef()
+        .set({
+
+          boardUid:
+            firebaseUser.uid,
+
+          refereeCount:
+            cfg.refereeCount,
+
+          createdAt:
+            firebase.database
+              .ServerValue
+              .TIMESTAMP
+
+        });
+
+    }else{
+
+      await metaRef()
+        .update({
+
+          refereeCount:
+            cfg.refereeCount
+
+        });
+
+    }
+
+
+    boardClaimed=true;
+
+    return true;
+
+  }catch(error){
+
+    console.error(
+      "Board claim failed:",
+      error
+    );
+
+    setCloudStatus(
+      "RULES ERROR",
+      "error"
+    );
+
+    setStatus(
+      "Firebase Rules/Auth error. Check Realtime Database Rules."
+    );
+
+    return false;
+  }
+}
+
+
+/* =========================================================
+   FIREBASE META UPDATE
+========================================================= */
+
+function updateFirebaseMeta(){
+
+  if(
+    !firebaseReady ||
+    !boardClaimed
+  ){
+    return;
+  }
+
+
+  metaRef()
+    .update({
+
+      refereeCount:
+        cfg.refereeCount
+
+    })
+    .catch(error=>{
+
+      console.error(
+        "Meta update:",
+        error
+      );
+
+    });
+}
+
+
+/* =========================================================
+   BOARD / TV / CONTROLLER BOOT
+========================================================= */
+
+function startBoardFirebase(){
+
+  if(!firebaseReady){
+    return;
+  }
+
+
+  claimBoard()
+    .then(ok=>{
+
+      if(!ok){
+        return;
+      }
+
+
+      setCloudStatus(
+        "CLOUD CONNECTED",
+        "ok"
+      );
+
+
+      stateRef()
+        .once("value")
+        .then(snapshot=>{
+
+          const data=
+            snapshot.val();
+
+
+          if(data){
+
+            applySavedState(data);
+
+          }else{
+
+            render();
+
+          }
+
+
+          subscribeBoardVotes();
+
+        })
+        .catch(error=>{
+
+          console.error(
+            "State load failed:",
+            error
+          );
+
+          setCloudStatus(
+            "STATE ERROR",
+            "error"
+          );
+
+          render();
+
+          subscribeBoardVotes();
+
+        });
+
+    });
+}
+
+
+function startControllerFirebase(){
+
+  if(!roomId){
+
+    $("joinOverlay")
+      .classList.remove("hidden");
+
+    return;
+  }
+
+
+  localStorage.setItem(
+    CONTROLLER_ROOM_KEY,
+    roomId
+  );
+
+
+  stateRef()
+    .on(
+      "value",
+      snapshot=>{
+
+        const data=
+          snapshot.val();
+
+
+        if(!data){
+
+          $("controllerCloud")
+            .textContent=
+            "WAITING FOR LAPTOP";
+
+          document
+            .querySelectorAll(
+              ".ref-score-btn"
+            )
+            .forEach(btn=>{
+              btn.disabled=true;
+            });
+
+          return;
+        }
+
+
+        updateControllerUI(data);
+
+      },
+      error=>{
+
+        console.error(
+          "Controller state:",
+          error
+        );
+
+        $("controllerCloud")
+          .textContent=
+          "FIREBASE ERROR";
+
+      }
+    );
+}
+
+
+function startDisplayFirebase(){
+
+  if(!roomId){
+
+    $("joinOverlay")
+      .classList.remove("hidden");
+
+    return;
+  }
+
+
+  stateRef()
+    .on(
+      "value",
+      snapshot=>{
+
+        const data=
+          snapshot.val();
+
+
+        if(data){
+
+          renderTV(data);
 
         }
 
       },
-      {
-        passive:false
+      error=>{
+
+        console.error(
+          "TV state:",
+          error
+        );
+
+        $("tvStatus")
+          .textContent=
+          "Firebase connection error";
+
+      }
+    );
+}
+
+
+/* =========================================================
+   QR
+========================================================= */
+
+let currentQrLink="";
+
+
+function baseUrl(){
+
+  return (
+    location.origin+
+    location.pathname
+  );
+}
+
+
+function makeControllerUrl(
+  referee
+){
+
+  return (
+    baseUrl()+
+    "?controller=1"+
+    "&room="+
+    encodeURIComponent(roomId)+
+    "&ref="+
+    referee
+  );
+}
+
+
+function makeTvUrl(){
+
+  return (
+    baseUrl()+
+    "?display=1"+
+    "&room="+
+    encodeURIComponent(roomId)
+  );
+}
+
+
+function openQR(
+  role="ref1"
+){
+
+  if(isControllerMode ||
+     isDisplayMode){
+    return;
+  }
+
+
+  $("qrOverlay")
+    .classList.remove("hidden");
+
+
+  showQR(role);
+}
+
+
+function showQR(role){
+
+  let link="";
+
+
+  if(role==="tv"){
+
+    link=
+      makeTvUrl();
+
+  }else{
+
+    const no=
+      Number(
+        String(role)
+          .replace("ref","")
+      ) || 1;
+
+    link=
+      makeControllerUrl(no);
+  }
+
+
+  currentQrLink=link;
+
+
+  $("qrLink")
+    .textContent=
+    link;
+
+
+  $("qrImage").src=
+    "https://api.qrserver.com/v1/create-qr-code/"+
+    "?size=300x300"+
+    "&margin=10"+
+    "&data="+
+    encodeURIComponent(link);
+
+
+  $("qrRef1Btn").disabled=
+    cfg.refereeCount<1;
+
+  $("qrRef2Btn").disabled=
+    cfg.refereeCount<2;
+
+  $("qrRef3Btn").disabled=
+    cfg.refereeCount<3;
+}
+
+
+function closeQR(){
+
+  $("qrOverlay")
+    .classList.add("hidden");
+}
+
+
+/* =========================================================
+   JOIN
+========================================================= */
+
+function openJoin(){
+
+  if(isControllerMode){
+
+    $("joinTitle")
+      .textContent=
+      "JOIN AS REFEREE "+
+      refNumber;
+
+  }else{
+
+    $("joinTitle")
+      .textContent=
+      "JOIN TV DISPLAY";
+
+  }
+
+
+  $("joinRoomInput").value=
+    roomId || "";
+
+  $("joinOverlay")
+    .classList.remove("hidden");
+}
+
+
+function joinRoom(){
+
+  const entered=
+    cleanRoom(
+      $("joinRoomInput").value
+    );
+
+
+  if(!entered){
+
+    alert(
+      "Please enter a valid room code."
+    );
+
+    return;
+  }
+
+
+  roomId=entered;
+
+
+  if(isControllerMode){
+
+    localStorage.setItem(
+      CONTROLLER_ROOM_KEY,
+      roomId
+    );
+
+
+    location.href=
+      baseUrl()+
+      "?controller=1"+
+      "&room="+
+      encodeURIComponent(roomId)+
+      "&ref="+
+      refNumber;
+
+  }else{
+
+    location.href=
+      baseUrl()+
+      "?display=1"+
+      "&room="+
+      encodeURIComponent(roomId);
+
+  }
+}
+
+
+/* =========================================================
+   REFEREE NUMBER
+========================================================= */
+
+let refNumber=
+  Math.min(
+    3,
+    Math.max(
+      1,
+      Number(
+        params.get("ref") || 1
+      )
+    )
+  );
+
+
+if(isControllerMode){
+
+  $("controllerRefNo")
+    .textContent=
+    refNumber;
+
+}
+
+
+/* =========================================================
+   EVENT HANDLERS — BOARD
+========================================================= */
+
+document
+  .querySelectorAll(
+    "[data-side][data-type]"
+  )
+  .forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        addPoints(
+          btn.dataset.side,
+          btn.dataset.type
+        );
+
+      }
+    );
+
+  });
+
+
+document
+  .querySelectorAll(
+    "[data-gam-side]"
+  )
+  .forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        changeGam(
+          btn.dataset.gamSide,
+          Number(
+            btn.dataset.delta
+          )
+        );
+
       }
     );
 
@@ -768,64 +5203,471 @@ document
 
 
 /* =========================================================
-   NO BROWSER DOUBLE-TAP ZOOM
-   ========================================================= */
+   BOARD BUTTONS
+========================================================= */
 
-document.addEventListener(
-  "dblclick",
-  event=>{
+$("settingsBtn")
+  .addEventListener(
+    "click",
+    openSettings
+  );
 
-    if(
-      event.target.closest(
-        ".ref-score-btn"
-      )
-    ){
+$("startBtn")
+  .addEventListener(
+    "click",
+    startTimer
+  );
 
-      event.preventDefault();
+$("pauseBtn")
+  .addEventListener(
+    "click",
+    pauseTimer
+  );
+
+$("endBtn")
+  .addEventListener(
+    "click",
+    endRound
+  );
+
+$("undoBtn")
+  .addEventListener(
+    "click",
+    undoLast
+  );
+
+$("newBtn")
+  .addEventListener(
+    "click",
+    newMatch
+  );
+
+$("directBtn")
+  .addEventListener(
+    "click",
+    openDirectWinner
+  );
+
+$("minusFive")
+  .addEventListener(
+    "click",
+    ()=>adjustTimer(-5)
+  );
+
+$("plusFive")
+  .addEventListener(
+    "click",
+    ()=>adjustTimer(5)
+  );
+
+$("startNextBtn")
+  .addEventListener(
+    "click",
+    startNextRound
+  );
+
+$("winnerNextBtn")
+  .addEventListener(
+    "click",
+    winnerContinue
+  );
+
+$("winnerCloseBtn")
+  .addEventListener(
+    "click",
+    closeWinner
+  );
+
+
+$("directRedBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeWinner();
+
+      declareMatchWinner(
+        "red",
+        "Direct winner declared by referee."
+      );
 
     }
+  );
 
-  },
-  {
-    passive:false
-  }
-);
+
+$("directBlueBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeWinner();
+
+      declareMatchWinner(
+        "blue",
+        "Direct winner declared by referee."
+      );
+
+    }
+  );
+
+
+$("saveSettingsBtn")
+  .addEventListener(
+    "click",
+    saveSettings
+  );
+
+$("cancelSettingsBtn")
+  .addEventListener(
+    "click",
+    closeSettings
+  );
+
+
+$("refereeBtn")
+  .addEventListener(
+    "click",
+    ()=>openQR("ref1")
+  );
+
+
+$("tvBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      if(!roomId)return;
+
+      window.open(
+        makeTvUrl(),
+        "_blank"
+      );
+
+    }
+  );
+
+
+$("qrRef1Btn")
+  .addEventListener(
+    "click",
+    ()=>showQR("ref1")
+  );
+
+$("qrRef2Btn")
+  .addEventListener(
+    "click",
+    ()=>showQR("ref2")
+  );
+
+$("qrRef3Btn")
+  .addEventListener(
+    "click",
+    ()=>showQR("ref3")
+  );
+
+$("qrTvBtn")
+  .addEventListener(
+    "click",
+    ()=>showQR("tv")
+  );
+
+$("closeQrBtn")
+  .addEventListener(
+    "click",
+    closeQR
+  );
+
+
+$("copyQrBtn")
+  .addEventListener(
+    "click",
+    async()=>{
+
+      try{
+
+        await navigator.clipboard
+          .writeText(
+            currentQrLink
+          );
+
+        $("copyQrBtn")
+          .textContent=
+          "COPIED ✓";
+
+
+        setTimeout(()=>{
+
+          $("copyQrBtn")
+            .textContent=
+            "COPY LINK";
+
+        },1200);
+
+      }catch(error){
+
+        alert(
+          currentQrLink
+        );
+
+      }
+
+    }
+  );
+
+
+$("joinRoomBtn")
+  .addEventListener(
+    "click",
+    joinRoom
+  );
+
+
+$("joinRoomInput")
+  .addEventListener(
+    "keydown",
+    event=>{
+
+      if(event.key==="Enter"){
+        joinRoom();
+      }
+
+    }
+  );
 
 
 /* =========================================================
-   START REFEREE UI
-   ========================================================= */
+   CONTROLLER BUTTONS
+========================================================= */
 
-showRefereeUI();
+document
+  .querySelectorAll(
+    ".ref-score-btn"
+  )
+  .forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        sendRefereeVote(
+          btn.dataset.refSide,
+          btn.dataset.refPointsType
+        );
+
+      }
+    );
+
+  });
 
 
-/*
-   =========================================================
-   ORIGINAL JAVASCRIPT CONTINUES HERE
-   =========================================================
+/* =========================================================
+   ROOM BADGE
+========================================================= */
 
-   Firebase
-   settings
-   scoring
-   timer
-   rounds
-   break
-   Gam-jeom
-   TV display
-   QR
-   history / undo
-   remote referee voting
-   winner logic
-   etc.
+if(!isControllerMode &&
+   !isDisplayMode){
 
-   These existing sections are kept unchanged
-   in the master source.
-   =========================================================
-*/
+  $("roomBadge")
+    .textContent=
+    "ROOM "+
+    roomId;
 
+}
+
+
+/* =========================================================
+   INITIAL LOCAL RENDER
+========================================================= */
+
+render();
+
+
+/* =========================================================
+   FIREBASE INITIALIZATION
+========================================================= */
+
+try{
+
+  firebase.initializeApp(
+    firebaseConfig
+  );
+
+  db=
+    firebase.database();
+
+  firebase.auth()
+    .onAuthStateChanged(
+      user=>{
+
+        if(!user){
+          return;
+        }
+
+
+        firebaseUser=user;
+
+        firebaseReady=true;
+
+
+        if(isControllerMode){
+
+          $("controllerCloud")
+            .textContent=
+            "CONNECTED";
+
+          startControllerFirebase();
+
+        }else if(isDisplayMode){
+
+          startDisplayFirebase();
+
+        }else{
+
+          setCloudStatus(
+            "AUTH OK",
+            "ok"
+          );
+
+          startBoardFirebase();
+
+        }
+
+      }
+    );
+
+
+  firebase.auth()
+    .signInAnonymously()
+    .catch(error=>{
+
+      console.error(
+        "Firebase anonymous login failed:",
+        error
+      );
+
+
+      firebaseReady=false;
+
+
+      if(isControllerMode){
+
+        $("controllerCloud")
+          .textContent=
+          "LOGIN FAILED";
+
+      }else if(isDisplayMode){
+
+        $("tvStatus")
+          .textContent=
+          "Firebase login failed";
+
+      }else{
+
+        setCloudStatus(
+          "AUTH FAILED",
+          "error"
+        );
+
+        setStatus(
+          "Firebase login failed — enable Anonymous Authentication."
+        );
+
+      }
+
+    });
+
+
+}catch(error){
+
+  console.error(
+    "Firebase initialization failed:",
+    error
+  );
+
+
+  firebaseReady=false;
+
+
+  if(isControllerMode){
+
+    $("controllerCloud")
+      .textContent=
+      "FIREBASE ERROR";
+
+  }else if(isDisplayMode){
+
+    $("tvStatus")
+      .textContent=
+      "Firebase unavailable";
+
+  }else{
+
+    setCloudStatus(
+      "FIREBASE ERROR",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   MODE JOIN
+========================================================= */
+
+if(
+  (isControllerMode ||
+   isDisplayMode) &&
+  !roomId
+){
+
+  openJoin();
+
+}
+
+
+/* =========================================================
+   CONTROLLER INITIAL STATE
+========================================================= */
+
+if(isControllerMode){
+
+  $("controllerRoom")
+    .textContent=
+    roomId
+      ? "ROOM "+roomId
+      : "ROOM ------";
+
+
+  document
+    .querySelectorAll(
+      ".ref-score-btn"
+    )
+    .forEach(btn=>{
+      btn.disabled=true;
+    });
+
+}
+
+
+/* =========================================================
+   GLOBAL ERROR REPORTING
+========================================================= */
+
+window.addEventListener(
+  "error",
+  event=>{
+
+    console.error(
+      "App error:",
+      event.error || event.message
+    );
+
+  }
+);
 
 </script>
 
 </body>
-
 </html>
