@@ -697,7 +697,152 @@ body.controller-mode #controllerScreen{
   .tv-center{order:0}
   .tv-fighter.red{order:-1}
   .tv-fighter.blue{order:1}
+}/* existing CSS */
+.tv-fighter.blue{
+  ...
 }
+
+
+/* ===== MOBILE REFEREE 2-COLUMN x 3-ROW LAYOUT ===== */
+
+@media (max-width:700px){
+
+  #controllerScreen{
+    width:100%;
+    height:100dvh;
+    overflow:hidden;
+    touch-action:manipulation;
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
+  }
+
+  #controllerScreen .controller-sides{
+    flex:1;
+    min-height:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr;
+    gap:2px;
+    overflow:hidden;
+    background:#fff;
+  }
+
+  #controllerScreen .ref-side{
+    min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:stretch;
+    padding:0;
+  }
+
+  #controllerScreen .ref-side.red-side{
+    background:#ef3f43;
+    border-right:2px solid #fff;
+  }
+
+  #controllerScreen .ref-side.blue-side{
+    background:#2447b8;
+  }
+
+  #controllerScreen .ref-buttons{
+    flex:1;
+    width:100%;
+    height:100%;
+    min-height:0;
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:repeat(3,1fr);
+    gap:2px;
+    padding:2px;
+  }
+
+  #controllerScreen .ref-score-btn{
+    width:100%;
+    height:100%;
+    min-height:0;
+    margin:0;
+    padding:4px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    background:#0006;
+    border:1px solid #ffffff55;
+    border-radius:0;
+
+    color:#fff;
+    font-weight:900;
+    font-size:0;
+
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+
+    transition:transform .07s ease,filter .07s ease,opacity .15s ease;
+  }
+
+  #controllerScreen .ref-score-btn:active{
+    transform:scale(.96);
+    filter:brightness(1.2);
+  }
+
+  #controllerScreen .ref-score-btn:disabled{
+    opacity:.3;
+    filter:grayscale(.5);
+  }
+
+  #controllerScreen .ref-score-btn .ref-big{
+    display:block;
+    margin:0;
+    font-size:clamp(55px,17vw,105px);
+    line-height:.9;
+    font-weight:900;
+    text-shadow:0 2px 5px #0008;
+  }
+
+  /* +1 / +2 / +3 ko top-to-bottom force karna */
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(1) .ref-big{
+    font-size:clamp(55px,17vw,105px);
+  }
+
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(2) .ref-big{
+    font-size:clamp(55px,17vw,105px);
+  }
+
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(3) .ref-big{
+    font-size:clamp(55px,17vw,105px);
+  }
+}
+
+
+/* ===== SMALL MOBILE ===== */
+
+@media (max-width:380px){
+
+  #controllerScreen .ref-score-btn .ref-big{
+    font-size:clamp(45px,16vw,80px);
+  }
+
+}
+
+
+/* ===== DOUBLE-TAP ZOOM BLOCK ===== */
+
+#controllerScreen,
+#controllerScreen *,
+#controllerScreen button{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+</style>
 </style>
 </head>
 
