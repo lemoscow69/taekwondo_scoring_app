@@ -1725,7 +1725,7 @@ let breakId = null;
 let running = false;
 let inBreak = false;
 let matchOver = false;
-
+let roundClosed = false;
 let history = [];
 
 let pendingAction = "none";
@@ -1868,9 +1868,10 @@ function makeLiveState(){
     seconds:seconds,
     breakSeconds:breakSeconds,
 
-    running:running,
-    inBreak:inBreak,
-    matchOver:matchOver,
+   running: running,
+inBreak: inBreak,
+roundClosed: roundClosed,
+matchOver: matchOver,
 
     status:$("status") ? $("status").textContent : "",
 
@@ -2059,8 +2060,10 @@ function render(){
 
 
   const locked =
-    matchOver ||
-    inBreak;
+  matchOver ||
+  inBreak ||
+  roundClosed ||
+  seconds<=0;
 
   document
     .querySelectorAll(".points button,.gam-box button")
@@ -2235,7 +2238,7 @@ function addPointsValue(
   source="Score"
 ){
 
-  if(matchOver || inBreak)return;
+  if(matchOver||inBreak||roundClosed||seconds<=0)return;
 
   points=Number(points);
 
@@ -2549,9 +2552,13 @@ function adjustTimer(delta){
 
 function endRound(){
 
-  if(matchOver||inBreak)return;
+  function endRound(){
 
-  stopClocks();
+  if(matchOver||inBreak||roundClosed)return;
+
+  roundClosed=true;
+
+  stopClocks();;
 
   const redScore=
     fighters.red.score;
@@ -2877,10 +2884,9 @@ function startNextRound(){
 
 
   running=false;
-
-  inBreak=false;
-
-  round++;
+inBreak=false;
+roundClosed=false;
+round++;
 
 
   for(
@@ -2985,11 +2991,10 @@ function newMatch(){
   breakSeconds=
     cfg.breakTime;
 
-  inBreak=false;
-
-  matchOver=false;
-
-  history=[];
+ inBreak=false;
+matchOver=false;
+roundClosed=false;
+history=[];
 
   pendingAction="none";
 
@@ -3386,12 +3391,14 @@ function processRemoteVote(
 ){
 
   if(
-    !vote ||
-    matchOver ||
-    inBreak
-  ){
-    return;
-  }
+  !vote ||
+  matchOver ||
+  inBreak ||
+  roundClosed ||
+  seconds<=0
+){
+  return;
+}
 
 
   const refNo=
@@ -4071,11 +4078,13 @@ function sendRefereeVote(
 
 
   if(
-    state.matchOver ||
-    state.inBreak
-  ){
-    return;
-  }
+  state.matchOver ||
+  state.inBreak ||
+  state.roundClosed ||
+  Number(state.seconds)<=0
+){
+  return;
+}
 
 
   const now=
@@ -4493,11 +4502,14 @@ function applySavedState(
     cfg.breakTime;
 
 
-  inBreak=
-    Boolean(data.inBreak);
+ inBreak=
+  Boolean(data.inBreak);
 
-  matchOver=
-    Boolean(data.matchOver);
+roundClosed=
+  Boolean(data.roundClosed);
+
+matchOver=
+  Boolean(data.matchOver);
 
 
   if(data.sessionId){
