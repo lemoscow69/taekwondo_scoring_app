@@ -875,7 +875,11 @@ body.controller-mode #controllerScreen{
       aria-label="Red fighter name"
     >
 
-    <div class="score" id="redScore">0</div>
+    <div class="score-adjust-row">
+  <button class="score-adjust red-adjust" data-adjust-side="red" data-adjust="-1">−</button>
+  <div class="score" id="redScore">0</div>
+  <button class="score-adjust red-adjust" data-adjust-side="red" data-adjust="1">+</button>
+</div>
 
     <div class="points">
       <button data-side="red" data-type="punch">
@@ -980,7 +984,11 @@ body.controller-mode #controllerScreen{
       aria-label="Blue fighter name"
     >
 
-    <div class="score" id="blueScore">0</div>
+    <div class="score-adjust-row">
+  <button class="score-adjust blue-adjust" data-adjust-side="blue" data-adjust="-1">−</button>
+  <div class="score" id="blueScore">0</div>
+  <button class="score-adjust blue-adjust" data-adjust-side="blue" data-adjust="1">+</button>
+</div>
 
     <div class="points">
 
