@@ -2129,23 +2129,19 @@ function sound(type){
       audioContext.resume();
     }
 
-   
-const notes={
+    const notes={
 
-  score:[700,0.12],
+      score:[700,0.12],
 
-  gam:[360,0.18],
+      gam:[360,0.18],
 
-  round:[520,0.25],
+      round:[520,0.25],
 
-  horn:[850,0.5],
+      horn:[850,0.5],
 
-  start:[600,0.35],
+      undo:[440,0.1]
 
-  undo:[440,0.1]
-
-};
-
+    };
 
     const now=
       audioContext.currentTime;
@@ -2163,11 +2159,10 @@ const notes={
     const gain=
       audioContext.createGain();
 
-   
-oscillator.type=
-  (type==="horn" || type==="start")
-    ? "sawtooth"
-    : "sine";
+    oscillator.type=
+      type==="horn"
+        ? "sawtooth"
+        : "sine";
 
     oscillator.frequency
       .setValueAtTime(
@@ -2444,19 +2439,7 @@ function checkScoreRoundEnd(){
    TIMER
 ========================================================= */
 
- function startTimer(){
-   
- 
-  }catch(error){}
-
-  // PLAY MATCH START BUZZER
-  sound("horn");
-
-  running=true;
-
-  setStatus(
-    "Round in progress"
-  );
+function startTimer(){
 
   if(
     matchOver ||
