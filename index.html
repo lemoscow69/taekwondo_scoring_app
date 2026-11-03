@@ -2184,14 +2184,22 @@ function flash(side){
 
 function sound(type){
 
-  if(!cfg.sound)return;
-
-  // Publish only round/match victory sounds for synchronized TV playback.
-  if(!isDisplayMode && !isControllerMode && (type==="round" || type==="horn")){
-    winnerSoundEvents.push({id:String(Date.now())+"-"+Math.random().toString(36).slice(2,8),type:type});
-    if(winnerSoundEvents.length>10)winnerSoundEvents=winnerSoundEvents.slice(-10);
+  // Laptop is the sound-event sender only: every sound is routed to the TV.
+  // The TV is the only device that creates audible output.
+  if(!isDisplayMode){
+    if(isControllerMode || !cfg.sound)return;
+    const allowedTypes=["score","gam","round","horn","undo"];
+    if(!allowedTypes.includes(type))return;
+    winnerSoundEvents.push({
+      id:String(Date.now())+"-"+Math.random().toString(36).slice(2,10),
+      type:type
+    });
+    if(winnerSoundEvents.length>30)winnerSoundEvents=winnerSoundEvents.slice(-30);
+    publishState();
+    return;
   }
 
+  // TV receives the event from Firebase and plays it locally.
   try{
 
     const AC=
@@ -4631,7 +4639,7 @@ function playSyncedTVWinnerSound(data){
     const eventId=String(event.id);
     if(seenTvSoundEventIds.has(eventId))return;
     seenTvSoundEventIds.add(eventId);
-    if(event.type==="round" || event.type==="horn")sound(event.type);
+    if(["score","gam","round","horn","undo"].includes(event.type))sound(event.type);
   });
   if(seenTvSoundEventIds.size>100){
     seenTvSoundEventIds=new Set(Array.from(seenTvSoundEventIds).slice(-30));
