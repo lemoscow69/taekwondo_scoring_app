@@ -240,6 +240,7 @@ header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
 }
 
 .hidden{display:none!important}
+.controller-mode #appealOverlay,.controller-mode #openAppealBtn,.display-mode #appealOverlay,.display-mode #openAppealBtn{display:none!important}
 
 .overlay{
   position:fixed;
@@ -277,6 +278,31 @@ header h1{font-size:clamp(16px,2.5vw,26px);margin:0}
   flex-wrap:wrap;
   margin-top:16px
 }
+
+/* ================= APPEAL WINDOW ================= */
+.appeal-modal{
+  width:min(620px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#202631;
+  border:1px solid #ffffff33;
+  border-radius:16px;
+  padding:18px;
+  text-align:center
+}
+.appeal-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.appeal-side{padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.appeal-side.red-appeal{background:#351d24;border:1px solid #ef5350}
+.appeal-side.blue-appeal{background:#172b45;border:1px solid #2196f3}
+.appeal-side h3{margin:2px 0 4px;font-size:18px}
+.appeal-score{font-size:36px;font-weight:900;line-height:1.1}
+.appeal-gam{font-size:13px;font-weight:bold;color:#dce5f2;margin-bottom:4px}
+.appeal-side button{width:100%;font-size:13px;padding:10px 5px;white-space:normal}
+.appeal-plus{background:#16834a}
+.appeal-minus{background:#a83232}
+.appeal-save{width:100%;margin-top:14px;background:#1769c2;font-size:17px;padding:13px}
+.appeal-cancel{width:100%;margin-top:8px;background:#4b5563}
+@media(max-width:420px){.appeal-columns{gap:7px}.appeal-side{padding:8px}.appeal-side h3{font-size:15px}.appeal-side button{font-size:11px;padding:9px 3px}}
 
 .settings{text-align:left}
 .settings h2{text-align:center}
@@ -1276,6 +1302,10 @@ body.controller-mode #controllerScreen{
         NEXT ROUND
       </button>
 
+      <button id="openAppealBtn" class="hidden" style="background:#e09b16;color:#171717">
+        APPEAL
+      </button>
+
       <button
         id="directRedBtn"
         class="hidden"
@@ -1298,6 +1328,36 @@ body.controller-mode #controllerScreen{
 
   </div>
 
+</div>
+
+<!-- ================= APPEAL ADJUSTMENT ================= -->
+<div class="overlay hidden" id="appealOverlay">
+  <div class="appeal-modal">
+    <h2 style="margin:4px 0 6px">APPEAL ADJUSTMENT</h2>
+    <p style="margin:0 0 14px;color:#cbd5e1;font-size:13px">Changes will appear on the TV only after DONE / SAVE.</p>
+    <div class="appeal-columns">
+      <section class="appeal-side red-appeal">
+        <h3 style="color:#ff7777">RED / HONG</h3>
+        <div class="appeal-score" id="appealRedScore">0</div>
+        <div class="appeal-gam">GAM-JEOM: <span id="appealRedGam">0</span></div>
+        <button class="appeal-plus" data-appeal-side="red" data-appeal-type="score" data-appeal-delta="1">＋ POINT</button>
+        <button class="appeal-minus" data-appeal-side="red" data-appeal-type="score" data-appeal-delta="-1">－ POINT</button>
+        <button class="appeal-plus" data-appeal-side="red" data-appeal-type="gam" data-appeal-delta="1">＋ GAM-JEOM</button>
+        <button class="appeal-minus" data-appeal-side="red" data-appeal-type="gam" data-appeal-delta="-1">－ GAM-JEOM</button>
+      </section>
+      <section class="appeal-side blue-appeal">
+        <h3 style="color:#70b8ff">BLUE / CHONG</h3>
+        <div class="appeal-score" id="appealBlueScore">0</div>
+        <div class="appeal-gam">GAM-JEOM: <span id="appealBlueGam">0</span></div>
+        <button class="appeal-plus" data-appeal-side="blue" data-appeal-type="score" data-appeal-delta="1">＋ POINT</button>
+        <button class="appeal-minus" data-appeal-side="blue" data-appeal-type="score" data-appeal-delta="-1">－ POINT</button>
+        <button class="appeal-plus" data-appeal-side="blue" data-appeal-type="gam" data-appeal-delta="1">＋ GAM-JEOM</button>
+        <button class="appeal-minus" data-appeal-side="blue" data-appeal-type="gam" data-appeal-delta="-1">－ GAM-JEOM</button>
+      </section>
+    </div>
+    <button class="appeal-save" id="appealSaveBtn">DONE / SAVE</button>
+    <button class="appeal-cancel" id="appealCancelBtn">CANCEL</button>
+  </div>
 </div>
 
 
@@ -2115,148 +2175,97 @@ function sound(type){
 
   try{
 
-    const AC =
+    const AC=
       window.AudioContext ||
       window.webkitAudioContext;
 
     if(!AC)return;
 
     if(!audioContext){
-      audioContext = new AC();
+      audioContext=new AC();
     }
 
-    function playSound(){
+    if(audioContext.state==="suspended"){
+      audioContext.resume();
+    }
 
-      const now = audioContext.currentTime;
+    const notes={
 
-      // ===== LOUD REFEREE HORN =====
-      if(type === "horn"){
+      score:[700,0.12],
 
-        const tones = [
-          {frequency:440, volume:0.18},
-          {frequency:554, volume:0.18}
-        ];
+      gam:[360,0.18],
 
-        tones.forEach(tone=>{
+      round:[520,0.25],
 
-          const oscillator =
-            audioContext.createOscillator();
+      horn:[850,0.5],
 
-          const gain =
-            audioContext.createGain();
+      undo:[440,0.1]
 
-          oscillator.type = "sawtooth";
+    };
 
-          oscillator.frequency.setValueAtTime(
-            tone.frequency,
-            now
-          );
+    const now=
+      audioContext.currentTime;
 
-          oscillator.frequency.linearRampToValueAtTime(
-            tone.frequency - 35,
-            now + 1.1
-          );
+    const [
+      frequency,
+      duration
+    ]=
+      notes[type] ||
+      notes.score;
 
-          gain.gain.setValueAtTime(
-            0.0001,
-            now
-          );
+    const oscillator=
+      audioContext.createOscillator();
 
-          gain.gain.exponentialRampToValueAtTime(
-            tone.volume,
-            now + 0.04
-          );
+    const gain=
+      audioContext.createGain();
 
-          gain.gain.setValueAtTime(
-            tone.volume,
-            now + 0.85
-          );
+    oscillator.type=
+      type==="horn"
+        ? "sawtooth"
+        : "sine";
 
-          gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            now + 1.1
-          );
-
-          oscillator.connect(gain);
-
-          gain.connect(audioContext.destination);
-
-          oscillator.start(now);
-
-          oscillator.stop(now + 1.15);
-
-        });
-
-        return;
-      }
-
-      // ===== OTHER SOUNDS =====
-      const notes = {
-
-        score:[700,0.12],
-        gam:[360,0.18],
-        round:[520,0.25],
-        undo:[440,0.1]
-
-      };
-
-      const [frequency,duration] =
-        notes[type] || notes.score;
-
-      const oscillator =
-        audioContext.createOscillator();
-
-      const gain =
-        audioContext.createGain();
-
-      oscillator.type = "sine";
-
-      oscillator.frequency.setValueAtTime(
+    oscillator.frequency
+      .setValueAtTime(
         frequency,
         now
       );
 
-      gain.gain.setValueAtTime(
+    gain.gain
+      .setValueAtTime(
         0.0001,
         now
       );
 
-      gain.gain.exponentialRampToValueAtTime(
+    gain.gain
+      .exponentialRampToValueAtTime(
         0.18,
-        now + 0.015
+        now+0.015
       );
 
-      gain.gain.exponentialRampToValueAtTime(
+    gain.gain
+      .exponentialRampToValueAtTime(
         0.0001,
-        now + duration
+        now+duration
       );
 
-      oscillator.connect(gain);
+    oscillator.connect(gain);
 
-      gain.connect(audioContext.destination);
+    gain.connect(
+      audioContext.destination
+    );
 
-      oscillator.start(now);
+    oscillator.start(now);
 
-      oscillator.stop(now + duration + 0.02);
-    }
-
-    if(audioContext.state === "suspended"){
-
-      audioContext.resume().then(()=>{
-        playSound();
-      }).catch(error=>{
-        console.warn("Audio resume failed",error);
-      });
-
-    }else{
-
-      playSound();
-
-    }
+    oscillator.stop(
+      now+duration+0.02
+    );
 
   }catch(error){
 
-    console.warn("Sound unavailable",error);
+    console.warn(
+      "Sound unavailable",
+      error
+    );
 
   }
 }
@@ -2754,6 +2763,11 @@ function showWinner(
       action!=="next"
     );
 
+  $("openAppealBtn").classList.toggle(
+    "hidden",
+    isControllerMode || isDisplayMode || action!=="next" || !String(title).includes("ROUND")
+  );
+
   $("directRedBtn")
     .classList.add("hidden");
 
@@ -2770,6 +2784,65 @@ function showWinner(
 }
 
 
+let appealDraft=null;
+let appealAvailableUntilBreakEnds=false;
+
+function openAppeal(){
+  if(isControllerMode || isDisplayMode || matchOver || inBreak && breakSeconds<=0){return;}
+  appealAvailableUntilBreakEnds=true;
+  appealDraft={
+    red:{score:fighters.red.score,gam:fighters.red.gam,totalGam:fighters.red.totalGam},
+    blue:{score:fighters.blue.score,gam:fighters.blue.gam,totalGam:fighters.blue.totalGam}
+  };
+  renderAppealDraft();
+  $("appealOverlay").classList.remove("hidden");
+}
+
+function renderAppealDraft(){
+  if(!appealDraft)return;
+  $("appealRedScore").textContent=appealDraft.red.score;
+  $("appealRedGam").textContent=appealDraft.red.gam;
+  $("appealBlueScore").textContent=appealDraft.blue.score;
+  $("appealBlueGam").textContent=appealDraft.blue.gam;
+}
+
+function changeAppealDraft(side,type,delta){
+  if(!appealDraft || !appealAvailableUntilBreakEnds)return;
+  const f=appealDraft[side];
+  if(type==="score"){
+    f.score=Math.max(0,f.score+delta);
+  }else{
+    const nextGam=Math.max(0,f.gam+delta);
+    const actualDelta=nextGam-f.gam;
+    f.gam=nextGam;
+    f.totalGam=Math.max(0,f.totalGam+actualDelta);
+    const opponent=side==="red"?"blue":"red";
+    appealDraft[opponent].score=Math.max(0,appealDraft[opponent].score+actualDelta);
+  }
+  renderAppealDraft();
+}
+
+function saveAppeal(){
+  if(!appealDraft || !appealAvailableUntilBreakEnds || inBreak && breakSeconds<=0)return;
+  snapshot();
+  for(const side of ["red","blue"]){
+    fighters[side].score=appealDraft[side].score;
+    fighters[side].gam=appealDraft[side].gam;
+    fighters[side].totalGam=appealDraft[side].totalGam;
+  }
+  appealDraft=null;
+  appealAvailableUntilBreakEnds=false;
+  $("appealOverlay").classList.add("hidden");
+  render();
+  setStatus("Appeal score adjustment saved.");
+  publishState();
+}
+
+function cancelAppeal(){
+  appealDraft=null;
+  $("appealOverlay").classList.add("hidden");
+}
+
 function closeWinner(){
 
   $("winnerOverlay")
@@ -2777,6 +2850,8 @@ function closeWinner(){
 
   $("winnerNextBtn")
     .classList.remove("hidden");
+
+  $("openAppealBtn").classList.add("hidden");
 
   $("directRedBtn")
     .classList.add("hidden");
@@ -2828,6 +2903,9 @@ function beginBreak(){
 
 
   if(cfg.breakTime<=0){
+    appealAvailableUntilBreakEnds=false;
+    appealDraft=null;
+    $("appealOverlay").classList.add("hidden");
 
     if(cfg.autoNext){
 
@@ -2873,6 +2951,9 @@ function beginBreak(){
       breakId=null;
 
       breakSeconds=0;
+      appealAvailableUntilBreakEnds=false;
+      appealDraft=null;
+      $("appealOverlay").classList.add("hidden");
 
 
       if(cfg.autoNext){
@@ -2927,6 +3008,9 @@ function startNextRound(){
   running=false;
 inBreak=false;
 roundClosed=false;
+appealAvailableUntilBreakEnds=false;
+appealDraft=null;
+$("appealOverlay").classList.add("hidden");
 round++;
 
 
@@ -5271,6 +5355,17 @@ $("winnerNextBtn")
     "click",
     winnerContinue
   );
+
+$("openAppealBtn").addEventListener("click",openAppeal);
+$("appealCancelBtn").addEventListener("click",cancelAppeal);
+$("appealSaveBtn").addEventListener("click",saveAppeal);
+document.querySelectorAll("[data-appeal-side]").forEach(button=>{
+  button.addEventListener("click",()=>changeAppealDraft(
+    button.dataset.appealSide,
+    button.dataset.appealType,
+    Number(button.dataset.appealDelta)
+  ));
+});
 
 $("winnerCloseBtn")
   .addEventListener(
