@@ -2109,6 +2109,7 @@ function flash(side){
 }
 
 
+
 function sound(type){
 
   if(!cfg.sound)return;
@@ -2125,9 +2126,130 @@ function sound(type){
       audioContext = new AC();
     }
 
-    function playSound(){
+    const playSound = () => {
 
       const now = audioContext.currentTime;
+
+      // TRUCK STYLE DUAL TONE HORN
+      if(type === "horn"){
+
+        const blasts = [0, 0.85];
+
+        blasts.forEach((delay)=>{
+
+          [392, 494].forEach((frequency)=>{
+
+            const oscillator =
+              audioContext.createOscillator();
+
+            const gain =
+              audioContext.createGain();
+
+            oscillator.type = "sawtooth";
+
+            oscillator.frequency.setValueAtTime(
+              frequency,
+              now + delay
+            );
+
+            oscillator.frequency.linearRampToValueAtTime(
+              frequency - 18,
+              now + delay + 0.65
+            );
+
+            gain.gain.setValueAtTime(
+              0.0001,
+              now + delay
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              0.16,
+              now + delay + 0.04
+            );
+
+            gain.gain.setValueAtTime(
+              0.16,
+              now + delay + 0.48
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              now + delay + 0.68
+            );
+
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+
+            oscillator.start(now + delay);
+            oscillator.stop(now + delay + 0.70);
+
+          });
+
+        });
+
+        return;
+      }
+
+      // OTHER SOUNDS - UNCHANGED
+      const notes = {
+        score:[700,0.12],
+        gam:[360,0.18],
+        round:[520,0.25],
+        undo:[440,0.1]
+      };
+
+      const [frequency,duration] =
+        notes[type] || notes.score;
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        now
+      );
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        now
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.18,
+        now + 0.015
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + duration
+      );
+
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration + 0.02);
+
+    };
+
+    if(audioContext.state === "suspended"){
+      audioContext.resume().then(playSound);
+    }else{
+      playSound();
+    }
+
+  }catch(error){
+
+    console.warn("Sound unavailable",error);
+
+  }
+}
+
 
       // ===== LOUD REFEREE HORN =====
       if(type === "horn"){
@@ -2741,7 +2863,7 @@ function awardRound(
 
   render();
 
-  sound("round");
+  sound("horn");
 
 
   if(
