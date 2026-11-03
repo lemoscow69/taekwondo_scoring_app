@@ -868,6 +868,12 @@ body.controller-mode #controllerScreen{
   user-select:none;
   -webkit-touch-callout:none;
 }
+
+
+/* TV audio unlock control */
+#tvSoundEnable{display:none;margin:14px auto 0;padding:10px 18px;border:1px solid #fff;border-radius:8px;background:#182b42;color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+.display-mode #tvSoundEnable{display:block}
+#tvSoundEnable.sound-enabled{background:#176b3a;border-color:#55d98b}
 </style>
 </style>
 </head>
@@ -1101,6 +1107,7 @@ body.controller-mode #controllerScreen{
       </div>
 
       <div class="tv-winner" id="tvWinner"></div>
+      <button id="tvSoundEnable" type="button" onclick="enableTVSound()">🔊 ENABLE TV SOUND</button>
 
     </div>
 
@@ -1791,6 +1798,10 @@ let history = [];
 let pendingAction = "none";
 
 let audioContext = null;
+let winnerSoundEvents = [];
+let seenTvSoundEventIds = new Set();
+let tvSoundInitialized = false;
+let tvHasReceivedInitialState = false;
 
 let sessionId = makeSessionId();
 
@@ -1942,6 +1953,8 @@ matchOver: matchOver,
           : $("winnerTitle").textContent
       )
       : "",
+
+    soundEvents:winnerSoundEvents.slice(-10),
 
     settings:{
       roundTime:cfg.roundTime,
@@ -2172,6 +2185,12 @@ function flash(side){
 function sound(type){
 
   if(!cfg.sound)return;
+
+  // Publish only round/match victory sounds for synchronized TV playback.
+  if(!isDisplayMode && !isControllerMode && (type==="round" || type==="horn")){
+    winnerSoundEvents.push({id:String(Date.now())+"-"+Math.random().toString(36).slice(2,8),type:type});
+    if(winnerSoundEvents.length>10)winnerSoundEvents=winnerSoundEvents.slice(-10);
+  }
 
   try{
 
@@ -4584,6 +4603,41 @@ function updateControllerUI(
    DISPLAY / TV
 ========================================================= */
 
+function enableTVSound(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return;
+    if(!audioContext)audioContext=new AC();
+    audioContext.resume().then(()=>{
+      const button=$("tvSoundEnable");
+      if(button){button.textContent="✓ TV SOUND ENABLED";button.classList.add("sound-enabled");}
+      tvSoundInitialized=true;
+    }).catch(error=>console.warn("TV audio unlock failed:",error));
+  }catch(error){console.warn("TV audio unavailable:",error);}
+}
+
+function playSyncedTVWinnerSound(data){
+  if(!isDisplayMode || !data || !Array.isArray(data.soundEvents))return;
+  // Do not replay sounds from before this TV page connected.
+  if(!tvHasReceivedInitialState){
+    data.soundEvents.forEach(event=>{if(event && event.id)seenTvSoundEventIds.add(String(event.id));});
+    tvHasReceivedInitialState=true;
+    return;
+  }
+  if(!tvSoundInitialized)return;
+  if(data.settings && data.settings.sound===false)return;
+  data.soundEvents.forEach(event=>{
+    if(!event || !event.id)return;
+    const eventId=String(event.id);
+    if(seenTvSoundEventIds.has(eventId))return;
+    seenTvSoundEventIds.add(eventId);
+    if(event.type==="round" || event.type==="horn")sound(event.type);
+  });
+  if(seenTvSoundEventIds.size>100){
+    seenTvSoundEventIds=new Set(Array.from(seenTvSoundEventIds).slice(-30));
+  }
+}
+
 function renderTV(data){
 
   if(!data)return;
@@ -5070,6 +5124,7 @@ function startDisplayFirebase(){
         if(data){
 
           renderTV(data);
+          playSyncedTVWinnerSound(data);
 
         }
 
