@@ -2449,18 +2449,14 @@ function startTimer(){
     return;
   }
 
-
   if(seconds<=0){
-
     endRound();
-
     return;
   }
 
-
   try{
 
-    const AC=
+    const AC =
       window.AudioContext ||
       window.webkitAudioContext;
 
@@ -2468,35 +2464,33 @@ function startTimer(){
       AC &&
       !audioContext
     ){
-
-      audioContext=
-        new AC();
+      audioContext = new AC();
     }
 
     if(
       audioContext &&
-      audioContext.state==="suspended"
+      audioContext.state === "suspended"
     ){
-
       audioContext.resume();
     }
 
   }catch(error){}
 
+  // BUZZER: only at the beginning of a round,
+  // not when resuming a paused round.
+  if(seconds >= cfg.roundTime){
+    sound("horn");
+  }
 
   running=true;
 
-  setStatus(
-    "Round in progress"
-  );
+  setStatus("Round in progress");
 
   render();
-
 
   timerId=setInterval(()=>{
 
     seconds--;
-
 
     if(seconds<=0){
 
@@ -2508,7 +2502,6 @@ function startTimer(){
 
       return;
     }
-
 
     render();
 
