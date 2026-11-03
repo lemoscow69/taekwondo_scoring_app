@@ -2656,12 +2656,21 @@ function awardRound(
   snapshot();
 
 
+  // Save the pre-decision round tally so an accepted appeal can
+  // replace this round's result instead of merely changing points.
+  appealRoundBeforeWins={
+    red:fighters.red.wins,
+    blue:fighters.blue.wins
+  };
+  appealRoundNumber=round;
+  appealRoundResultCaptured=true;
+  appealAvailableUntilBreakEnds=true;
+
   if(side){
-
     fighters[side].wins++;
-
   }
 
+  appealOriginalWinner=side || null;
 
   render();
 
@@ -2765,7 +2774,12 @@ function showWinner(
 
   $("openAppealBtn").classList.toggle(
     "hidden",
-    isControllerMode || isDisplayMode || action!=="next" || !String(title).includes("ROUND")
+    isControllerMode ||
+    isDisplayMode ||
+    !appealAvailableUntilBreakEnds ||
+    !appealRoundResultCaptured ||
+    appealRoundNumber!==round ||
+    !(String(title).includes("ROUND") || String(title).includes("MATCH WINNER"))
   );
 
   $("directRedBtn")
@@ -2786,10 +2800,20 @@ function showWinner(
 
 let appealDraft=null;
 let appealAvailableUntilBreakEnds=false;
+let appealRoundBeforeWins=null;
+let appealRoundNumber=null;
+let appealOriginalWinner=null;
+let appealRoundResultCaptured=false;
 
 function openAppeal(){
-  if(isControllerMode || isDisplayMode || matchOver || inBreak && breakSeconds<=0){return;}
-  appealAvailableUntilBreakEnds=true;
+  if(
+    isControllerMode ||
+    isDisplayMode ||
+    !appealAvailableUntilBreakEnds ||
+    !appealRoundResultCaptured ||
+    appealRoundNumber!==round ||
+    inBreak && breakSeconds<=0
+  ){return;}
   appealDraft={
     red:{score:fighters.red.score,gam:fighters.red.gam,totalGam:fighters.red.totalGam},
     blue:{score:fighters.blue.score,gam:fighters.blue.gam,totalGam:fighters.blue.totalGam}
@@ -2823,18 +2847,95 @@ function changeAppealDraft(side,type,delta){
 }
 
 function saveAppeal(){
-  if(!appealDraft || !appealAvailableUntilBreakEnds || inBreak && breakSeconds<=0)return;
+  if(
+    !appealDraft ||
+    !appealAvailableUntilBreakEnds ||
+    !appealRoundResultCaptured ||
+    appealRoundNumber!==round ||
+    (inBreak && breakSeconds<=0)
+  ) return;
+
+  // Capture the adjusted values BEFORE clearing the draft.
+  const correctedScores={
+    red:Math.max(0,Number(appealDraft.red.score)||0),
+    blue:Math.max(0,Number(appealDraft.blue.score)||0)
+  };
+  const correctedGam={
+    red:Math.max(0,Number(appealDraft.red.gam)||0),
+    blue:Math.max(0,Number(appealDraft.blue.gam)||0)
+  };
+  const correctedTotalGam={
+    red:Math.max(0,Number(appealDraft.red.totalGam)||0),
+    blue:Math.max(0,Number(appealDraft.blue.totalGam)||0)
+  };
+
+  // Determine the appeal result from the final adjusted round scores.
+  const correctedWinner =
+    correctedScores.red>correctedScores.blue ? "red" :
+    correctedScores.blue>correctedScores.red ? "blue" : null;
+
+  // Keep Undo support before committing any changes.
   snapshot();
+
+  // Restore the round tally to the state BEFORE the original round award.
+  // This removes Blue's original round win before applying the appeal result.
+  const winsBefore=appealRoundBeforeWins || {red:0,blue:0};
+  fighters.red.wins=Math.max(0,Number(winsBefore.red)||0);
+  fighters.blue.wins=Math.max(0,Number(winsBefore.blue)||0);
+
+  // Commit corrected score and Gam-jeom values to the live match state.
   for(const side of ["red","blue"]){
-    fighters[side].score=appealDraft[side].score;
-    fighters[side].gam=appealDraft[side].gam;
-    fighters[side].totalGam=appealDraft[side].totalGam;
+    fighters[side].score=correctedScores[side];
+    fighters[side].gam=correctedGam[side];
+    fighters[side].totalGam=correctedTotalGam[side];
   }
+
+  // Apply exactly ONE round result: corrected winner, or draw.
+  if(correctedWinner){
+    fighters[correctedWinner].wins++;
+  }
+
+  // Clear the appeal window, but retain the corrected result.
   appealDraft=null;
   appealAvailableUntilBreakEnds=false;
+  appealRoundResultCaptured=false;
+  appealRoundBeforeWins=null;
+  appealOriginalWinner=null;
+  appealRoundNumber=null;
+  inBreak=false;
+  matchOver=false;
   $("appealOverlay").classList.add("hidden");
+
+  // Re-render scores and wins before deciding who won the match.
   render();
-  setStatus("Appeal score adjustment saved.");
+
+  if(correctedWinner && fighters[correctedWinner].wins>=requiredWins()){
+    // A corrected result may reverse a previously declared match winner.
+    declareMatchWinner(
+      correctedWinner,
+      fighterName(correctedWinner)+
+      " has won the required number of rounds after the appeal decision."
+    );
+  }else if(correctedWinner){
+    showWinner(
+      "ROUND WINNER",
+      fighterName(correctedWinner)+
+      " wins Round "+round+" after the appeal decision.",
+      "next"
+    );
+  }else{
+    showWinner(
+      "ROUND DRAW",
+      "The appeal decision leaves the round tied. No round win is awarded.",
+      "next"
+    );
+  }
+
+  setStatus(
+    correctedWinner
+      ? fighterName(correctedWinner)+" is the corrected round winner."
+      : "Appeal saved: the corrected round is a draw."
+  );
   publishState();
 }
 
@@ -2905,6 +3006,10 @@ function beginBreak(){
   if(cfg.breakTime<=0){
     appealAvailableUntilBreakEnds=false;
     appealDraft=null;
+    appealRoundResultCaptured=false;
+    appealRoundBeforeWins=null;
+    appealOriginalWinner=null;
+    appealRoundNumber=null;
     $("appealOverlay").classList.add("hidden");
 
     if(cfg.autoNext){
@@ -2953,6 +3058,10 @@ function beginBreak(){
       breakSeconds=0;
       appealAvailableUntilBreakEnds=false;
       appealDraft=null;
+      appealRoundResultCaptured=false;
+      appealRoundBeforeWins=null;
+      appealOriginalWinner=null;
+      appealRoundNumber=null;
       $("appealOverlay").classList.add("hidden");
 
 
@@ -3010,6 +3119,10 @@ inBreak=false;
 roundClosed=false;
 appealAvailableUntilBreakEnds=false;
 appealDraft=null;
+appealRoundResultCaptured=false;
+appealRoundBeforeWins=null;
+appealOriginalWinner=null;
+appealRoundNumber=null;
 $("appealOverlay").classList.add("hidden");
 round++;
 
