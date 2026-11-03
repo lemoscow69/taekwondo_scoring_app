@@ -5140,6 +5140,46 @@ $("pauseBtn")
     pauseTimer
   );
 
+/* =========================================
+   KEYBOARD CONTROL — ENTER TO START / PAUSE
+========================================= */
+
+document.addEventListener("keydown", function(event) {
+
+  // Only Enter key
+  if (event.key !== "Enter") return;
+
+  // Hold karne par baar-baar trigger na ho
+  if (event.repeat) return;
+
+  // Input ya kisi button par focus ho to shortcut na chale
+  const active = document.activeElement;
+
+  if (
+    active &&
+    (
+      active.tagName === "INPUT" ||
+      active.tagName === "TEXTAREA" ||
+      active.tagName === "SELECT" ||
+      active.tagName === "BUTTON" ||
+      active.isContentEditable
+    )
+  ) {
+    return;
+  }
+
+  // Default Enter action rokna
+  event.preventDefault();
+
+  // Running hai to PAUSE, warna START
+  if (running) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+
+});
+
 $("endBtn")
   .addEventListener(
     "click",
