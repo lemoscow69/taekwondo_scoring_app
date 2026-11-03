@@ -2115,15 +2115,151 @@ function sound(type){
 
   try{
 
-    const AC=
+    const AC =
       window.AudioContext ||
       window.webkitAudioContext;
 
     if(!AC)return;
 
     if(!audioContext){
-      audioContext=new AC();
+      audioContext = new AC();
     }
+
+    function playSound(){
+
+      const now = audioContext.currentTime;
+
+      // ===== LOUD REFEREE HORN =====
+      if(type === "horn"){
+
+        const tones = [
+          {frequency:440, volume:0.18},
+          {frequency:554, volume:0.18}
+        ];
+
+        tones.forEach(tone=>{
+
+          const oscillator =
+            audioContext.createOscillator();
+
+          const gain =
+            audioContext.createGain();
+
+          oscillator.type = "sawtooth";
+
+          oscillator.frequency.setValueAtTime(
+            tone.frequency,
+            now
+          );
+
+          oscillator.frequency.linearRampToValueAtTime(
+            tone.frequency - 35,
+            now + 1.1
+          );
+
+          gain.gain.setValueAtTime(
+            0.0001,
+            now
+          );
+
+          gain.gain.exponentialRampToValueAtTime(
+            tone.volume,
+            now + 0.04
+          );
+
+          gain.gain.setValueAtTime(
+            tone.volume,
+            now + 0.85
+          );
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            now + 1.1
+          );
+
+          oscillator.connect(gain);
+
+          gain.connect(audioContext.destination);
+
+          oscillator.start(now);
+
+          oscillator.stop(now + 1.15);
+
+        });
+
+        return;
+      }
+
+      // ===== OTHER SOUNDS =====
+      const notes = {
+
+        score:[700,0.12],
+        gam:[360,0.18],
+        round:[520,0.25],
+        undo:[440,0.1]
+
+      };
+
+      const [frequency,duration] =
+        notes[type] || notes.score;
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        now
+      );
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        now
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.18,
+        now + 0.015
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + duration
+      );
+
+      oscillator.connect(gain);
+
+      gain.connect(audioContext.destination);
+
+      oscillator.start(now);
+
+      oscillator.stop(now + duration + 0.02);
+    }
+
+    if(audioContext.state === "suspended"){
+
+      audioContext.resume().then(()=>{
+        playSound();
+      }).catch(error=>{
+        console.warn("Audio resume failed",error);
+      });
+
+    }else{
+
+      playSound();
+
+    }
+
+  }catch(error){
+
+    console.warn("Sound unavailable",error);
+
+  }
+}
 
     if(audioContext.state==="suspended"){
       audioContext.resume();
