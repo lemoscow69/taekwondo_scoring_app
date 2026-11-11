@@ -875,6 +875,19 @@ body.controller-mode #controllerScreen{
 .display-mode #tvSoundEnable{display:block}
 #tvSoundEnable.sound-enabled{background:#176b3a;border-color:#55d98b}
 </style>
+
+/* TV round-winner popup */
+.tv-round-winner-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.82)}
+.tv-round-winner-card{width:min(900px,94vw);padding:clamp(22px,4vw,48px);border:5px solid #fff;border-radius:24px;background:#ffd600;color:#111;text-align:center;box-shadow:0 0 55px rgba(255,214,0,.65)}
+.tv-round-winner-heading{font-size:clamp(28px,5vw,64px);font-weight:900;letter-spacing:2px}
+.tv-round-winner-name{margin:12px 0 24px;font-size:clamp(34px,7vw,86px);line-height:1.05;font-weight:1000}
+.tv-round-winner-scores{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tv-round-score{padding:16px 10px;border-radius:16px;color:#fff;display:flex;flex-direction:column;gap:8px}
+.tv-round-score span{font-size:clamp(22px,3.5vw,42px);font-weight:900}
+.tv-round-score strong{font-size:clamp(54px,10vw,112px);line-height:1}
+.tv-round-score.red-score{background:#c62828}
+.tv-round-score.blue-score{background:#1565c0}
+@media(max-width:520px){.tv-round-winner-scores{gap:8px}.tv-round-score{padding:12px 6px}}
 </style>
 </head>
 
@@ -1132,6 +1145,17 @@ body.controller-mode #controllerScreen{
 
     </div>
 
+  </div>
+
+  <div id="tvRoundWinnerOverlay" class="tv-round-winner-overlay hidden" aria-live="assertive">
+    <div class="tv-round-winner-card">
+      <div class="tv-round-winner-heading">ROUND WINNER</div>
+      <div id="tvRoundWinnerName" class="tv-round-winner-name">RED WINS!</div>
+      <div class="tv-round-winner-scores">
+        <div class="tv-round-score red-score"><span>RED</span><strong id="tvRoundRedScore">0</strong></div>
+        <div class="tv-round-score blue-score"><span>BLUE</span><strong id="tvRoundBlueScore">0</strong></div>
+      </div>
+    </div>
   </div>
 
 </section>
@@ -1802,6 +1826,7 @@ let winnerSoundEvents = [];
 let seenTvSoundEventIds = new Set();
 let tvSoundInitialized = false;
 let tvHasReceivedInitialState = false;
+let currentRoundPopup = null;
 
 let sessionId = makeSessionId();
 
@@ -1953,6 +1978,8 @@ matchOver: matchOver,
           : $("winnerTitle").textContent
       )
       : "",
+
+    roundPopup:currentRoundPopup,
 
     soundEvents:winnerSoundEvents.slice(-10),
 
@@ -2699,6 +2726,12 @@ function awardRound(
 
   if(!side){
 
+    currentRoundPopup={
+      winner:"ROUND DRAW",
+      redScore:fighters.red.score,
+      blueScore:fighters.blue.score
+    };
+
     showWinner(
       "ROUND DRAW",
       reason,
@@ -2708,6 +2741,12 @@ function awardRound(
     return;
   }
 
+
+  currentRoundPopup={
+    winner:side==="red" ? "RED WINS!" : "BLUE WINS!",
+    redScore:fighters.red.score,
+    blueScore:fighters.blue.score
+  };
 
   showWinner(
     "ROUND WINNER",
@@ -2761,6 +2800,20 @@ function showWinner(
   message,
   action
 ){
+
+  if(title==="ROUND WINNER" || title==="ROUND DRAW"){
+    if(!currentRoundPopup){
+      currentRoundPopup={
+        winner:title==="ROUND DRAW" ? "ROUND DRAW" : "",
+        redScore:fighters.red.score,
+        blueScore:fighters.blue.score
+      };
+    }
+    currentRoundPopup.redScore=fighters.red.score;
+    currentRoundPopup.blueScore=fighters.blue.score;
+  }else{
+    currentRoundPopup=null;
+  }
 
   pendingAction=action;
 
@@ -4719,6 +4772,20 @@ function renderTV(data){
     .textContent=
     data.winner ||
     "";
+
+  const roundPopup=data.roundPopup;
+  const showRoundPopup=
+    data.winner==="ROUND WINNER" ||
+    data.winner==="ROUND DRAW";
+  $("tvRoundWinnerOverlay").classList.toggle(
+    "hidden",
+    !(showRoundPopup && roundPopup)
+  );
+  if(showRoundPopup && roundPopup){
+    $("tvRoundWinnerName").textContent=roundPopup.winner || "ROUND DRAW";
+    $("tvRoundRedScore").textContent=Number(roundPopup.redScore)||0;
+    $("tvRoundBlueScore").textContent=Number(roundPopup.blueScore)||0;
+  }
 }
 
 
