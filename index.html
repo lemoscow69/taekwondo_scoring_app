@@ -888,168 +888,43 @@ body.controller-mode #controllerScreen{
 .tv-round-score.blue-score{background:#1565c0}
 @media(max-width:520px){.tv-round-winner-scores{gap:8px}.tv-round-score{padding:12px 6px}}
 
+/* LAPTOP MATCH HISTORY */
+.history-modal{text-align:left;width:min(760px,100%)}
+.history-modal h2{text-align:center}
+.history-note{text-align:center;color:#b0bec5;font-size:12px}
+.match-history-list{display:flex;flex-direction:column;gap:9px;max-height:55vh;overflow:auto;margin:14px 0}
+.match-history-empty{padding:24px 12px;text-align:center;color:#b0bec5;background:#111821;border-radius:9px}
+.match-history-item{padding:12px;background:#111821;border:1px solid #ffffff22;border-radius:10px}
+.match-history-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#b0bec5;font-size:12px;margin-bottom:8px}
+.match-history-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-weight:900;font-size:22px;text-align:center}
+.match-history-score .history-red{color:#ff7777}
+.match-history-score .history-blue{color:#70b8ff}
+.match-history-result{text-align:center;color:#ffd54f;font-weight:bold;margin-top:7px;font-size:13px}
+@media(max-width:700px){.match-history-score{font-size:17px}.history-modal{padding:14px}}
 
-
-/* ===== REFEREE REMOTE: FULL-SCREEN, SAME LAYOUT IN BOTH ORIENTATIONS ===== */
-/* RED remains on the left, BLUE on the right; each side has +1/+2/+3
-   stacked vertically. The layout is independent of device orientation. */
-body.controller-mode{
-  width:100%;
-  height:100%;
-  min-height:100dvh;
-  overflow:hidden;
+/* Slightly larger mobile referee scoring buttons and point numerals */
+@media (max-width:700px){
+  #controllerScreen .ref-score-btn .ref-big{
+    font-size:clamp(62px,18vw,112px);
+  }
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(1) .ref-big,
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(2) .ref-big,
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(3) .ref-big{
+    font-size:clamp(62px,18vw,112px);
+  }
 }
-body.controller-mode #controllerScreen{
-  display:flex !important;
-  flex-direction:column !important;
-  width:100vw !important;
-  height:100vh !important;
-  height:100dvh !important;
-  min-height:0 !important;
-  overflow:hidden !important;
+@media (max-width:380px){
+  #controllerScreen .ref-score-btn .ref-big{font-size:clamp(50px,17vw,88px)}
 }
-body.controller-mode #controllerScreen .controller-header{
-  flex:0 0 auto !important;
-  min-height:clamp(48px,7vh,68px) !important;
-  padding:clamp(5px,1.2vh,10px) clamp(8px,1.5vw,14px) !important;
-}
-body.controller-mode #controllerScreen .controller-scorebar{
-  flex:0 0 auto !important;
-  min-height:clamp(56px,10vh,88px) !important;
-  padding:clamp(4px,1vh,8px) !important;
-}
-body.controller-mode #controllerScreen .controller-sides{
-  flex:1 1 0 !important;
-  min-height:0 !important;
-  width:100% !important;
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-  grid-template-rows:minmax(0,1fr) !important;
-  gap:2px !important;
-  overflow:hidden !important;
-}
-body.controller-mode #controllerScreen .ref-side{
-  min-width:0 !important;
-  min-height:0 !important;
-  height:100% !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:stretch !important;
-  justify-content:stretch !important;
-  padding:clamp(3px,1vh,10px) !important;
-  overflow:hidden !important;
-}
-body.controller-mode #controllerScreen .ref-side.red-side{
-  border-right:2px solid #fff !important;
-  border-bottom:0 !important;
-}
-body.controller-mode #controllerScreen .ref-side-title{
-  flex:0 0 auto !important;
-  text-align:center !important;
-  font-size:clamp(20px,5vw,48px) !important;
-  line-height:1 !important;
-  margin:0 0 2px !important;
-}
-body.controller-mode #controllerScreen .ref-side-sub{
-  flex:0 0 auto !important;
-  text-align:center !important;
-  font-size:clamp(10px,2.2vw,18px) !important;
-  margin:0 0 clamp(3px,0.8vh,8px) !important;
-}
-body.controller-mode #controllerScreen .ref-buttons{
-  flex:1 1 0 !important;
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) !important;
-  grid-template-rows:repeat(3,minmax(0,1fr)) !important;
-  gap:clamp(2px,0.5vh,6px) !important;
-  padding:0 !important;
-}
-body.controller-mode #controllerScreen .ref-score-btn{
-  width:100% !important;
-  height:100% !important;
-  min-width:0 !important;
-  min-height:0 !important;
-  margin:0 !important;
-  padding:2px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border:1px solid #ffffff55 !important;
-  border-radius:2px !important;
-  font-size:0 !important;
-  line-height:1 !important;
-  overflow:hidden !important;
-  touch-action:manipulation !important;
-}
-body.controller-mode #controllerScreen .ref-score-btn .ref-big{
-  display:block !important;
-  margin:0 !important;
-  font-size:clamp(30px,9vw,100px) !important;
-  line-height:.95 !important;
-  font-weight:900 !important;
-  white-space:nowrap !important;
-}
-body.controller-mode #controllerScreen .ref-score-btn:disabled{
-  opacity:.28 !important;
-  filter:grayscale(.65) !important;
-}
-body.controller-mode #controllerScreen .controller-footer{
-  flex:0 0 auto !important;
-  padding:clamp(3px,.7vh,7px) !important;
-  font-size:clamp(8px,1.4vw,11px) !important;
+@media (max-width:700px) and (orientation:landscape){
+  #controllerScreen .ref-score-btn .ref-big,
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(1) .ref-big,
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(2) .ref-big,
+  #controllerScreen .ref-buttons .ref-score-btn:nth-child(3) .ref-big{
+    font-size:clamp(42px,10vh,76px);
+  }
 }
 
-/* Landscape phones: give each scoring button a larger, readable tap target. */
-@media (orientation:landscape) and (max-height:700px){
-  body.controller-mode #controllerScreen .controller-header{
-    min-height:42px !important;
-    padding:4px 10px !important;
-  }
-  body.controller-mode #controllerScreen .controller-title{
-    font-size:clamp(13px,2.5vw,18px) !important;
-  }
-  body.controller-mode #controllerScreen .controller-scorebar{
-    min-height:48px !important;
-    padding:3px 8px !important;
-  }
-  body.controller-mode #controllerScreen .controller-current{
-    font-size:clamp(22px,5vh,34px) !important;
-  }
-  body.controller-mode #controllerScreen .controller-round{
-    font-size:clamp(10px,2.2vh,14px) !important;
-    line-height:1.15 !important;
-  }
-  body.controller-mode #controllerScreen .ref-side{
-    padding:3px 5px !important;
-  }
-  body.controller-mode #controllerScreen .ref-side-title{
-    font-size:clamp(18px,4.2vh,30px) !important;
-  }
-  body.controller-mode #controllerScreen .ref-side-sub{
-    font-size:clamp(10px,2.2vh,14px) !important;
-    margin-bottom:3px !important;
-  }
-  body.controller-mode #controllerScreen .ref-buttons{
-    gap:3px !important;
-  }
-  body.controller-mode #controllerScreen .ref-score-btn{
-    font-size:clamp(11px,2.4vh,16px) !important;
-    padding:3px !important;
-    border-width:2px !important;
-  }
-  body.controller-mode #controllerScreen .ref-score-btn .ref-big{
-    font-size:clamp(38px,10.5vh,72px) !important;
-    line-height:.95 !important;
-  }
-  body.controller-mode #controllerScreen .controller-footer{
-    padding:2px 4px !important;
-    font-size:9px !important;
-  }
-}
 </style>
 
 </head>
@@ -1068,6 +943,7 @@ body.controller-mode #controllerScreen .controller-footer{
     <span class="cloud-badge" id="cloudBadge">CLOUD...</span>
     <button class="small-btn" id="refereeBtn">📱 REFEREE</button>
     <button class="small-btn" id="tvBtn">📺 TV</button>
+    <button class="small-btn" id="historyBtn">📚 HISTORY</button>
     <button class="small-btn" id="settingsBtn">⚙ SETTINGS</button>
   </div>
 </header>
@@ -1555,6 +1431,19 @@ body.controller-mode #controllerScreen .controller-footer{
 </div>
 
 
+<!-- ================= MATCH HISTORY (LAPTOP ONLY) ================= -->
+<div class="overlay hidden" id="matchHistoryOverlay">
+  <div class="modal history-modal">
+    <h2>📚 MATCH HISTORY</h2>
+    <p class="history-note">Records are saved on this laptop/browser.</p>
+    <div id="matchHistoryList" class="match-history-list"></div>
+    <div class="modal-actions">
+      <button id="clearMatchHistoryBtn" class="end">CLEAR ALL</button>
+      <button id="closeMatchHistoryBtn">CLOSE</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= SETTINGS ================= -->
 
 <div class="overlay hidden" id="settingsOverlay">
@@ -2011,6 +1900,126 @@ let controllerState = null;
 let controllerCurrentSession = "";
 
 let boardClaimed = false;
+
+/* =========================================================
+   LAPTOP-ONLY PERSISTENT MATCH HISTORY
+========================================================= */
+
+const MATCH_HISTORY_KEY = "excellenceTaekwondoMatchHistory_v1";
+let savedMatchRecords = [];
+
+function loadMatchRecords(){
+  if(isControllerMode || isDisplayMode)return;
+  try{
+    const stored=JSON.parse(localStorage.getItem(MATCH_HISTORY_KEY) || "[]");
+    savedMatchRecords=Array.isArray(stored) ? stored : [];
+  }catch(error){
+    savedMatchRecords=[];
+  }
+}
+
+function persistMatchRecords(){
+  if(isControllerMode || isDisplayMode)return;
+  try{
+    localStorage.setItem(MATCH_HISTORY_KEY,JSON.stringify(savedMatchRecords));
+  }catch(error){
+    console.error("Could not save match history:",error);
+    setStatus("History could not be saved. Check this browser's storage.");
+  }
+}
+
+function saveCurrentMatchRecord(resultLabel){
+  if(isControllerMode || isDisplayMode || !roomId)return;
+  if(savedMatchRecords.some(record=>record.sessionId===sessionId))return;
+
+  const record={
+    id:sessionId,
+    sessionId:sessionId,
+    roomId:roomId,
+    date:new Date().toISOString(),
+    redName:fighterName("red"),
+    blueName:fighterName("blue"),
+    redScore:Number(fighters.red.score)||0,
+    blueScore:Number(fighters.blue.score)||0,
+    redGam:Number(fighters.red.totalGam)||0,
+    blueGam:Number(fighters.blue.totalGam)||0,
+    redRounds:Number(fighters.red.wins)||0,
+    blueRounds:Number(fighters.blue.wins)||0,
+    roundsPlayed:Math.max(1,Number(round)||1),
+    result:resultLabel || "Match ended",
+    complete:Boolean(matchOver)
+  };
+
+  savedMatchRecords.unshift(record);
+  if(savedMatchRecords.length>500)savedMatchRecords=savedMatchRecords.slice(0,500);
+  persistMatchRecords();
+}
+
+function renderMatchHistory(){
+  const list=$("matchHistoryList");
+  if(!list)return;
+  list.replaceChildren();
+
+  if(!savedMatchRecords.length){
+    const empty=document.createElement("div");
+    empty.className="match-history-empty";
+    empty.textContent="No match records yet. Completed matches will appear here.";
+    list.appendChild(empty);
+    return;
+  }
+
+  savedMatchRecords.forEach(record=>{
+    const item=document.createElement("article");
+    item.className="match-history-item";
+
+    const top=document.createElement("div");
+    top.className="match-history-top";
+    const date=document.createElement("span");
+    const parsedDate=new Date(record.date);
+    date.textContent=Number.isNaN(parsedDate.getTime()) ? "Date unavailable" : parsedDate.toLocaleString();
+    const room=document.createElement("span");
+    room.textContent="ROOM "+(record.roomId || "------");
+    top.append(date,room);
+
+    const score=document.createElement("div");
+    score.className="match-history-score";
+    const red=document.createElement("span");
+    red.className="history-red";
+    red.textContent=(record.redName || "HONG")+" · "+(record.redScore ?? 0);
+    const dash=document.createElement("span");
+    dash.textContent="—";
+    const blue=document.createElement("span");
+    blue.className="history-blue";
+    blue.textContent=(record.blueName || "CHONG")+" · "+(record.blueScore ?? 0);
+    score.append(red,dash,blue);
+
+    const result=document.createElement("div");
+    result.className="match-history-result";
+    result.textContent=(record.result || "Match ended")+" • Rounds "+(record.redRounds ?? 0)+"-"+(record.blueRounds ?? 0)+(record.complete ? "" : " • INCOMPLETE");
+
+    item.append(top,score,result);
+    list.appendChild(item);
+  });
+}
+
+function openMatchHistory(){
+  if(isControllerMode || isDisplayMode)return;
+  renderMatchHistory();
+  $("matchHistoryOverlay").classList.remove("hidden");
+}
+
+function closeMatchHistory(){
+  $("matchHistoryOverlay").classList.add("hidden");
+}
+
+function clearMatchHistory(){
+  if(!confirm("Clear all saved match history from this laptop? This cannot be undone."))return;
+  savedMatchRecords=[];
+  persistMatchRecords();
+  renderMatchHistory();
+}
+
+loadMatchRecords();
 
 
 /* =========================================================
@@ -2803,6 +2812,8 @@ function endRound(){
 
   if(matchOver||inBreak||roundClosed)return;
 
+  roundClosed=true;
+
   stopClocks();
 
   const redScore=
@@ -2813,10 +2824,6 @@ function endRound(){
 
 
   if(redScore===blueScore){
-
-    // A drawn round has no awardRound() call, so close it here.
-    roundClosed=true;
-    render();
 
     showWinner(
       "ROUND DRAW",
@@ -2847,12 +2854,7 @@ function awardRound(
   reason
 ){
 
-  if(matchOver||inBreak||roundClosed)return;
-
-  // Lock referee scoring immediately when a round winner is decided.
-  // The lock is included in Firebase state so every remote referee
-  // disables its buttons and rejects any late/queued vote.
-  roundClosed=true;
+  if(matchOver||inBreak)return;
 
   stopClocks();
 
@@ -2947,6 +2949,7 @@ function declareMatchWinner(
 
   inBreak=false;
 
+  saveCurrentMatchRecord((side==="red" ? fighterName("red") : fighterName("blue"))+" WINS");
   render();
 
   currentMatchPopup={
@@ -3470,6 +3473,20 @@ function newMatch(){
 
 
   stopClocks();
+
+  const hasMatchActivity =
+    round>1 ||
+    fighters.red.score>0 ||
+    fighters.blue.score>0 ||
+    fighters.red.wins>0 ||
+    fighters.blue.wins>0 ||
+    fighters.red.totalGam>0 ||
+    fighters.blue.totalGam>0 ||
+    matchOver;
+  if(hasMatchActivity){
+    const resultLabel=matchOver ? "Completed match" : "Stopped before completion";
+    saveCurrentMatchRecord(resultLabel);
+  }
 
   fighters=
     freshFighters();
@@ -4779,7 +4796,6 @@ function updateControllerUI(
   const locked=
     data.matchOver ||
     data.inBreak ||
-    data.roundClosed ||
     !data.sessionId ||
     refNumber>cfg.refereeCount;
 
@@ -4824,13 +4840,11 @@ function updateControllerUI(
       ? (
         data.matchOver
           ? "MATCH OVER"
-          : data.roundClosed
-            ? "ROUND OVER"
-            : data.inBreak
-              ? "BREAK"
-              : refNumber>cfg.refereeCount
-                ? "REFEREE DISABLED"
-                : "WAITING"
+          : data.inBreak
+            ? "BREAK"
+            : refNumber>cfg.refereeCount
+              ? "REFEREE DISABLED"
+              : "WAITING"
       )
       : "CONNECTED";
 }
@@ -5742,6 +5756,13 @@ $("newBtn")
     "click",
     newMatch
   );
+
+$("historyBtn").addEventListener("click",openMatchHistory);
+$("closeMatchHistoryBtn").addEventListener("click",closeMatchHistory);
+$("clearMatchHistoryBtn").addEventListener("click",clearMatchHistory);
+$("matchHistoryOverlay").addEventListener("click",event=>{
+  if(event.target.id==="matchHistoryOverlay")closeMatchHistory();
+});
 
 $("directBtn")
   .addEventListener(
