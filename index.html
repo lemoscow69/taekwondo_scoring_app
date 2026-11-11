@@ -888,6 +888,66 @@ body.controller-mode #controllerScreen{
 .tv-round-score.blue-score{background:#1565c0}
 @media(max-width:520px){.tv-round-winner-scores{gap:8px}.tv-round-score{padding:12px 6px}}
 
+
+
+/* ===== KEEP REFEREE REMOTE LAYOUT THE SAME IN PORTRAIT AND LANDSCAPE ===== */
+/* Preserve the portrait arrangement: RED above BLUE, three scoring buttons
+   in one horizontal row for each fighter, regardless of phone orientation. */
+body.controller-mode #controllerScreen .controller-sides{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:2px !important;
+  overflow:hidden !important;
+}
+body.controller-mode #controllerScreen .ref-side{
+  min-width:0 !important;
+  min-height:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:clamp(5px,1.5vh,12px) !important;
+}
+body.controller-mode #controllerScreen .ref-side.red-side{
+  border-right:0 !important;
+  border-bottom:5px solid #ffd54f !important;
+}
+body.controller-mode #controllerScreen .ref-buttons{
+  flex:0 0 auto !important;
+  width:min(95%,500px) !important;
+  height:auto !important;
+  min-height:0 !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  grid-template-rows:1fr !important;
+  gap:clamp(4px,1vw,8px) !important;
+  padding:0 !important;
+}
+body.controller-mode #controllerScreen .ref-score-btn{
+  width:100% !important;
+  height:auto !important;
+  min-height:clamp(54px,10vh,90px) !important;
+  padding:6px 3px !important;
+  border-radius:9px !important;
+  font-size:clamp(11px,2.2vw,15px) !important;
+}
+body.controller-mode #controllerScreen .ref-score-btn .ref-big{
+  font-size:clamp(25px,5.5vw,42px) !important;
+  line-height:1 !important;
+}
+body.controller-mode #controllerScreen .ref-side-title{
+  font-size:clamp(20px,5vw,38px) !important;
+  margin-bottom:2px !important;
+}
+body.controller-mode #controllerScreen .ref-side-sub{
+  margin-bottom:clamp(4px,1vh,8px) !important;
+}
+body.controller-mode #controllerScreen .ref-score-btn:disabled{
+  opacity:.28 !important;
+  filter:grayscale(.65) !important;
+}
+
 </style>
 
 </head>
@@ -2683,7 +2743,12 @@ function awardRound(
   reason
 ){
 
-  if(matchOver||inBreak)return;
+  if(matchOver||inBreak||roundClosed)return;
+
+  // Lock referee scoring immediately when a round winner is decided.
+  // The lock is included in Firebase state so every remote referee
+  // disables its buttons and rejects any late/queued vote.
+  roundClosed=true;
 
   stopClocks();
 
@@ -4610,6 +4675,7 @@ function updateControllerUI(
   const locked=
     data.matchOver ||
     data.inBreak ||
+    data.roundClosed ||
     !data.sessionId ||
     refNumber>cfg.refereeCount;
 
@@ -4654,11 +4720,13 @@ function updateControllerUI(
       ? (
         data.matchOver
           ? "MATCH OVER"
-          : data.inBreak
-            ? "BREAK"
-            : refNumber>cfg.refereeCount
-              ? "REFEREE DISABLED"
-              : "WAITING"
+          : data.roundClosed
+            ? "ROUND OVER"
+            : data.inBreak
+              ? "BREAK"
+              : refNumber>cfg.refereeCount
+                ? "REFEREE DISABLED"
+                : "WAITING"
       )
       : "CONNECTED";
 }
