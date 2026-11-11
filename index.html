@@ -986,6 +986,165 @@ body.controller-mode #controllerScreen{
   }
 }
 
+
+/* ===== REFEREE CONTROLLER: ICON BUTTONS + RESPONSIVE TIMER/LAYOUT ===== */
+#controllerScreen .controller-scorebar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(90px,1.25fr) minmax(0,1fr);
+  align-items:center;
+  gap:clamp(5px,2vw,14px);
+  padding:clamp(5px,1.2vh,12px) clamp(6px,2vw,16px);
+}
+#controllerScreen .controller-current{
+  font-size:clamp(24px,6vw,46px);
+  line-height:1;
+}
+#controllerScreen .controller-round{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  white-space:nowrap;
+}
+#controllerScreen #controllerTimer{
+  font-size:clamp(25px,6.5vw,48px);
+  line-height:1;
+  font-weight:1000;
+  color:#fff;
+  font-variant-numeric:tabular-nums;
+  padding:3px 10px;
+  border:2px solid #ffd54f;
+  border-radius:9px;
+  background:#05080d;
+  min-width:94px;
+}
+#controllerScreen .controller-sides{
+  flex:1 1 auto;
+  min-height:0;
+  min-width:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr);
+  overflow:hidden;
+}
+#controllerScreen .ref-side{
+  min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
+  padding:clamp(3px,1vh,10px);
+  overflow:hidden;
+}
+#controllerScreen .ref-side-title{
+  flex:0 0 auto;
+  font-size:clamp(17px,4.2vw,30px);
+  line-height:1;
+  margin:2px 0;
+  text-align:center;
+}
+#controllerScreen .ref-side-sub{
+  flex:0 0 auto;
+  font-size:clamp(11px,2.8vw,17px);
+  line-height:1.1;
+  margin:0 0 clamp(3px,.8vh,8px);
+  text-align:center;
+}
+#controllerScreen .ref-buttons{
+  flex:1 1 auto;
+  min-height:0;
+  min-width:0;
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:repeat(3,minmax(0,1fr));
+  gap:clamp(3px,.8vh,8px);
+}
+#controllerScreen .ref-score-btn{
+  min-width:0;
+  min-height:0;
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:clamp(3px,.8vh,9px) 2px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(2px,.5vh,6px);
+  overflow:hidden;
+  border:2px solid #ffffff70;
+  border-radius:clamp(7px,1.5vw,13px);
+  background:#0007;
+  color:#fff;
+  font-size:0;
+  line-height:1;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+#controllerScreen .ref-score-btn .ref-icon{
+  display:block;
+  width:clamp(34px,8vw,76px);
+  height:clamp(34px,8vw,76px);
+  max-width:65%;
+  max-height:52%;
+  flex:0 1 auto;
+  color:#fff;
+}
+#controllerScreen .ref-score-btn .ref-button-label{
+  display:block;
+  flex:0 0 auto;
+  font-size:clamp(11px,2.7vw,19px);
+  font-weight:1000;
+  letter-spacing:.4px;
+  line-height:1;
+  white-space:nowrap;
+}
+#controllerScreen .ref-score-btn .ref-big{
+  display:none !important;
+}
+#controllerScreen .ref-score-btn:active{transform:scale(.97);filter:brightness(1.2)}
+#controllerScreen .ref-score-btn:disabled{opacity:.32;filter:grayscale(.55)}
+#controllerScreen .controller-footer{font-size:clamp(8px,1.5vw,11px);padding:3px 5px}
+
+/* Portrait: preserve two fighter columns and three vertically stacked actions. */
+@media (max-width:700px) and (orientation:portrait){
+  body.controller-mode #controllerScreen{height:100dvh;min-height:0;}
+  #controllerScreen .controller-header{padding:6px 9px;min-height:38px}
+  #controllerScreen .controller-title{font-size:clamp(13px,3.5vw,17px)}
+  #controllerScreen .controller-info{font-size:9px}
+  #controllerScreen .controller-scorebar{min-height:58px}
+  #controllerScreen .controller-sides{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  #controllerScreen .ref-side{padding:5px 4px}
+}
+
+/* Landscape: compact header/timer and fit all six actions without overlap. */
+@media (max-width:900px) and (orientation:landscape){
+  body.controller-mode #controllerScreen{height:100dvh;min-height:0;}
+  #controllerScreen .controller-header{padding:3px 9px;min-height:30px}
+  #controllerScreen .controller-title{font-size:clamp(12px,2.5vw,17px)}
+  #controllerScreen .controller-info{font-size:8px;line-height:1.15}
+  #controllerScreen .controller-scorebar{min-height:46px;padding:3px 8px;}
+  #controllerScreen .controller-current{font-size:clamp(20px,5vh,34px)}
+  #controllerScreen .controller-round{font-size:clamp(9px,2.1vh,13px)}
+  #controllerScreen #controllerTimer{font-size:clamp(21px,5.4vh,34px);min-width:82px;padding:2px 7px}
+  #controllerScreen .ref-side{padding:2px 4px}
+  #controllerScreen .ref-side-title{font-size:clamp(15px,3.5vh,24px)}
+  #controllerScreen .ref-side-sub{font-size:clamp(9px,2.1vh,13px);margin-bottom:2px}
+  #controllerScreen .ref-buttons{gap:clamp(2px,.5vh,5px)}
+  #controllerScreen .ref-score-btn{gap:1px;padding:1px}
+  #controllerScreen .ref-score-btn .ref-icon{width:clamp(26px,7vh,48px);height:clamp(26px,7vh,48px);max-height:55%}
+  #controllerScreen .ref-score-btn .ref-button-label{font-size:clamp(9px,2.1vh,13px)}
+  #controllerScreen .controller-footer{font-size:8px;padding:1px 3px}
+}
+
+@media (max-width:360px) and (orientation:portrait){
+  #controllerScreen .ref-score-btn .ref-icon{width:clamp(29px,9vw,42px);height:clamp(29px,9vw,42px)}
+  #controllerScreen .ref-score-btn .ref-button-label{font-size:10px}
+}
+
 </style>
 
 </head>
@@ -1316,7 +1475,8 @@ body.controller-mode #controllerScreen{
           data-ref-side="red"
           data-ref-points-type="punch"
         >
-          PUNCH
+          <svg class="ref-icon" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 53 20 39q-2-8 5-10 6-2 9 5l4 8V20q0-8 8-8t8 8v18l3-8q3-7 10-4 6 2 4 9l-4 20q-3 18-20 23H39Q27 78 25 64Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="m35 49 12 4m1-9 12 3m-1 9 10 2" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+          <span class="ref-button-label">PUNCH</span>
           <span class="ref-big" id="controllerRedPunch">+1</span>
         </button>
 
@@ -1325,7 +1485,8 @@ body.controller-mode #controllerScreen{
           data-ref-side="red"
           data-ref-points-type="body"
         >
-          BODY
+          <svg class="ref-icon" viewBox="0 0 100 100" aria-hidden="true"><path d="M34 12 20 22 13 43l10 7 8-12-3 48h44l-3-48 8 12 10-7-7-21-14-10-10 10H44Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="m34 26 16 12 16-12 8 12-7 38H33l-7-38Z" fill="currentColor" opacity=".22" stroke="currentColor" stroke-width="4"/><path d="M50 38v38M33 52h34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          <span class="ref-button-label">CHEST</span>
           <span class="ref-big" id="controllerRedBody">+2</span>
         </button>
 
@@ -1334,7 +1495,8 @@ body.controller-mode #controllerScreen{
           data-ref-side="red"
           data-ref-points-type="head"
         >
-          HEAD
+          <svg class="ref-icon" viewBox="0 0 100 100" aria-hidden="true"><path d="M19 49a31 31 0 0 1 62 0v7H19Z" fill="currentColor" opacity=".22"/><path d="M19 50a31 31 0 0 1 62 0v8H19Z" fill="none" stroke="currentColor" stroke-width="5"/><path d="M25 57v15q0 8 8 8h34q8 0 8-8V57M34 58v21m32-21v21M26 48h48M37 58v10m13-10v10m13-10v10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M39 17q11-8 22 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          <span class="ref-button-label">FACE</span>
           <span class="ref-big" id="controllerRedHead">+3</span>
         </button>
 
@@ -1360,7 +1522,8 @@ body.controller-mode #controllerScreen{
           data-ref-side="blue"
           data-ref-points-type="punch"
         >
-          PUNCH
+          <svg class="ref-icon" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 53 20 39q-2-8 5-10 6-2 9 5l4 8V20q0-8 8-8t8 8v18l3-8q3-7 10-4 6 2 4 9l-4 20q-3 18-20 23H39Q27 78 25 64Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="m35 49 12 4m1-9 12 3m-1 9 10 2" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+          <span class="ref-button-label">PUNCH</span>
           <span class="ref-big" id="controllerBluePunch">+1</span>
         </button>
 
@@ -1369,7 +1532,8 @@ body.controller-mode #controllerScreen{
           data-ref-side="blue"
           data-ref-points-type="body"
         >
-          BODY
+          <svg class="ref-icon" viewBox="0 0 100 100" aria-hidden="true"><path d="M34 12 20 22 13 43l10 7 8-12-3 48h44l-3-48 8 12 10-7-7-21-14-10-10 10H44Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="m34 26 16 12 16-12 8 12-7 38H33l-7-38Z" fill="currentColor" opacity=".22" stroke="currentColor" stroke-width="4"/><path d="M50 38v38M33 52h34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          <span class="ref-button-label">CHEST</span>
           <span class="ref-big" id="controllerBlueBody">+2</span>
         </button>
 
@@ -1378,7 +1542,8 @@ body.controller-mode #controllerScreen{
           data-ref-side="blue"
           data-ref-points-type="head"
         >
-          HEAD
+          <svg class="ref-icon" viewBox="0 0 100 100" aria-hidden="true"><path d="M19 49a31 31 0 0 1 62 0v7H19Z" fill="currentColor" opacity=".22"/><path d="M19 50a31 31 0 0 1 62 0v8H19Z" fill="none" stroke="currentColor" stroke-width="5"/><path d="M25 57v15q0 8 8 8h34q8 0 8-8V57M34 58v21m32-21v21M26 48h48M37 58v10m13-10v10m13-10v10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M39 17q11-8 22 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          <span class="ref-button-label">FACE</span>
           <span class="ref-big" id="controllerBlueHead">+3</span>
         </button>
 
