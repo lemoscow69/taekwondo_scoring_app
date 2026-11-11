@@ -1002,6 +1002,54 @@ body.controller-mode #controllerScreen .controller-footer{
   padding:clamp(3px,.7vh,7px) !important;
   font-size:clamp(8px,1.4vw,11px) !important;
 }
+
+/* Landscape phones: give each scoring button a larger, readable tap target. */
+@media (orientation:landscape) and (max-height:700px){
+  body.controller-mode #controllerScreen .controller-header{
+    min-height:42px !important;
+    padding:4px 10px !important;
+  }
+  body.controller-mode #controllerScreen .controller-title{
+    font-size:clamp(13px,2.5vw,18px) !important;
+  }
+  body.controller-mode #controllerScreen .controller-scorebar{
+    min-height:48px !important;
+    padding:3px 8px !important;
+  }
+  body.controller-mode #controllerScreen .controller-current{
+    font-size:clamp(22px,5vh,34px) !important;
+  }
+  body.controller-mode #controllerScreen .controller-round{
+    font-size:clamp(10px,2.2vh,14px) !important;
+    line-height:1.15 !important;
+  }
+  body.controller-mode #controllerScreen .ref-side{
+    padding:3px 5px !important;
+  }
+  body.controller-mode #controllerScreen .ref-side-title{
+    font-size:clamp(18px,4.2vh,30px) !important;
+  }
+  body.controller-mode #controllerScreen .ref-side-sub{
+    font-size:clamp(10px,2.2vh,14px) !important;
+    margin-bottom:3px !important;
+  }
+  body.controller-mode #controllerScreen .ref-buttons{
+    gap:3px !important;
+  }
+  body.controller-mode #controllerScreen .ref-score-btn{
+    font-size:clamp(11px,2.4vh,16px) !important;
+    padding:3px !important;
+    border-width:2px !important;
+  }
+  body.controller-mode #controllerScreen .ref-score-btn .ref-big{
+    font-size:clamp(38px,10.5vh,72px) !important;
+    line-height:.95 !important;
+  }
+  body.controller-mode #controllerScreen .controller-footer{
+    padding:2px 4px !important;
+    font-size:9px !important;
+  }
+}
 </style>
 
 </head>
