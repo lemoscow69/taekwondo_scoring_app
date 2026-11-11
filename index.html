@@ -2184,116 +2184,93 @@ function flash(side){
 
 function sound(type){
 
-  // Laptop is the sound-event sender only: every sound is routed to the TV.
-  // The TV is the only device that creates audible output.
+  // Laptop sends sound events only. TV is the only device that plays audio.
+  const allowedTypes=["score","gam","round","horn","undo","break","match"];
+
   if(!isDisplayMode){
     if(isControllerMode || !cfg.sound)return;
-    const allowedTypes=["score","gam","round","horn","undo"];
     if(!allowedTypes.includes(type))return;
+
     winnerSoundEvents.push({
       id:String(Date.now())+"-"+Math.random().toString(36).slice(2,10),
       type:type
     });
-    if(winnerSoundEvents.length>30)winnerSoundEvents=winnerSoundEvents.slice(-30);
+
+    if(winnerSoundEvents.length>30){
+      winnerSoundEvents=winnerSoundEvents.slice(-30);
+    }
+
     publishState();
     return;
   }
 
-  // TV receives the event from Firebase and plays it locally.
+  // TV plays the received sound locally with higher volume.
   try{
-
-    const AC=
-      window.AudioContext ||
-      window.webkitAudioContext;
-
+    const AC=window.AudioContext||window.webkitAudioContext;
     if(!AC)return;
 
-    if(!audioContext){
-      audioContext=new AC();
-    }
+    if(!audioContext)audioContext=new AC();
 
     if(audioContext.state==="suspended"){
       audioContext.resume();
     }
 
-    const notes={
-
-      score:[700,0.12],
-
-      gam:[360,0.18],
-
-      round:[520,0.25],
-
-      horn:[850,0.5],
-
-      undo:[440,0.1]
-
+    const soundProfiles={
+      score:{frequency:880,duration:0.24,volume:0.52,wave:"sine"},
+      gam:{frequency:420,duration:0.32,volume:0.58,wave:"triangle"},
+      round:{frequency:660,duration:0.55,volume:0.62,wave:"sine"},
+      horn:{frequency:520,duration:1.05,volume:0.78,wave:"sawtooth"},
+      undo:{frequency:540,duration:0.22,volume:0.48,wave:"sine"},
+      break:{frequency:740,duration:0.9,volume:0.72,wave:"square"},
+      match:{frequency:880,duration:1.35,volume:0.82,wave:"sawtooth"}
     };
 
-    const now=
-      audioContext.currentTime;
+    const profile=soundProfiles[type]||soundProfiles.score;
+    const now=audioContext.currentTime;
 
-    const [
-      frequency,
-      duration
-    ]=
-      notes[type] ||
-      notes.score;
+    // Match-end sound is a clear three-tone victory signal.
+    if(type==="match"){
+      [880,1100,1320].forEach((frequency,index)=>{
+        const oscillator=audioContext.createOscillator();
+        const gain=audioContext.createGain();
+        const toneStart=now+(index*0.24);
+        const toneDuration=0.42;
 
-    const oscillator=
-      audioContext.createOscillator();
+        oscillator.type="sawtooth";
+        oscillator.frequency.setValueAtTime(frequency,toneStart);
 
-    const gain=
-      audioContext.createGain();
+        gain.gain.setValueAtTime(0.0001,toneStart);
+        gain.gain.exponentialRampToValueAtTime(0.78,toneStart+0.025);
+        gain.gain.setValueAtTime(0.78,toneStart+toneDuration-0.06);
+        gain.gain.exponentialRampToValueAtTime(0.0001,toneStart+toneDuration);
 
-    oscillator.type=
-      type==="horn"
-        ? "sawtooth"
-        : "sine";
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start(toneStart);
+        oscillator.stop(toneStart+toneDuration+0.02);
+      });
+      return;
+    }
 
-    oscillator.frequency
-      .setValueAtTime(
-        frequency,
-        now
-      );
+    const oscillator=audioContext.createOscillator();
+    const gain=audioContext.createGain();
 
-    gain.gain
-      .setValueAtTime(
-        0.0001,
-        now
-      );
+    oscillator.type=profile.wave;
+    oscillator.frequency.setValueAtTime(profile.frequency,now);
 
-    gain.gain
-      .exponentialRampToValueAtTime(
-        0.18,
-        now+0.015
-      );
-
-    gain.gain
-      .exponentialRampToValueAtTime(
-        0.0001,
-        now+duration
-      );
+    // Smooth fade-in/fade-out avoids clicks while keeping the sound louder.
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.gain.exponentialRampToValueAtTime(profile.volume,now+0.025);
+    gain.gain.setValueAtTime(profile.volume,now+profile.duration-0.07);
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+profile.duration);
 
     oscillator.connect(gain);
-
-    gain.connect(
-      audioContext.destination
-    );
-
+    gain.connect(audioContext.destination);
     oscillator.start(now);
-
-    oscillator.stop(
-      now+duration+0.02
-    );
+    oscillator.stop(now+profile.duration+0.03);
 
   }catch(error){
-
-    console.warn(
-      "Sound unavailable",
-      error
-    );
-
+    console.warn("Sound unavailable",error);
   }
 }
 
@@ -2761,7 +2738,7 @@ function declareMatchWinner(
 
   render();
 
-  sound("horn");
+  sound("match");
 
 
   showWinner(
@@ -3031,6 +3008,7 @@ function beginBreak(){
 
 
   if(cfg.breakTime<=0){
+    sound("break");
     appealAvailableUntilBreakEnds=false;
     appealDraft=null;
     appealRoundResultCaptured=false;
@@ -3078,6 +3056,7 @@ function beginBreak(){
 
     if(breakSeconds<=0){
 
+      sound("break");
       clearInterval(breakId);
 
       breakId=null;
@@ -4639,7 +4618,7 @@ function playSyncedTVWinnerSound(data){
     const eventId=String(event.id);
     if(seenTvSoundEventIds.has(eventId))return;
     seenTvSoundEventIds.add(eventId);
-    if(["score","gam","round","horn","undo"].includes(event.type))sound(event.type);
+    if(["score","gam","round","horn","undo","break","match"].includes(event.type))sound(event.type);
   });
   if(seenTvSoundEventIds.size>100){
     seenTvSoundEventIds=new Set(Array.from(seenTvSoundEventIds).slice(-30));
