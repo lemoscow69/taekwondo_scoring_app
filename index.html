@@ -1150,7 +1150,7 @@ body.controller-mode #controllerScreen{
 
   <div id="tvRoundWinnerOverlay" class="tv-round-winner-overlay hidden" aria-live="assertive">
     <div class="tv-round-winner-card">
-      <div class="tv-round-winner-heading">ROUND WINNER</div>
+      <div id="tvRoundWinnerHeading" class="tv-round-winner-heading">ROUND WINNER</div>
       <div id="tvRoundWinnerName" class="tv-round-winner-name">RED WINS!</div>
       <div class="tv-round-winner-scores">
         <div class="tv-round-score red-score"><span>RED</span><strong id="tvRoundRedScore">0</strong></div>
@@ -1828,6 +1828,7 @@ let seenTvSoundEventIds = new Set();
 let tvSoundInitialized = false;
 let tvHasReceivedInitialState = false;
 let currentRoundPopup = null;
+let currentMatchPopup = null;
 
 let sessionId = makeSessionId();
 
@@ -1981,6 +1982,7 @@ matchOver: matchOver,
       : "",
 
     roundPopup:currentRoundPopup,
+    matchPopup:currentMatchPopup,
 
     soundEvents:winnerSoundEvents.slice(-10),
 
@@ -2778,6 +2780,12 @@ function declareMatchWinner(
 
   render();
 
+  currentMatchPopup={
+    winner:side==="red" ? "RED WINS!" : "BLUE WINS!",
+    redScore:fighters.red.score,
+    blueScore:fighters.blue.score
+  };
+
   sound("match");
 
 
@@ -2814,6 +2822,20 @@ function showWinner(
     currentRoundPopup.blueScore=fighters.blue.score;
   }else{
     currentRoundPopup=null;
+  }
+
+  if(title==="MATCH WINNER"){
+    if(!currentMatchPopup){
+      currentMatchPopup={
+        winner:"MATCH WINNER",
+        redScore:fighters.red.score,
+        blueScore:fighters.blue.score
+      };
+    }
+    currentMatchPopup.redScore=fighters.red.score;
+    currentMatchPopup.blueScore=fighters.blue.score;
+  }else{
+    currentMatchPopup=null;
   }
 
   pendingAction=action;
@@ -3003,6 +3025,8 @@ function cancelAppeal(){
 }
 
 function closeWinner(){
+
+  currentMatchPopup=null;
 
   $("winnerOverlay")
     .classList.add("hidden");
@@ -4774,18 +4798,16 @@ function renderTV(data){
     data.winner ||
     "";
 
-  const roundPopup=data.roundPopup;
-  const showRoundPopup=
-    data.winner==="ROUND WINNER" ||
-    data.winner==="ROUND DRAW";
-  $("tvRoundWinnerOverlay").classList.toggle(
-    "hidden",
-    !(showRoundPopup && roundPopup)
-  );
-  if(showRoundPopup && roundPopup){
-    $("tvRoundWinnerName").textContent=roundPopup.winner || "ROUND DRAW";
-    $("tvRoundRedScore").textContent=Number(roundPopup.redScore)||0;
-    $("tvRoundBlueScore").textContent=Number(roundPopup.blueScore)||0;
+  const isRoundWinner=data.winner==="ROUND WINNER" || data.winner==="ROUND DRAW";
+  const isMatchWinner=data.winner==="MATCH WINNER";
+  const popupData=isMatchWinner ? data.matchPopup : (isRoundWinner ? data.roundPopup : null);
+  const showWinnerPopup=!!popupData && (isRoundWinner || isMatchWinner);
+  $("tvRoundWinnerOverlay").classList.toggle("hidden",!showWinnerPopup);
+  if(showWinnerPopup){
+    $("tvRoundWinnerHeading").textContent=isMatchWinner ? "MATCH WINNER" : "ROUND WINNER";
+    $("tvRoundWinnerName").textContent=popupData.winner || (data.winner==="ROUND DRAW" ? "ROUND DRAW" : "WINNER");
+    $("tvRoundRedScore").textContent=Number(popupData.redScore)||0;
+    $("tvRoundBlueScore").textContent=Number(popupData.blueScore)||0;
   }
 }
 
