@@ -5219,4 +5219,1214 @@ function renderTV(data){
     $("tvRoundWinnerHeading").textContent=isMatchWinner ? "MATCH WINNER" : "ROUND WINNER";
     $("tvRoundWinnerName").textContent=popupData.winner || (data.winner==="ROUND DRAW" ? "ROUND DRAW" : "WINNER");
     $("tvRoundRedScore").textContent=Number(popupData.redScore)||0;
-    $("tvRoundBlueS
+    $("tvRoundBlueScore").textContent=Number(popupData.blueScore)||0;
+  }
+}
+
+
+/* =========================================================
+   BOARD STATE RECOVERY
+========================================================= */
+
+function applySavedState(
+  data
+){
+
+  if(!data)return;
+
+
+  if(data.fighters){
+
+    fighters=
+      data.fighters;
+
+  }else{
+
+    fighters.red.score=
+      Number(data.redScore)||0;
+
+    fighters.blue.score=
+      Number(data.blueScore)||0;
+
+    fighters.red.gam=
+      Number(data.redGam)||0;
+
+    fighters.blue.gam=
+      Number(data.blueGam)||0;
+
+    fighters.red.totalGam=
+      Number(data.redTotalGam)||0;
+
+    fighters.blue.totalGam=
+      Number(data.blueTotalGam)||0;
+
+    fighters.red.wins=
+      Number(data.redWins)||0;
+
+    fighters.blue.wins=
+      Number(data.blueWins)||0;
+
+  }
+
+
+  round=
+    Number(data.round)||1;
+
+
+  seconds=
+    Number(data.seconds)||
+    cfg.roundTime;
+
+
+  breakSeconds=
+    Number(data.breakSeconds)||
+    cfg.breakTime;
+
+
+ inBreak=
+  Boolean(data.inBreak);
+
+roundClosed=
+  Boolean(data.roundClosed);
+
+matchOver=
+  Boolean(data.matchOver);
+
+
+  if(data.sessionId){
+    sessionId=
+      data.sessionId;
+  }
+
+
+  if(
+    data.settings
+  ){
+
+    cfg={
+      ...cfg,
+      ...data.settings
+    };
+
+  }
+
+
+  /*
+    Important:
+    On browser refresh, don't create
+    a duplicate timer accidentally.
+  */
+
+  running=false;
+
+  stopClocks();
+
+  render();
+}
+
+
+/* =========================================================
+   BOARD CLAIM
+========================================================= */
+
+async function claimBoard(){
+
+  if(
+    !firebaseReady ||
+    !firebaseUser ||
+    !roomId
+  ){
+    return false;
+  }
+
+
+  try{
+
+    const snap=
+      await metaRef()
+        .once("value");
+
+
+    const data=
+      snap.val();
+
+
+    if(
+      data &&
+      data.boardUid &&
+      data.boardUid!==firebaseUser.uid
+    ){
+
+      setCloudStatus(
+        "ROOM IN USE",
+        "error"
+      );
+
+      setStatus(
+        "This room is already controlled by another laptop."
+      );
+
+      return false;
+    }
+
+
+    if(!data){
+
+      await metaRef()
+        .set({
+
+          boardUid:
+            firebaseUser.uid,
+
+          refereeCount:
+            cfg.refereeCount,
+
+          createdAt:
+            firebase.database
+              .ServerValue
+              .TIMESTAMP
+
+        });
+
+    }else{
+
+      await metaRef()
+        .update({
+
+          refereeCount:
+            cfg.refereeCount
+
+        });
+
+    }
+
+
+    boardClaimed=true;
+
+    return true;
+
+  }catch(error){
+
+    console.error(
+      "Board claim failed:",
+      error
+    );
+
+    setCloudStatus(
+      "RULES ERROR",
+      "error"
+    );
+
+    setStatus(
+      "Firebase Rules/Auth error. Check Realtime Database Rules."
+    );
+
+    return false;
+  }
+}
+
+
+/* =========================================================
+   FIREBASE META UPDATE
+========================================================= */
+
+function updateFirebaseMeta(){
+
+  if(
+    !firebaseReady ||
+    !boardClaimed
+  ){
+    return;
+  }
+
+
+  metaRef()
+    .update({
+
+      refereeCount:
+        cfg.refereeCount
+
+    })
+    .catch(error=>{
+
+      console.error(
+        "Meta update:",
+        error
+      );
+
+    });
+}
+
+
+/* =========================================================
+   BOARD / TV / CONTROLLER BOOT
+========================================================= */
+
+function startBoardFirebase(){
+
+  if(!firebaseReady){
+    return;
+  }
+
+
+  claimBoard()
+    .then(ok=>{
+
+      if(!ok){
+        return;
+      }
+
+
+      setCloudStatus(
+        "CLOUD CONNECTED",
+        "ok"
+      );
+
+
+      stateRef()
+        .once("value")
+        .then(snapshot=>{
+
+          const data=
+            snapshot.val();
+
+
+          if(data){
+
+            applySavedState(data);
+
+          }else{
+
+            render();
+
+          }
+
+
+          subscribeBoardVotes();
+
+        })
+        .catch(error=>{
+
+          console.error(
+            "State load failed:",
+            error
+          );
+
+          setCloudStatus(
+            "STATE ERROR",
+            "error"
+          );
+
+          render();
+
+          subscribeBoardVotes();
+
+        });
+
+    });
+}
+
+
+function startControllerFirebase(){
+
+  if(!roomId){
+
+    $("joinOverlay")
+      .classList.remove("hidden");
+
+    return;
+  }
+
+
+  localStorage.setItem(
+    CONTROLLER_ROOM_KEY,
+    roomId
+  );
+
+
+  stateRef()
+    .on(
+      "value",
+      snapshot=>{
+
+        const data=
+          snapshot.val();
+
+
+        if(!data){
+
+          $("controllerCloud")
+            .textContent=
+            "WAITING FOR LAPTOP";
+
+          document
+            .querySelectorAll(
+              ".ref-score-btn"
+            )
+            .forEach(btn=>{
+              btn.disabled=true;
+            });
+
+          return;
+        }
+
+
+        updateControllerUI(data);
+
+      },
+      error=>{
+
+        console.error(
+          "Controller state:",
+          error
+        );
+
+        $("controllerCloud")
+          .textContent=
+          "FIREBASE ERROR";
+
+      }
+    );
+}
+
+
+function startDisplayFirebase(){
+
+  if(!roomId){
+
+    $("joinOverlay")
+      .classList.remove("hidden");
+
+    return;
+  }
+
+
+  stateRef()
+    .on(
+      "value",
+      snapshot=>{
+
+        const data=
+          snapshot.val();
+
+
+        if(data){
+
+          renderTV(data);
+          playSyncedTVWinnerSound(data);
+
+        }
+
+      },
+      error=>{
+
+        console.error(
+          "TV state:",
+          error
+        );
+
+        $("tvStatus")
+          .textContent=
+          "Firebase connection error";
+
+      }
+    );
+}
+
+
+/* =========================================================
+   QR
+========================================================= */
+
+let currentQrLink="";
+
+
+function baseUrl(){
+
+  return (
+    location.origin+
+    location.pathname
+  );
+}
+
+
+function makeControllerUrl(
+  referee
+){
+
+  return (
+    baseUrl()+
+    "?controller=1"+
+    "&room="+
+    encodeURIComponent(roomId)+
+    "&ref="+
+    referee
+  );
+}
+
+
+function makeTvUrl(){
+
+  return (
+    baseUrl()+
+    "?display=1"+
+    "&room="+
+    encodeURIComponent(roomId)
+  );
+}
+
+
+function openQR(
+  role="ref1"
+){
+
+  if(isControllerMode ||
+     isDisplayMode){
+    return;
+  }
+
+
+  $("qrOverlay")
+    .classList.remove("hidden");
+
+
+  showQR(role);
+}
+
+
+function showQR(role){
+
+  let link="";
+
+
+  if(role==="tv"){
+
+    link=
+      makeTvUrl();
+
+  }else{
+
+    const no=
+      Number(
+        String(role)
+          .replace("ref","")
+      ) || 1;
+
+    link=
+      makeControllerUrl(no);
+  }
+
+
+  currentQrLink=link;
+
+
+  $("qrLink")
+    .textContent=
+    link;
+
+
+  $("qrImage").src=
+    "https://api.qrserver.com/v1/create-qr-code/"+
+    "?size=300x300"+
+    "&margin=10"+
+    "&data="+
+    encodeURIComponent(link);
+
+
+  $("qrRef1Btn").disabled=
+    cfg.refereeCount<1;
+
+  $("qrRef2Btn").disabled=
+    cfg.refereeCount<2;
+
+  $("qrRef3Btn").disabled=
+    cfg.refereeCount<3;
+}
+
+
+function closeQR(){
+
+  $("qrOverlay")
+    .classList.add("hidden");
+}
+
+
+/* =========================================================
+   JOIN
+========================================================= */
+
+function openJoin(){
+
+  if(isControllerMode){
+
+    $("joinTitle")
+      .textContent=
+      "JOIN AS REFEREE "+
+      refNumber;
+
+  }else{
+
+    $("joinTitle")
+      .textContent=
+      "JOIN TV DISPLAY";
+
+  }
+
+
+  $("joinRoomInput").value=
+    roomId || "";
+
+  $("joinOverlay")
+    .classList.remove("hidden");
+}
+
+
+function joinRoom(){
+
+  const entered=
+    cleanRoom(
+      $("joinRoomInput").value
+    );
+
+
+  if(!entered){
+
+    alert(
+      "Please enter a valid room code."
+    );
+
+    return;
+  }
+
+
+  roomId=entered;
+
+
+  if(isControllerMode){
+
+    localStorage.setItem(
+      CONTROLLER_ROOM_KEY,
+      roomId
+    );
+
+
+    location.href=
+      baseUrl()+
+      "?controller=1"+
+      "&room="+
+      encodeURIComponent(roomId)+
+      "&ref="+
+      refNumber;
+
+  }else{
+
+    location.href=
+      baseUrl()+
+      "?display=1"+
+      "&room="+
+      encodeURIComponent(roomId);
+
+  }
+}
+
+
+/* =========================================================
+   REFEREE NUMBER
+========================================================= */
+
+let refNumber=
+  Math.min(
+    3,
+    Math.max(
+      1,
+      Number(
+        params.get("ref") || 1
+      )
+    )
+  );
+
+
+if(isControllerMode){
+
+  $("controllerRefNo")
+    .textContent=
+    refNumber;
+
+}
+
+
+/* =========================================================
+   EVENT HANDLERS — BOARD
+========================================================= */
+
+document
+  .querySelectorAll(
+    "[data-side][data-type]"
+  )
+  .forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        addPoints(
+          btn.dataset.side,
+          btn.dataset.type
+        );
+
+      }
+    );
+
+  });
+
+
+document
+  .querySelectorAll(
+    "[data-gam-side]"
+  )
+  .forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        changeGam(
+          btn.dataset.gamSide,
+          Number(
+            btn.dataset.delta
+          )
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   BOARD BUTTONS
+========================================================= */
+
+$("settingsBtn")
+  .addEventListener(
+    "click",
+    openSettings
+  );
+
+$("startBtn")
+  .addEventListener(
+    "click",
+    startTimer
+  );
+
+$("pauseBtn")
+  .addEventListener(
+    "click",
+    pauseTimer
+  );
+
+/* =========================================
+   KEYBOARD CONTROL — ENTER TO START / PAUSE
+========================================= */
+
+document.addEventListener("keydown", function(event) {
+
+  // Only Enter key
+  if (event.key !== "Enter") return;
+
+  // Hold karne par baar-baar trigger na ho
+  if (event.repeat) return;
+
+  // Input ya kisi button par focus ho to shortcut na chale
+  const active = document.activeElement;
+
+  if (
+    active &&
+    (
+      active.tagName === "INPUT" ||
+      active.tagName === "TEXTAREA" ||
+      active.tagName === "SELECT" ||
+      active.tagName === "BUTTON" ||
+      active.isContentEditable
+    )
+  ) {
+    return;
+  }
+
+  // Default Enter action rokna
+  event.preventDefault();
+
+  // Running hai to PAUSE, warna START
+  if (running) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+
+});
+
+$("endBtn")
+  .addEventListener(
+    "click",
+    endRound
+  );
+
+$("undoBtn")
+  .addEventListener(
+    "click",
+    undoLast
+  );
+
+$("newBtn")
+  .addEventListener(
+    "click",
+    newMatch
+  );
+
+$("historyBtn").addEventListener("click",openMatchHistory);
+$("closeMatchHistoryBtn").addEventListener("click",closeMatchHistory);
+$("clearMatchHistoryBtn").addEventListener("click",clearMatchHistory);
+$("matchHistoryOverlay").addEventListener("click",event=>{
+  if(event.target.id==="matchHistoryOverlay")closeMatchHistory();
+});
+
+$("directBtn")
+  .addEventListener(
+    "click",
+    openDirectWinner
+  );
+
+$("minusFive")
+  .addEventListener(
+    "click",
+    ()=>adjustTimer(-5)
+  );
+
+$("plusFive")
+  .addEventListener(
+    "click",
+    ()=>adjustTimer(5)
+  );
+
+$("startNextBtn")
+  .addEventListener(
+    "click",
+    startNextRound
+  );
+
+$("winnerNextBtn")
+  .addEventListener(
+    "click",
+    winnerContinue
+  );
+
+$("openAppealBtn").addEventListener("click",openAppeal);
+$("appealCancelBtn").addEventListener("click",cancelAppeal);
+$("appealSaveBtn").addEventListener("click",saveAppeal);
+document.querySelectorAll("[data-appeal-side]").forEach(button=>{
+  button.addEventListener("click",()=>changeAppealDraft(
+    button.dataset.appealSide,
+    button.dataset.appealType,
+    Number(button.dataset.appealDelta)
+  ));
+});
+
+$("winnerCloseBtn")
+  .addEventListener(
+    "click",
+    closeWinner
+  );
+
+
+$("directRedBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeWinner();
+
+      declareMatchWinner(
+        "red",
+        "Direct winner declared by referee."
+      );
+
+    }
+  );
+
+
+$("directBlueBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeWinner();
+
+      declareMatchWinner(
+        "blue",
+        "Direct winner declared by referee."
+      );
+
+    }
+  );
+
+
+$("saveSettingsBtn")
+  .addEventListener(
+    "click",
+    saveSettings
+  );
+
+$("cancelSettingsBtn")
+  .addEventListener(
+    "click",
+    closeSettings
+  );
+
+
+$("refereeBtn")
+  .addEventListener(
+    "click",
+    ()=>openQR("ref1")
+  );
+
+
+$("tvBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      if(!roomId)return;
+
+      window.open(
+        makeTvUrl(),
+        "_blank"
+      );
+
+    }
+  );
+
+
+$("qrRef1Btn")
+  .addEventListener(
+    "click",
+    ()=>showQR("ref1")
+  );
+
+$("qrRef2Btn")
+  .addEventListener(
+    "click",
+    ()=>showQR("ref2")
+  );
+
+$("qrRef3Btn")
+  .addEventListener(
+    "click",
+    ()=>showQR("ref3")
+  );
+
+$("qrTvBtn")
+  .addEventListener(
+    "click",
+    ()=>showQR("tv")
+  );
+
+$("closeQrBtn")
+  .addEventListener(
+    "click",
+    closeQR
+  );
+
+
+$("copyQrBtn")
+  .addEventListener(
+    "click",
+    async()=>{
+
+      try{
+
+        await navigator.clipboard
+          .writeText(
+            currentQrLink
+          );
+
+        $("copyQrBtn")
+          .textContent=
+          "COPIED ✓";
+
+
+        setTimeout(()=>{
+
+          $("copyQrBtn")
+            .textContent=
+            "COPY LINK";
+
+        },1200);
+
+      }catch(error){
+
+        alert(
+          currentQrLink
+        );
+
+      }
+
+    }
+  );
+
+
+$("joinRoomBtn")
+  .addEventListener(
+    "click",
+    joinRoom
+  );
+
+
+$("joinRoomInput")
+  .addEventListener(
+    "keydown",
+    event=>{
+
+      if(event.key==="Enter"){
+        joinRoom();
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   CONTROLLER BUTTONS
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".ref-score-btn"
+  )
+  .forEach(btn=>{
+
+    btn.addEventListener(
+      "click",
+      ()=>{
+
+        sendRefereeVote(
+          btn.dataset.refSide,
+          btn.dataset.refPointsType
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   ROOM BADGE
+========================================================= */
+
+if(!isControllerMode &&
+   !isDisplayMode){
+
+  $("roomBadge")
+    .textContent=
+    "ROOM "+
+    roomId;
+
+}
+
+
+/* =========================================================
+   INITIAL LOCAL RENDER
+========================================================= */
+
+render();
+
+
+/* =========================================================
+   FIREBASE INITIALIZATION
+========================================================= */
+
+try{
+
+  firebase.initializeApp(
+    firebaseConfig
+  );
+
+  db=
+    firebase.database();
+
+  firebase.auth()
+    .onAuthStateChanged(
+      user=>{
+
+        if(!user){
+          return;
+        }
+
+
+        firebaseUser=user;
+
+        firebaseReady=true;
+
+
+        if(isControllerMode){
+
+          $("controllerCloud")
+            .textContent=
+            "CONNECTED";
+
+          startControllerFirebase();
+
+        }else if(isDisplayMode){
+
+          startDisplayFirebase();
+
+        }else{
+
+          setCloudStatus(
+            "AUTH OK",
+            "ok"
+          );
+
+          startBoardFirebase();
+
+        }
+
+      }
+    );
+
+
+  firebase.auth()
+    .signInAnonymously()
+    .catch(error=>{
+
+      console.error(
+        "Firebase anonymous login failed:",
+        error
+      );
+
+
+      firebaseReady=false;
+
+
+      if(isControllerMode){
+
+        $("controllerCloud")
+          .textContent=
+          "LOGIN FAILED";
+
+      }else if(isDisplayMode){
+
+        $("tvStatus")
+          .textContent=
+          "Firebase login failed";
+
+      }else{
+
+        setCloudStatus(
+          "AUTH FAILED",
+          "error"
+        );
+
+        setStatus(
+          "Firebase login failed — enable Anonymous Authentication."
+        );
+
+      }
+
+    });
+
+
+}catch(error){
+
+  console.error(
+    "Firebase initialization failed:",
+    error
+  );
+
+
+  firebaseReady=false;
+
+
+  if(isControllerMode){
+
+    $("controllerCloud")
+      .textContent=
+      "FIREBASE ERROR";
+
+  }else if(isDisplayMode){
+
+    $("tvStatus")
+      .textContent=
+      "Firebase unavailable";
+
+  }else{
+
+    setCloudStatus(
+      "FIREBASE ERROR",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   MODE JOIN
+========================================================= */
+
+if(
+  (isControllerMode ||
+   isDisplayMode) &&
+  !roomId
+){
+
+  openJoin();
+
+}
+
+
+/* =========================================================
+   CONTROLLER INITIAL STATE
+========================================================= */
+
+if(isControllerMode){
+
+  $("controllerRoom")
+    .textContent=
+    roomId
+      ? "ROOM "+roomId
+      : "ROOM ------";
+
+
+  document
+    .querySelectorAll(
+      ".ref-score-btn"
+    )
+    .forEach(btn=>{
+      btn.disabled=true;
+    });
+
+}
+
+
+/* =========================================================
+   GLOBAL ERROR REPORTING
+========================================================= */
+
+window.addEventListener(
+  "error",
+  event=>{
+
+    console.error(
+      "App error:",
+      event.error || event.message
+    );
+
+  }
+);
+
+</script>
+
+</body>
+</html>
